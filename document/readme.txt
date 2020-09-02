@@ -1,1 +1,0 @@
-This is a front project for Tencent enterprise wechat
