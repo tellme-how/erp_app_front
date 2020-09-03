@@ -45,7 +45,7 @@ module.exports = {
                 //target: 'http://192.168.21.78:6767',
                 //target:'http://localhost:6767',
                 //服务器
-				target: 'http://192.168.85.96:6767',
+				target: 'http://192.168.85.87:7767',
 				//戚俊然
 				//				target: 'http://10.128.32.221:6767',
 				//王琦
