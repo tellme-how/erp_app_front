@@ -30,6 +30,7 @@
 	.classZero {
 		background-color: #d3e8fd;
 		color: #2771ca;
+		width: 120px
 	}
 	#classTd{
 		border: solid 1px #a9c0df;

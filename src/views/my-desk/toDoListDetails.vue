@@ -26,10 +26,56 @@
 </template>
 
 <script>
+	//部门年度计划
 	import DepartmentYearPlan from '../../views/my-desk/components/DepartmentYearPlan';
+	//部门月度计划
+	import DepartmentMonthPlan from '../../views/my-desk/components/DepartmentMonthPlan';
+	//临时任务派发
+	import TemporaryMission from '../../views/my-desk/components/TemporaryMission';
+	//一岗一表 
+	import FormPost from '../../views/my-desk/components/FormPost';
+	//配合任务
+	import CoordinationTask from '../../views/my-desk/components/CoordinationTask';
+	//经济指标
+	import OptionIndex from '../../views/my-desk/components/OptionIndex';
+	//公司年度计划汇总
+	import CompanyYearPlanCollect from '../../views/my-desk/components/CompanyYearPlanCollect';
+	//员工考评表
+	import StaffAppraisals from '../../views/my-desk/components/StaffAppraisals';
+	//员工考评表汇总
+	import StaffAppraisalsCollect from '../../views/my-desk/components/StaffAppraisalsCollect';
+	//一人一表  (延期)
+	import TaskDelayApply from '../../views/my-desk/components/TaskDelayApply';
+	//一人一表  (作废)
+	import TaskCancelApply from '../../views/my-desk/components/TaskCancelApply';
+	//一人一表  (任务调整)
+	import TaskAdjust from '../../views/my-desk/components/TaskAdjust';
+	//一人一表  (人员变更)
+	import AssignerChange from '../../views/my-desk/components/AssignerChange';
+	//一人一表  (任务委托)
+	import TaskEntrust from '../../views/my-desk/components/TaskEntrust';
+	//一人一表  (报备)
+	import TaskReport from '../../views/my-desk/components/TaskReport';
+	//一人一表  (自评)
+	import TaskSelfEvaluateApply from '../../views/my-desk/components/TaskSelfEvaluateApply';
 	export default {
 		components: {
-			DepartmentYearPlan
+			DepartmentYearPlan,
+			TaskSelfEvaluateApply,
+			TaskReport,
+			TaskEntrust,
+			AssignerChange,
+			TaskAdjust,
+			TaskCancelApply,
+			TaskDelayApply,
+			StaffAppraisalsCollect,
+			StaffAppraisals,
+			CompanyYearPlanCollect,
+			OptionIndex,
+			CoordinationTask,
+			FormPost,
+			TemporaryMission,
+			DepartmentMonthPlan
 		},
 		data() {
 			return {
@@ -60,6 +106,7 @@
 			};
 		},
 		created() {
+			console.log(this.$route.params.row.classId)
 			this.columns = []
 			this.$api.myDesk.getWfDecisionTypeConByCurNode({
 				mailId: this.context.foid

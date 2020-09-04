@@ -1,10 +1,10 @@
 <!--
-	部门年度计划
+	部门月度计划
 -->
 <template>
 	<div>
 		<erpVanCell v-for="(item,key) in list" :key="key" :formContext="formContext" :rowCell="item"></erpVanCell>
-		<erpVanCellTitle title="年计划编制">
+		<erpVanCellTitle title="月计划编制">
 			<van-button @click="showOne = !showOne" size="mini" plain type="primary">展开明细</van-button>
 		</erpVanCellTitle>
 		<lineTable v-if="showOne" :linesList="linesList" :widthTable="widthTable"></lineTable>
@@ -29,8 +29,8 @@
 					value: "companyName",
 					list: []
 				}, {
-					name: "单据号",
-					value: "voucherId",
+					name: "月计划编号",
+					value: "planId",
 					list: []
 				}, {
 					name: "版本",
@@ -39,6 +39,10 @@
 				}, {
 					name: "年份",
 					value: "year",
+					list: []
+				}, {
+					name: "月度",
+					value: "month",
 					list: []
 				}, {
 					name: "计划部门",
@@ -53,8 +57,8 @@
 					value: "gestorName",
 					list: []
 				}, {
-					name: "备注",
-					value: "remark",
+					name: "经办日期",
+					value: "handleDate",
 					list: []
 				}],
 				linesList: [{
@@ -66,16 +70,16 @@
 					value: "departmentName",
 					list: []
 				}, {
+					name: "任务类型",
+					value: "taskType",
+					list: []
+				}, {
 					name: "任务级别",
 					value: "taskLevel",
 					list: []
 				}, {
 					name: "周期性任务",
 					value: "periodicityTask",
-					list: []
-				}, {
-					name: "跨月任务",
-					value: "periodicityMonth",
 					list: []
 				}, {
 					name: "工作名称",
@@ -141,15 +145,29 @@
 			};
 		},
 		created() {
-			this.$api.myDesk.getDepYearPlanDetail(JSON.stringify({
+			this.$api.myDesk.showDeptMonthPlanDetail({
 				id: this.context.fsrcoId
-			})).then(data => {
-				this.formContext = data.data
-				var lines = data.data.line
+			}).then(data => {
+				console.log(data)
+				this.formContext = data.data.data
+				var lines = data.data.data.departmentMonthPlanLine
 				this.linesList.forEach(item => {
 					item.list.push(item.name)
 					lines.forEach(val => {
-						item.list.push(val[item.value])
+						if(item.value == 'taskType') {
+							switch(val[item.value]) {
+								case 1:
+									item.list.push('主任务')
+									break;
+								case 2:
+									item.list.push('临时任务')
+									break;
+								default:
+									break;
+							}
+						} else {
+							item.list.push(val[item.value])
+						}
 					})
 				})
 				this.widthTable = lines.length * 40 + 40
@@ -169,8 +187,6 @@
 	}
 </style>
 <style>
-	
-	
 	.van-cell__title {
 		text-align: left;
 	}
