@@ -2,6 +2,21 @@ import httpReqest from '../../utils/https';
 import QS from 'qs';
 
 const myDesk = {
+	//审核回复信息查询
+	selectAuditReplyInfo(params) {
+		var valueS = '?';
+		for(var item in params) {
+			valueS += item + "=" + params[item] + "&";
+		}
+		if(valueS.slice(valueS.length - 1, valueS.length) === "&") {
+			valueS = valueS.slice(0, valueS.length - 1);
+		}
+		return httpReqest.post('/api/scha/workFlow/selectAuditReplyInfo' + valueS);
+	},
+	//审核回复信息保存
+	saveAuditReplyInfo(params) {
+		return httpReqest.post('/api/scha/workFlow/saveAuditReplyInfo', params);
+	},
 	//一人一表
 	findPersonalTableTaskById(params) {
 		return httpReqest.post('/api/scha/personalTableTask/findPersonalTableTaskById', params);

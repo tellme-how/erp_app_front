@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<van-nav-bar class="titleClass" title="待办事项">
+		<van-nav-bar class="titleClass" title="待办事项待办事项待办事项待办事项待办事项待办事项待办事项待办事项待办事项待办事项待办事项待办事项待办事项待办事项待办事项待办事项待办事项待办事项待办事项待办事项待办事项待办事项待办事项待办事项待办事项待办事项待办事项待办事项待办事项">
 		</van-nav-bar>
 		<router-view></router-view>
 	</div>

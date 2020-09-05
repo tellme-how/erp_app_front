@@ -13,6 +13,13 @@
 	}
 </script>
 
-<style>
-
+<style scoped>
+	/deep/.van-cell__title {
+		max-width: 30%;
+	}
+	
+	/deep/.van-cell__value {
+		text-align: center;
+		color: #000000;
+	}
 </style>

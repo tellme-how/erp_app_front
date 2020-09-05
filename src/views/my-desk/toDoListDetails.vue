@@ -1,6 +1,7 @@
 <template>
 	<div class="flexMainre">
 		<tabViews :context="context" :is="$route.params.row.classId"></tabViews>
+		<approvalProcess></approvalProcess>
 		<div style="height: 7vh;width: 100%;"></div>
 		<div class="nextBtn">
 			<van-row>
