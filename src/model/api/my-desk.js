@@ -13,9 +13,17 @@ const myDesk = {
 		}
 		return httpReqest.post('/api/scha/workFlow/selectAuditReplyInfo' + valueS);
 	},
+	//查询所有人员
+	getStaffTree(params) {
+		return httpReqest.post('/api/interfaces/staffManage/getStaffTree', params);
+	},
 	//审核回复信息保存
 	saveAuditReplyInfo(params) {
 		return httpReqest.post('/api/scha/workFlow/saveAuditReplyInfo', params);
+	},
+	//人员/用户/职务-列表查询
+	findStaffByPage(params) {
+		return httpReqest.post('/api/interfaces/staffManage/findStaffByPage', params);
 	},
 	//一人一表
 	findPersonalTableTaskById(params) {

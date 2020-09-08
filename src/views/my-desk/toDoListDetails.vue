@@ -2,7 +2,7 @@
 	<div class="flexMainre">
 		<tabViews :context="context" :is="$route.params.row.classId"></tabViews>
 		<approvalProcess></approvalProcess>
-		<div style="height: 7vh;width: 100%;"></div>
+		<div style="height: 8vh;width: 100%;"></div>
 		<div class="nextBtn">
 			<van-row>
 				<van-col span="6">
@@ -14,13 +14,13 @@
 				<van-col span="17">
 					<van-field v-model="value2" center clearable label="" placeholder="请输入审批意见">
 						<template #button>
-							<van-button icon="success" size="mini" type="primary">提交</van-button>
+							<van-button @click="toDo" icon="success" size="mini" type="primary">提交</van-button>
 						</template>
 					</van-field>
 				</van-col>
 				<van-col span="1">
-					<span @click="showShare = true">1</span>
-					<van-share-sheet v-model="showShare" :options="options" @select="onSelect" /></van-col>
+					<van-icon  size="20" @click="showShare = true" name="bars" />
+					<van-share-sheet cancel-text="关闭" v-model="showShare" :options="options" @select="onSelect" /></van-col>
 			</van-row>
 		</div>
 	</div>
@@ -89,25 +89,24 @@
 				showShare: false,
 				options: [{
 						name: '转发',
-						icon: 'wechat'
+						icon: this.$GLOBAL.htmlUrl + '1.png'
 					},
 					{
 						name: '委托',
-						icon: 'weibo'
+						icon: this.$GLOBAL.htmlUrl + '2.png'
 					},
 					{
 						name: '关注',
-						icon: 'link'
+						icon: this.$GLOBAL.htmlUrl + '3.png'
 					},
 					{
 						name: '加签',
-						icon: 'poster'
+						icon: this.$GLOBAL.htmlUrl + '5.png'
 					}
 				],
 			};
 		},
 		created() {
-			console.log(this.$route.params.row.classId)
 			this.columns = []
 			this.$api.myDesk.getWfDecisionTypeConByCurNode({
 				mailId: this.context.foid
@@ -118,8 +117,21 @@
 			})
 		},
 		methods: {
+			toDo() {
+
+			},
 			onSelect(option) {
-				this.showShare = false;
+				if(option.name == "关注") {
+					if(option.icon == this.$GLOBAL.htmlUrl + '4.png') {
+						option.icon = this.$GLOBAL.htmlUrl + '3.png'
+					} else {
+						option.icon = this.$GLOBAL.htmlUrl + '4.png'
+					}
+				} else {
+					this.$router.push({
+						name: "personnelSelection"
+					})
+				}
 			},
 			onConfirm(value) {
 				this.value = value
@@ -141,10 +153,12 @@
 		position: fixed;
 		bottom: 0;
 		height: 7vh;
+		line-height: 7vh;
 		width: 99%;
 		background-color: #fff;
 		margin: 1px;
-		border: 1px solid black;
+		border-top: 1px solid black;
+		border-bottom: 1px solid black;
 	}
 </style>
 <style>

@@ -7,13 +7,7 @@
   
   * 
   * */
-const htmlUrl = 'http://192.168.85.96:6013/'
+const htmlUrl = 'http://192.168.85.87:9010/pic/'
 export default {
-	//富文本
-	editorOption,
-	//字段类型
-	fieldTypeList,
-	//table高度
-	tableHeight,
 	htmlUrl
 }

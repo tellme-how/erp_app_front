@@ -31,6 +31,7 @@
 						console.log(data)
 						//账户ID
 						localStorage.setItem('ms_userId', data.data.principal.accountId);
+						localStorage.setItem('userData', JSON.stringify(data.data.principal));
 						this.$router.push("/erp")
 					})
 					localStorage.setItem('ms_tokenId', val.data.access_token);

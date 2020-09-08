@@ -69,23 +69,23 @@
 			};
 		},
 		created() {
-			//			this.$api.myDesk.selectAuditReplyInfo({
-			//				faudit : this.rowChild.foid,
-			//				userId : localStorage.getItem('ms_userId')
-			//			}).then(data => {
-			//				this.list = data.data
-			//过滤数据,取出   登陆人等于被回复人  或者  公开的 数据
-			//			this.list = data.data.filter(item => {
-			//				return item.freplyedPesron == localStorage.getItem('ms_userId') || item.fpublish == 1
-			//			})
-			//如果回复人等于被回复人,那么只显示回复人 
-			//			this.list.forEach(item => {
-			//				if(item.freplyPesron == item.freplyedPesron) {
-			//					item.freplyedPesronName = ""
-			//					item.freplyedPesron = ""
-			//				}
-			//			})
-			//			})
+//			this.$api.myDesk.selectAuditReplyInfo({
+//				faudit: this.rowChild.foid,
+//				userId: localStorage.getItem('ms_userId')
+//			}).then(data => {
+//				this.list = data.data
+//				//过滤数据,取出   登陆人等于被回复人  或者  公开的 数据
+//				this.list = data.data.filter(item => {
+//					return item.freplyedPesron == localStorage.getItem('ms_userId') || item.fpublish == 1
+//				})
+//				//如果回复人等于被回复人,那么只显示回复人 
+//				this.list.forEach(item => {
+//					if(item.freplyPesron == item.freplyedPesron) {
+//						item.freplyedPesronName = ""
+//						item.freplyedPesron = ""
+//					}
+//				})
+//			})
 		},
 		methods: {
 			closeVan() {
