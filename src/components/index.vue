@@ -4,6 +4,8 @@
 	<van-button type="primary">主要按钮</van-button>
 	<van-button type="primary">主要按钮</van-button>
 	<van-button type="primary">主要按钮</van-button>
+	<van-button @click="$router.push('/erp/notice')" type="primary">通知公告</van-button>
+	<van-button type="primary">主要按钮</van-button>
 	</div>
 </template>
 

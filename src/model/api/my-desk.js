@@ -2,6 +2,21 @@ import httpReqest from '../../utils/https';
 import QS from 'qs';
 
 const myDesk = {
+	//查询文件管理:分页
+	findDocumentManageByPage(params) {
+		return httpReqest.post('/api/interfaces/documentmanage/findDocumentManageByPage', params);
+	},
+	//获取文件类别组织
+	getDocumentCategoryOrgArch(params) {
+		var valueS = '?';
+		for(var item in params) {
+			valueS += item + "=" + params[item] + "&";
+		}
+		if(valueS.slice(valueS.length - 1, valueS.length) === "&") {
+			valueS = valueS.slice(0, valueS.length - 1);
+		}
+		return httpReqest.get('/api/interfaces/documentcategory/getDocumentCategoryOrgArch' + valueS);
+	},
 	//审核回复信息查询
 	selectAuditReplyInfo(params) {
 		var valueS = '?';

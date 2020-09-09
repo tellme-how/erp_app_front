@@ -1,25 +1,23 @@
 <template>
 	<div class="flexMainre">
-		<tabViews :context="context" :is="$route.params.row.classId"></tabViews>
+		<tabViews :context="context" :is="context.classId"></tabViews>
 		<approvalProcess></approvalProcess>
 		<div style="height: 8vh;width: 100%;"></div>
 		<div class="nextBtn">
 			<van-row>
 				<van-col span="6">
-					<van-field readonly clickable :value="value" label="" placeholder="审批" @click="showPicker = true" />
-					<van-popup v-model="showPicker" position="bottom">
-						<van-picker show-toolbar :columns="columns" @confirm="onConfirm" @cancel="showPicker = false" />
-					</van-popup>
+					<van-field readonly clickable :value="value" label="" placeholder="审批" @click="show = true" />
+					<van-action-sheet v-model="show" :actions="columns" @select="onConfirm" />
 				</van-col>
-				<van-col span="17">
+				<van-col span="16">
 					<van-field v-model="value2" center clearable label="" placeholder="请输入审批意见">
 						<template #button>
 							<van-button @click="toDo" icon="success" size="mini" type="primary">提交</van-button>
 						</template>
 					</van-field>
 				</van-col>
-				<van-col span="1">
-					<van-icon  size="20" @click="showShare = true" name="bars" />
+				<van-col style="height: 8vh;line-height: 8vh;" span="2">
+					<van-icon size="20" @click="showShare = true" name="bars" />
 					<van-share-sheet cancel-text="关闭" v-model="showShare" :options="options" @select="onSelect" /></van-col>
 			</van-row>
 		</div>
@@ -83,8 +81,8 @@
 				columns: [],
 				value: "",
 				value2: "",
-				showPicker: false,
-				context: this.$route.params.row,
+				show: false,
+				context: {},
 				tabViews: "",
 				showShare: false,
 				options: [{
@@ -107,13 +105,21 @@
 			};
 		},
 		created() {
+			if(this.$route.params.row) {
+				sessionStorage.setItem("deskRow", JSON.stringify(this.$route.params.row));
+			}
+			this.context = JSON.parse(sessionStorage.getItem("deskRow"))
+			this.$store.commit("titleShow", this.context.fsubject)
 			this.columns = []
 			this.$api.myDesk.getWfDecisionTypeConByCurNode({
 				mailId: this.context.foid
 			}).then(data => {
 				for(var key in data.data.data) {
-					this.columns.push(data.data.data[key])
+					this.columns.push({
+						name: data.data.data[key]
+					})
 				}
+				console.log(this.columns)
 			})
 		},
 		methods: {
@@ -134,8 +140,8 @@
 				}
 			},
 			onConfirm(value) {
-				this.value = value
-				this.showPicker = false;
+				this.value = value.name
+				this.show = false;
 			},
 			toUrl() {
 				this.tabViews = ""
@@ -158,7 +164,6 @@
 		background-color: #fff;
 		margin: 1px;
 		border-top: 1px solid black;
-		border-bottom: 1px solid black;
 	}
 </style>
 <style>

@@ -7,7 +7,11 @@ export default new Vuex.Store({
 	state: {
 		title :"",
 	},
-	mutations: {},
+	mutations: {
+		titleShow: function(state, con) {
+			state.title = con
+		},
+	},
 	actions: {},
 	modules: {}
 })

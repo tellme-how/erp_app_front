@@ -1,14 +1,19 @@
 <template>
-	<div>
-		<van-form @submit="onSubmit">
-			<van-field v-model="param.username" name="username" label="用户名" placeholder="请输入用户名" :rules="[{ required: true, message: '请填写用户名' }]" />
-			<van-field v-model="param.password" type="password" name="password" label="密码" placeholder="请输入密码" :rules="[{ required: true, message: '请填写密码' }]" />
-			<div style="margin: 16px;">
-				<van-button round block type="info" native-type="submit">
-					提交
-				</van-button>
-			</div>
-		</van-form>
+	<div class="loginHeaderA">
+		<div class="loginA">
+			账号密码登录
+		</div>
+		<div class="loginDataA">
+			<van-form>
+				<van-field size="200" v-model="param.username" left-icon="user-o" name="username" label="" placeholder="请输入用户名" :rules="[{ required: true, message: '' }]" />
+				<van-field v-model="param.password" left-icon="bag-o" type="password" name="password" label="" placeholder="请输入密码" :rules="[{ required: true, message: '' }]" />
+			</van-form>
+		</div>
+		<div class="loginButtonA">
+			<van-button block type="info" @click="submit">
+				提交
+			</van-button>
+		</div>
 	</div>
 </template>
 
@@ -24,7 +29,7 @@
 			};
 		},
 		methods: {
-			onSubmit() {
+			submit() {
 				localStorage.clear()
 				this.$api.myDesk.login(this.param).then(val => {
 					this.$api.myDesk.getUserInfo().then(data => {
@@ -43,5 +48,35 @@
 </script>
 
 <style scoped="scoped">
-
+	/deep/.van-cell {
+		line-height: 50px;
+	}
+	
+	.loginButtonA {
+		height: 10vh;
+		line-height: 10vh;
+		width: 50vw;
+		margin: 0 auto;
+	}
+	
+	.loginDataA {
+		height: 30vh;
+		line-height: 30vh;
+		width: 70vw;
+		margin: 0 auto;
+	}
+	
+	.loginHeaderA {
+		height: 100vh;
+		width: 100vw;
+		line-height: 100vh;
+		font-size: 30px;
+		color: #1989fa;
+	}
+	
+	.loginA {
+		height: 30vh;
+		line-height: 30vh;
+		width: 100vw;
+	}
 </style>

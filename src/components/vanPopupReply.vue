@@ -1,6 +1,6 @@
 <template>
 	<van-popup :close-on-click-overlay="showClose" @click-overlay="closeVan" v-model:show="show" position="bottom" :style="{ height: '30%' }">
-		<van-cell v-for="(item,key) in list" value-class="valueClass">
+		<van-cell v-for="(item,key) in list" :key="key" value-class="valueClass">
 			<template v-if="item.freplyedPesronName == ''" #default>
 				<span @click="toReply(item,1)" class="spanClss">{{item.freplyPesronName}} : </span>
 				<span>{{item.freplyContent}}</span>

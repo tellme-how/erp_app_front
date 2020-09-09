@@ -1,7 +1,11 @@
 <template>
 	<div>
 		<div class="titleClass">
-			我是表头撒大苏打萨达萨达萨达阿达
+			<van-row>
+				<van-col @click="toBack()" span="2">
+					<van-icon style="margin-top: 10px;" name="arrow-left" /></van-col>
+				<van-col span="22">{{$store.state.title}}</van-col>
+			</van-row>
 		</div>
 		<div class="s"></div>
 		<router-view></router-view>
@@ -13,13 +17,13 @@
 	import { Toast } from 'vant';
 	export default {
 		data() {
-			return {
-			};
+			return {};
 		},
-		created() {
-		},
+		created() {},
 		methods: {
-			
+			toBack() {
+				window.history.back()
+			}
 		}
 	};
 </script>
@@ -34,11 +38,13 @@
 		color: #000000;
 		background-color: rgba(81, 118, 171, 1)
 	}
-	.s{
+	
+	.s {
 		height: 5vh;
 		width: 100%;
 		background: blue;
 	}
+	
 	.vanIconClass {
 		color: white
 	}

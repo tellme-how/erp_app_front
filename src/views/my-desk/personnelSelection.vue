@@ -8,7 +8,7 @@
 			</van-search>
 			<van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="onLoad">
 				<van-checkbox-group v-model="result">
-					<div style="margin: 5px;" v-for="(item,key) in list ">
+					<div style="margin: 5px;" v-for="(item,key) in list">
 						<van-checkbox @click="getCon(item)" shape="square" :name="item.toid">
 							<van-row>
 								<van-col span="4">img</van-col>
@@ -44,7 +44,7 @@
 			<van-list finished-text="没有更多了">
 				<draggable v-model="checkListShow" :options="{animation:500}">
 					<transition-group>
-						<div style="margin: 5px;" v-for="(item,key) in checkListShow" :key="key">
+						<div style="margin: 5px;" v-for="(item,val) in checkListShow" :key="val">
 							<van-row style="height: 8vh;">
 								<van-col style="height: 8vh;line-height: 8vh;" span="2">
 									<van-icon size="1.2em" name="close" @click="clearCheck(item)" />
@@ -86,10 +86,10 @@
 			</van-grid>
 			<div v-if="showFig">
 				<van-grid>
-					<van-grid-item @click="byDeptmentName();showName='同部门';showImg='wap-home-o'" id="circle1" icon="wap-home-o" text="同部门" />
-					<van-grid-item @click="allName();showName='所有人';showImg='friends-o'" id="circle2" icon="friends-o" text="所有人" />
-					<van-grid-item @click="getresultId();showName='常用人';showFig = false;showImg='apps-o';finished=true" id="circle3" icon="apps-o" text="常用人" />
-					<van-grid-item @click="showName='组织架构';showFig = false;showImg='cluster-o'" id="circle4" icon="cluster-o" text="组织架构" />
+					<van-grid-item @click="byDeptmentName()" id="circle1" icon="wap-home-o" text="同部门" />
+					<van-grid-item @click="allName()" id="circle2" icon="friends-o" text="所有人" />
+					<van-grid-item @click="getresultId()" id="circle3" icon="apps-o" text="常用人" />
+					<van-grid-item @click="toTreeData()" id="circle4" icon="cluster-o" text="组织架构" />
 				</van-grid>
 			</div>
 		</div>
@@ -128,15 +128,13 @@
 			};
 		},
 		created() {
+			this.$store.commit("titleShow", "常用人")
 			this.getList()
 			this.$api.myDesk.getStaffTree({}).then(data => {
 				this.dataTree = eval('(' + data.data.data + ')')
 			})
 		},
 		methods: {
-			getresultId() {
-				this.list = JSON.parse(localStorage.getItem("resultId"))
-			},
 			toSave() {
 				var cur = []
 				let obj = {};
@@ -212,7 +210,20 @@
 				}
 				this.getList()
 			},
+			getresultId() {
+				this.$store.commit("titleShow", "常用人")
+				this.showName = '常用人';
+				this.showFig = false;
+				this.showImg = 'apps-o';
+				this.finished = true;
+				this.showDiv = true
+				this.list = JSON.parse(localStorage.getItem("resultId"))
+			},
 			allName() {
+				this.$store.commit("titleShow", "所有人")
+				this.showName = '所有人';
+				this.showImg = 'friends-o';
+				this.showDiv = true
 				this.list = []
 				this.finished = false
 				this.formList = {
@@ -222,6 +233,10 @@
 				this.getList()
 			},
 			byDeptmentName() {
+				this.$store.commit("titleShow", "同部门")
+				this.showName = '同部门';
+				this.showImg = 'wap-home-o';
+				this.showDiv = true
 				this.list = []
 				this.finished = false
 				this.formList = {
@@ -230,6 +245,13 @@
 					tdepartmentname: JSON.parse(localStorage.getItem("userData")).deptmentName
 				}
 				this.getList()
+			},
+			toTreeData() {
+				this.$store.commit("titleShow", "组织架构")
+				this.showName = '组织架构';
+				this.showFig = false;
+				this.showImg = 'cluster-o';
+				this.showDiv = true
 			},
 			getList() {
 				this.formList.fpositionstate = 1

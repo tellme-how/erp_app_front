@@ -3,19 +3,28 @@
 		<form action="/">
 			<van-search @search="onSearch" input-align="center" v-model="searchValue" shape="round" background="#C0C0C0" placeholder="请输入搜索关键词" />
 		</form>
-		<van-cell @click="toUrl(item)" v-for="(item,key) in list" :key="key">
-			<template #title>
-				<van-row style="text-align: left;">
-					<van-col span="24">{{item.fsubject}}</van-col>
-				</van-row>
-			</template>
-			<template #label>
-				<van-row style="text-align: left;">
-					<van-col span="17">{{labelShow(item)}}</van-col>
-					<van-col span="7">{{item.fpreReceiveTime}}</van-col>
-				</van-row>
-			</template>
-		</van-cell>
+		<div v-for="(item,key) in list" :key="key">
+			<van-row>
+				<van-col span="24">
+					<van-cell :class="{ 'bbb': item.fstatus=='已完成' , 'ccc': item.fstatus=='编辑中', 'ddd': item.fstatus=='超市'}" @click="toUrl(item)">
+						<van-row>
+							<van-col span="18">
+								<van-row>
+									{{item.fsubject}}
+								</van-row>
+								<van-row style="color: #969799;font-size: 12px;">
+									{{labelShow(item)}}
+								</van-row>
+							</van-col>
+							<van-col span="6" style="color: #969799;font-size: 12px;">
+								{{item.fpreReceiveTime}}
+							</van-col>
+						</van-row>
+					</van-cell>
+					<van-divider class="vanDividerClassA" />
+				</van-col>
+			</van-row>
+		</div>
 	</div>
 </template>
 
@@ -30,12 +39,11 @@
 			};
 		},
 		created() {
+			this.$store.commit("titleShow", "待办事项")
 			this.onLoad()
 		},
 		methods: {
-			onSearch(val) {
-				console.log(val)
-			},
+			onSearch(val) {},
 			labelShow(row) {
 				return row.fstatus + " " + row.fsrcCompany + " " + row.factivityName
 			},
@@ -63,5 +71,30 @@
 </script>
 
 <style>
-
+	.vanDividerClassA {
+		border: 0px solid whitesmoke;
+		margin: 0px!important;
+		width: 100vw
+	}
+	
+	.bbb {
+		height: auto;
+		padding: 1vh;
+		background: #f4fff9;
+		border-left: 20px solid #b0f8cf;
+	}
+	
+	.ccc {
+		height: auto;
+		padding: 1vh;
+		background: #fffa7f;
+		border-left: 20px solid #fffeed;
+	}
+	
+	.ddd {
+		height: auto;
+		padding: 1vh;
+		background: #ffcf91;
+		border-left: 20px solid #fff4e5;
+	}
 </style>
