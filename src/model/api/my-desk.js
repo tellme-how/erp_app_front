@@ -2,6 +2,10 @@ import httpReqest from '../../utils/https';
 import QS from 'qs';
 
 const myDesk = {
+	//页面配置url
+	postHttp(url,params){
+		return httpReqest.post('/api/wfInterfaces/' + url, params);
+	},
 	//查询文件管理:分页
 	findDocumentManageByPage(params) {
 		return httpReqest.post('/api/interfaces/documentmanage/findDocumentManageByPage', params);
@@ -42,7 +46,25 @@ const myDesk = {
 	},
 	//一人一表
 	findPersonalTableTaskById(params) {
-		return httpReqest.post('/api/scha/personalTableTask/findPersonalTableTaskById', params);
+		var valueS = '?';
+		for(var item in params) {
+			valueS += item + "=" + params[item] + "&";
+		}
+		if(valueS.slice(valueS.length - 1, valueS.length) === "&") {
+			valueS = valueS.slice(0, valueS.length - 1);
+		}
+		return httpReqest.post('/api/scha/personalTableResult/findPersonalTableTaskById' + valueS);
+	},
+	//是否审批
+	getWFBizMailInfoByUserId(params) {
+		var valueS = '?';
+		for(var item in params) {
+			valueS += item + "=" + params[item] + "&";
+		}
+		if(valueS.slice(valueS.length - 1, valueS.length) === "&") {
+			valueS = valueS.slice(0, valueS.length - 1);
+		}
+		return httpReqest.get('/api/wfInterfaces/workFlow/getWFBizMailInfoByUserId' + valueS);
 	},
 	//员工考评表汇总
 	getStaffAppraisalsSummaryVO(params) {
@@ -145,10 +167,6 @@ const myDesk = {
 	},
 	getUserInfo() {
 		return httpReqest.get('/api/uaa/me');
-	},
-	//获取待办事项
-	getunhandledTask(params) {
-		return httpReqest.post('/api/wfInterfaces/workFlow/unhandledTask', params);
 	},
 	//api手动输入接口名称
 	apiUrl(url, params) {

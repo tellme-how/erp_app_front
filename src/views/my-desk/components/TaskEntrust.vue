@@ -147,10 +147,12 @@
 			};
 		},
 		created() {
+			console.log(this.context)
 			this.$api.myDesk.findPersonalTableTaskById({
-				id: this.context.fsrcoId
+				id: this.context.foid,
 			}).then(data => {
 				console.log(data)
+				return
 				this.formContext = data.data.data
 //				this.showName(this.formContext)
 				var lines = [{

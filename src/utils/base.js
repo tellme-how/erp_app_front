@@ -73,7 +73,30 @@ export default {
 			var hour = time.getHours(); //返回日期中的小时数（0到23）
 			var minute = time.getMinutes(); //返回日期中的分钟数（0到59）
 			var second = time.getSeconds(); //返回日期中的秒数（0到59）
+			if(month.toString().length == 1){
+				month = '0' + month
+			}
+			if(date.toString().length == 1){
+				date = '0' + date
+			}
 			return year + "-" + month + "-" + date + " " + hour + ":" + minute + ":" + second;
+		};
+		//时间戳转正常格式(干掉时分秒)
+		Vue.prototype.conversionTime2 = function(youData) {
+			var time = new Date(youData)
+			var year = time.getFullYear(); //取得4位数的年份
+			var month = time.getMonth() + 1; //取得日期中的月份，其中0表示1月，11表示12月
+			var date = time.getDate(); //返回日期月份中的天数（1到31）
+			var hour = time.getHours(); //返回日期中的小时数（0到23）
+			var minute = time.getMinutes(); //返回日期中的分钟数（0到59）
+			var second = time.getSeconds(); //返回日期中的秒数（0到59）
+			if(month.toString().length == 1){
+				month = '0' + month
+			}
+			if(date.toString().length == 1){
+				date = '0' + date
+			}
+			return year + "-" + month + "-" + date
 		};
 		//对象非空
 		Vue.prototype.noObject = function(val) {

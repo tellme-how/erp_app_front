@@ -1,35 +1,39 @@
 <template>
 	<div>
-		<form action="/">
-			<van-row style="background: #C0C0C0;height: 7vh;">
-				<van-col span="8">
-					<van-dropdown-menu>
-						<van-dropdown-item @change="toChange" v-model="value" :options="contextListA" />
-					</van-dropdown-menu>
-				</van-col>
-				<van-col span="16">
-					<van-search @search="onSearch" input-align="center" v-model="searchValue" background="#C0C0C0" shape="round" placeholder="请输入搜索关键词" />
-				</van-col>
-			</van-row>
-		</form>
-		<van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="toMore">
-			<div style="margin: 10px;" v-for="(item,key) in list">
-				<van-row>
-					<van-row class="noticetitle">
-						{{item.fname}}
-					</van-row>
-					<van-row style="margin-top: 5px;text-align: left;margin-left: 20px;font-size: 12px;color: DarkGray;">
-						<van-col span="15">
+		<van-row style="background: #C0C0C0;">
+			<van-col span="6">
+				<van-dropdown-menu>
+					<van-dropdown-item @change="toChange" v-model="value" :options="contextListA" />
+				</van-dropdown-menu>
+			</van-col>
+			<van-col span="12">
+				<van-search @search="onSearch" @clear="list=[];formListAll.page='1';getAll();" input-align="center" v-model="searchValue" background="#C0C0C0" shape="round" placeholder="请输入搜索关键词">
+				</van-search>
+			</van-col>
+			<van-col span="6">
+				<van-dropdown-menu>
+					<van-dropdown-item v-model="optionValue" :options="option" @change="toChangeRight" />
+				</van-dropdown-menu>
+			</van-col>
+		</van-row>
+		<van-pull-refresh v-model="isLoading" @refresh="list=[];formListAll.page='1';getAll();">
+			<van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="toMore">
+				<div style="margin: 10px;" v-for="(item,key) in list">
+					<van-row>
+						<van-row class="noticetitle">
+							{{item.fname}}
+						</van-row>
+						<van-row style="margin-top: 5px;text-align: left;margin-left: 20px;font-size: 12px;color: DarkGray;">
 							创建人 : {{item.fcreatorname}}
-						</van-col>
-						<van-col span="9	">
+						</van-row>
+						<van-row style="text-align: right;font-size: 12px;color: DarkGray;">
 							{{item.fcreatetime}}
-						</van-col>
+						</van-row>
 					</van-row>
-				</van-row>
-				<van-divider class="vanDividerClassA" />
-			</div>
-		</van-list>
+					<van-divider class="vanDividerClassA" />
+				</div>
+			</van-list>
+		</van-pull-refresh>
 	</div>
 </template>
 
@@ -37,27 +41,130 @@
 	export default {
 		data() {
 			return {
+				isLoading: false,
+				optionValue: "",
+				option: [],
+				show: false,
 				value: -1,
 				contextListA: [],
 				formList: {
 					page: 1,
-					size: 20
+					size: 20,
+					fpid: "",
+					fdocstatus: "已发布"
 				},
 				formListAll: {
 					page: 1,
-					size: 20
+					size: 20,
+					fdocstatus: "已发布"
 				},
 				list: [],
 				loading: false,
 				finished: false,
-				searchValue: ""
+				searchValue: "",
+				showState: false,
+				showFig: true,
+				rowNow: {}
 			};
 		},
 		created() {
-			this.$store.commit("titleShow", "通知公告")
+			if(this.$route.params.id) {
+				this.showFig = false
+				this.optionValue = this.$route.params.id
+				this.rowNow = this.$route.params.rowNow
+				this.$store.commit("titleShow", this.$route.params.rowNow.text)
+			} else {
+				this.showFig = true
+				this.optionValue = this.$route.params.moreList[0].value
+				this.$store.commit("titleShow", this.$route.params.moreList[0].text)
+			}
+			this.option = this.$route.params.moreList
+			this.$store.commit("tabbarShow", true)
 			this.onLoad()
 		},
 		methods: {
+			toChangeRight(aaa) {
+				this.formListAll = {
+					page: 1,
+					size: 20,
+					fdocstatus: "已发布"
+				}
+				this.list = []
+				this.onLoad(1)
+				this.value = -1
+			},
+			onLoad(state) {
+				this.contextListA = []
+				this.formListAll.fpid = this.optionValue
+				this.contextListA.push({
+					text: "全部",
+					value: -1,
+					fpid: this.optionValue
+				})
+				this.getAll()
+				if(state == 1) {
+					this.$api.myDesk.getDocumentCategoryOrgArch({
+						isportalshow: 1
+					}).then(data => {
+						eval("(" + data.data.data + ")").forEach(item => {
+							if(item.foid == this.optionValue) {
+								if(typeof(item.children) != "undefined") {
+									item.children.forEach((val, key) => {
+										this.contextListA.push({
+											text: val.fname,
+											value: key,
+											fpid: val.foid,
+										})
+									})
+								}
+							}
+						})
+					})
+				} else {
+					if(this.showFig) {
+						if(typeof(this.option[0].listChildren) != "undefined") {
+							this.option[0].listChildren.forEach((val, key) => {
+								this.contextListA.push({
+									text: val.fname,
+									value: key,
+									fpid: val.foid,
+								})
+							})
+						}
+					} else {
+						if(typeof(this.rowNow.listChildren) != "undefined") {
+							this.rowNow.listChildren.forEach((val, key) => {
+								this.contextListA.push({
+									text: val.fname,
+									value: key,
+									fpid: val.foid,
+								})
+							})
+						}
+					}
+				}
+			},
+			getAll() {
+				this.list = []
+				if(!this.showState) {
+					this.showState = true
+					this.$api.myDesk.findDocumentManageByPage(this.formListAll).then(data => {
+						data.data.data.rows.forEach(item => {
+							item.fcreatetime = this.formateDate(item.fcreatetime)
+							this.list.push(item)
+						})
+						this.loading = false
+						if(data.data.data.rows.length < 20) {
+							this.finished = true
+						}
+						this.showState = false
+						this.isLoading = false
+					})
+				}
+			},
+			toName() {
+
+			},
 			//格式化日期
 			formateDate(date) {
 				let datetime =  new  Date(date);
@@ -71,27 +178,46 @@
 					.toISOString()
 					.slice(0,  19).replace('T', ' ');
 			},
-			onSearch(val) {},
+			onSearch(val) {
+				if(this.noNull(val)) {
+					this.list = [];
+					this.formListAll.page = 1;
+					this.getAll();
+				} else {
+					this.list = this.list.filter(item => {
+						return item.fname.indexOf(val) != -1
+					})
+				}
+			},
 			toChange(val) {
 				this.list = []
 				this.finished = false
 				this.formList.page = 1
 				this.formListAll.page = 0
-				if(this.value != -1) {
+				if(this.value == -1) {
+					this.formList.fpid = this.optionValue
+					this.formListAll.fpid = this.optionValue
+					this.getList()
+				} else {
 					this.formList.fpid = this.contextListA[this.value + 1].fpid
+					this.formListAll.fpid = this.contextListA[this.value + 1].fpid
 					this.getList()
 				}
 			},
 			getList() {
-				this.$api.myDesk.findDocumentManageByPage(this.formList).then(data => {
-					data.data.data.rows.forEach(item => {
-						this.list.push(item)
+				if(!this.showState) {
+					this.showState = true
+					this.$api.myDesk.findDocumentManageByPage(this.formList).then(data => {
+						data.data.data.rows.forEach(item => {
+							this.list.push(item)
+						})
+						this.loading = false
+						if(data.data.data.rows.length < 20) {
+							this.finished = true
+						}
+						this.showState = false
 					})
-					this.loading = false
-					if(data.data.data.rows.length < 20) {
-						this.finished = true
-					}
-				})
+				}
 			},
 			toMore() {
 				if(typeof(this.formListAll.fpid) != "undefined") {
@@ -114,43 +240,6 @@
 						row: row
 					}
 				})
-			},
-			onLoad() {
-				this.$api.myDesk.getDocumentCategoryOrgArch({
-					isportalshow: 1
-				}).then(data => {
-					this.contextListA = []
-					eval("(" + data.data.data + ")").forEach(item => {
-						if(item.fname == "通知公告") {
-							this.formListAll.fpid = item.foid
-							this.contextListA.push({
-								text: "全部",
-								value: -1,
-								fpid: item.foid
-							})
-							this.getAll()
-							item.children.forEach((val, key) => {
-								this.contextListA.push({
-									text: val.fname,
-									value: key,
-									fpid: val.foid,
-								})
-							})
-						}
-					})
-				})
-			},
-			getAll() {
-				this.$api.myDesk.findDocumentManageByPage(this.formListAll).then(data => {
-					data.data.data.rows.forEach(item => {
-						item.fcreatetime = this.formateDate(item.fcreatetime)
-						this.list.push(item)
-					})
-					this.loading = false
-					if(data.data.data.rows.length < 20) {
-						this.finished = true
-					}
-				})
 			}
 		},
 	};
@@ -171,18 +260,11 @@
 		margin-left: 20px;
 	}
 	
+	/deep/.van-search {
+		padding: 7px 12px;
+	}
+	
 	/deep/.van-dropdown-menu__bar {
 		box-shadow: 0 0px 0px rgba(100, 101, 102, .12)!important;
-	}
-	
-	/deep/.van-search {
-		padding: 7px 12px!important;
-	}
-	
-	.vanDividerClassA {
-		border: 0px solid whitesmoke;
-		margin: 0px;
-		margin-top: 10px;
-		width: 100vw
 	}
 </style>

@@ -81,16 +81,12 @@
 		<div class="nextBtn">
 			<van-button style="width: 25vw;" size="small" @click="toGet();showDiv = false" icon="friends-o" plain hairline type="info">已选({{result.length}})</van-button>
 			<van-button @click="toSave" style="margin-left: 10px;margin-right :10px;width: 25vw;" size="small" icon="edit" plain hairline type="info">确定</van-button>
-			<van-grid>
-				<van-grid-item @click="showFig = !showFig" id="circle" :icon="showImg" :text="showName" />
-			</van-grid>
+			<van-image width="5rem" height="5rem" @click="showFig = !showFig" id="circle" :src="showImg" />
 			<div v-if="showFig">
-				<van-grid>
-					<van-grid-item @click="byDeptmentName()" id="circle1" icon="wap-home-o" text="同部门" />
-					<van-grid-item @click="allName()" id="circle2" icon="friends-o" text="所有人" />
-					<van-grid-item @click="getresultId()" id="circle3" icon="apps-o" text="常用人" />
-					<van-grid-item @click="toTreeData()" id="circle4" icon="cluster-o" text="组织架构" />
-				</van-grid>
+				<van-image id="circle1" @click="byDeptmentName()" round width="3rem" height="3rem" :src="$GLOBAL.htmlUrl + '部门.png'" />
+				<van-image id="circle2" @click="allName()" round width="3rem" height="3rem" :src="$GLOBAL.htmlUrl + '所有人.png'" />
+				<van-image id="circle3" @click="getresultId()" round width="3rem" height="3rem" :src="$GLOBAL.htmlUrl + '常用人.png'" />
+				<van-image id="circle4" @click="toTreeData()" round width="3rem" height="3rem" :src="$GLOBAL.htmlUrl + '组织架构.png'" />
 			</div>
 		</div>
 	</div>
@@ -104,7 +100,7 @@
 		},
 		data() {
 			return {
-				showImg: "apps-o",
+				showImg: this.$GLOBAL.htmlUrl + '常用人大.png',
 				showDiv: true,
 				showName: "常用人",
 				value: "",
@@ -132,9 +128,24 @@
 			this.getList()
 			this.$api.myDesk.getStaffTree({}).then(data => {
 				this.dataTree = eval('(' + data.data.data + ')')
+				this.dataTreeShow(this.dataTree)
 			})
 		},
 		methods: {
+			dataTreeShow(treeList) {
+				treeList.forEach((item, index) => {
+					if(typeof(item.children) == "undefined") {
+						if(typeof(item.fstruid) == "undefined") {
+							item.disabled = false
+						} else {
+							item.disabled = true
+						}
+					} else {
+						item.disabled = true
+						this.dataTreeShow(item.children)
+					}
+				})
+			},
 			toSave() {
 				var cur = []
 				let obj = {};
@@ -214,7 +225,7 @@
 				this.$store.commit("titleShow", "常用人")
 				this.showName = '常用人';
 				this.showFig = false;
-				this.showImg = 'apps-o';
+				this.showImg = this.$GLOBAL.htmlUrl + '常用人大.png';
 				this.finished = true;
 				this.showDiv = true
 				this.list = JSON.parse(localStorage.getItem("resultId"))
@@ -222,7 +233,7 @@
 			allName() {
 				this.$store.commit("titleShow", "所有人")
 				this.showName = '所有人';
-				this.showImg = 'friends-o';
+				this.showImg = this.$GLOBAL.htmlUrl + '所有人大.png';
 				this.showDiv = true
 				this.list = []
 				this.finished = false
@@ -235,7 +246,7 @@
 			byDeptmentName() {
 				this.$store.commit("titleShow", "同部门")
 				this.showName = '同部门';
-				this.showImg = 'wap-home-o';
+				this.showImg = this.$GLOBAL.htmlUrl + '部门大.png';
 				this.showDiv = true
 				this.list = []
 				this.finished = false
@@ -250,7 +261,7 @@
 				this.$store.commit("titleShow", "组织架构")
 				this.showName = '组织架构';
 				this.showFig = false;
-				this.showImg = 'cluster-o';
+				this.showImg = this.$GLOBAL.htmlUrl + '组织架构大.png';
 				this.showDiv = true
 			},
 			getList() {
@@ -314,7 +325,7 @@
 		bottom: 0;
 		height: 7vh;
 		line-height: 7vh;
-		width: 99%;
+		width: 100%;
 		background-color: #fff;
 		margin: 1px;
 		border-top: 1px solid black;
@@ -338,72 +349,36 @@
 	
 	#circle {
 		position: fixed;
-		color: white;
-		bottom: -2vh;
-		left: -3vw;
+		bottom: 0vh;
+		left: 0vw;
 		z-index: 999;
-		width: 80px;
-		height: 80px;
-		line-height: 80px;
-		background: RoyalBlue;
-		-moz-border-radius: 60px;
-		-webkit-border-radius: 60px;
-		border-radius: 60px;
 	}
 	
 	#circle1 {
 		position: fixed;
-		font-size: 6px;
-		bottom: 15vh;
+		bottom: 16vh;
 		left: 2vw;
 		z-index: 999;
-		width: 50px;
-		height: 50px;
-		background: #7fee1d!important;
-		-moz-border-radius: 60px!important;
-		-webkit-border-radius: 60px!important;
-		border-radius: 60px!important;
 	}
 	
 	#circle2 {
 		position: fixed;
-		font-size: 6px;
-		bottom: 13vh;
+		bottom: 14vh;
 		left: 15vw;
 		z-index: 999;
-		width: 50px;
-		height: 50px;
-		background: #7fee1d;
-		-moz-border-radius: 60px;
-		-webkit-border-radius: 60px;
-		border-radius: 60px;
 	}
 	
 	#circle3 {
 		position: fixed;
-		font-size: 6px;
-		bottom: 8vh;
+		bottom: 9vh;
 		left: 25vw;
 		z-index: 999;
-		width: 50px;
-		height: 50px;
-		background: #7fee1d;
-		-moz-border-radius: 60px;
-		-webkit-border-radius: 60px;
-		border-radius: 60px;
 	}
 	
 	#circle4 {
 		position: fixed;
-		font-size: 6px;
-		bottom: 0vh;
+		bottom: 1vh;
 		left: 28vw;
 		z-index: 999;
-		width: 50px;
-		height: 50px;
-		background: #7fee1d;
-		-moz-border-radius: 60px;
-		-webkit-border-radius: 60px;
-		border-radius: 60px;
 	}
 </style>

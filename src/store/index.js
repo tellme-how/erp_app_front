@@ -5,11 +5,15 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
 	state: {
-		title :"",
+		title: "",
+		tabbar: true,
 	},
 	mutations: {
 		titleShow: function(state, con) {
 			state.title = con
+		},
+		tabbarShow: function(state, con) {
+			state.tabbar = con
 		},
 	},
 	actions: {},

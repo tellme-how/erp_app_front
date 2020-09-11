@@ -105,12 +105,19 @@
 			};
 		},
 		created() {
+			this.$store.commit("tabbarShow", false)
 			if(this.$route.params.row) {
 				sessionStorage.setItem("deskRow", JSON.stringify(this.$route.params.row));
 			}
 			this.context = JSON.parse(sessionStorage.getItem("deskRow"))
 			this.$store.commit("titleShow", this.context.fsubject)
 			this.columns = []
+			//			this.$api.myDesk.getWFBizMailInfoByUserId({
+			//				mailId: this.context.foid,
+			//				userId: localStorage.getItem('ms_userId')
+			//			}).then(data => {
+			//				console.log(data)
+			//			})
 			this.$api.myDesk.getWfDecisionTypeConByCurNode({
 				mailId: this.context.foid
 			}).then(data => {
@@ -119,7 +126,6 @@
 						name: data.data.data[key]
 					})
 				}
-				console.log(this.columns)
 			})
 		},
 		methods: {
@@ -160,14 +166,24 @@
 		bottom: 0;
 		height: 7vh;
 		line-height: 7vh;
-		width: 99%;
+		width: 100%;
 		background-color: #fff;
 		margin: 1px;
 		border-top: 1px solid black;
 	}
-</style>
-<style>
+	
 	input {
 		background-color: whitesmoke!important;
+	}
+</style>
+<style scoped="scoped">
+	/deep/.van-share-sheet__name {
+		height: 20px!important;
+	}
+	/deep/.van-share-sheet__options {
+		line-height: 4vh!important;
+	}
+	/deep/.van-share-sheet__option {
+		width: 25%;
 	}
 </style>
