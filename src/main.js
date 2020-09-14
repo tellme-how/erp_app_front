@@ -6,6 +6,7 @@ import api from './model/api/index';
 
 import Vant from 'vant';
 import 'vant/lib/index.css';
+Vue.use(Vant);
 
 //公共方法
 import base from './utils/base.js';
@@ -25,9 +26,14 @@ import permission from './permission.js'
 
 // css样式还是需要全部引入
 import 'element-ui/lib/theme-chalk/index.css'
-import element from './element/index'
+import element from './components/common/element'
 Vue.use(element)
-Vue.use(Vant);
+
+
+//提示框
+import { Notify } from 'vant';
+Vue.use(Notify);
+
 Vue.prototype.$api = api;
 Vue.config.productionTip = false
 

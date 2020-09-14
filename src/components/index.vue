@@ -41,7 +41,7 @@
 					id: 2,
 					name: "工作事项",
 					icon: this.$GLOBAL.htmlUrl + '工作事项.png',
-					url: ""
+					url: "workItems"
 				}, {
 					id: 3,
 					name: "新闻资讯",
@@ -56,8 +56,59 @@
 		created() {
 			this.getMoreList()
 			this.$store.commit("titleShow", "工作助理")
+			//获取工作事项相关参数
+			this.getContext();
 		},
 		methods: {
+			/*
+			 * 孟鹏飞 2020-08-06
+			 *
+			 * 登陆时调用工作事项内的查询接口，并放置于本地缓存
+			 *
+			 * */
+			getContext() {
+				//全部枚举
+				this.$api.collaborativeOffice.findList({}).then(data => {
+					localStorage.setItem('selectList', JSON.stringify(data.data.data));
+				})
+				//最上端公司选择
+				this.$api.collaborativeOffice.getCompanyData().then(data => {
+					localStorage.setItem('CompanyData', JSON.stringify(data.data.data.rows));
+				})
+				//全部服务
+				this.$api.collaborativeOffice.findTServiceByParams({}).then(data => {
+					localStorage.setItem('tServiceByParams', JSON.stringify(data.data.data));
+				})
+				//工作事项
+				this.$api.collaborativeOffice.getFieldBrowse().then(data => {
+					localStorage.setItem('fieldBrowseList', JSON.stringify(data.data.data));
+				})
+				//公司 部门 职位
+				this.$api.collaborativeOffice.selectAllOrganizationInfo().then(data => {
+					localStorage.setItem('allOrganizationInfo', JSON.stringify(eval('(' + data.data.data + ')')));
+				})
+				//人员
+				this.$api.collaborativeOffice.findConList("staffManage/findStaffByPage", {
+					page: 1,
+					size: 100000
+				}).then(data => {
+					localStorage.setItem('staffList', JSON.stringify(data.data.data.rows));
+				})
+				//用户
+				this.$api.collaborativeOffice.findConList("userManage/findUserBypage", {
+					page: 1,
+					size: 100000
+				}).then(data => {
+					localStorage.setItem('userList', JSON.stringify(data.data.data.rows));
+				})
+				//职务
+				this.$api.collaborativeOffice.findConList("positionmnt/findPositionList", {
+					page: 1,
+					size: 100000
+				}).then(data => {
+					localStorage.setItem('positionList', JSON.stringify(data.data.data.rows));
+				})
+			},
 			toName(row) {
 				if(this.show) {
 					this.$router.push({

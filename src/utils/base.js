@@ -12,7 +12,7 @@ export default {
 	install(Vue, options) {
 		//警告框弹出
 		Vue.prototype.goOut = function(error) {
-			this.$message.error(error);
+			this.$notify({ type: 'danger', message: error });
 		};
 		//警告框弹出
 		Vue.prototype.goOut2 = function(error) {
@@ -25,7 +25,28 @@ export default {
 		};
 		//成功框弹出
 		Vue.prototype.goOk = function(success) {
-			this.$message.success(success);
+			this.$notify({ type: 'success', message: success });
+		};
+		Vue.prototype.dateValue = function(dateValue, state) {
+			function formatTen(num) {
+				return num > 9 ? (num + "") : ("0" + num);
+			}
+
+			function formatDate(date) {
+				var year = date.getFullYear();
+				var month = date.getMonth() + 1;
+				var day = date.getDate();
+				var hour = date.getHours();
+				var minute = date.getMinutes();
+				var second = date.getSeconds();
+				if(state == 1) {
+					return year + "-" + formatTen(month) + "-" + formatTen(day);
+				} else {
+					return year + "-" + formatTen(month) + "-" + formatTen(day) + " " + formatTen(hour) + ":" + formatTen(minute);
+				}
+
+			}
+			return formatDate(dateValue)
 		};
 		//弹框
 		/* 例子:
@@ -73,10 +94,10 @@ export default {
 			var hour = time.getHours(); //返回日期中的小时数（0到23）
 			var minute = time.getMinutes(); //返回日期中的分钟数（0到59）
 			var second = time.getSeconds(); //返回日期中的秒数（0到59）
-			if(month.toString().length == 1){
+			if(month.toString().length == 1) {
 				month = '0' + month
 			}
-			if(date.toString().length == 1){
+			if(date.toString().length == 1) {
 				date = '0' + date
 			}
 			return year + "-" + month + "-" + date + " " + hour + ":" + minute + ":" + second;
@@ -90,10 +111,10 @@ export default {
 			var hour = time.getHours(); //返回日期中的小时数（0到23）
 			var minute = time.getMinutes(); //返回日期中的分钟数（0到59）
 			var second = time.getSeconds(); //返回日期中的秒数（0到59）
-			if(month.toString().length == 1){
+			if(month.toString().length == 1) {
 				month = '0' + month
 			}
-			if(date.toString().length == 1){
+			if(date.toString().length == 1) {
 				date = '0' + date
 			}
 			return year + "-" + month + "-" + date

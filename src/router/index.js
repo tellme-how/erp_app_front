@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import Router from 'vue-router';
 import myDesk from '../views/my-desk/route';
+import InsideMail from '../views/collaborative-office/route';
 
 Vue.use(Router);
 
@@ -17,6 +18,7 @@ export const constantRouterMap = [{
 		redirect: '/erp/index',
 		children: [
 			...myDesk,
+			...InsideMail,
 			{
 				path: 'index',
 				name: 'index',

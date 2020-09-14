@@ -1,3 +1,18 @@
  body {
  	background: #F5F5F5FF;
  }
+ 
+ .nextBtn {
+ 	position: fixed;
+ 	bottom: 0;
+ 	height: 7vh;
+ 	line-height: 7vh;
+ 	width: 100%;
+ 	background-color: #fff;
+ 	margin: 1px;
+ 	border-top: 1px solid black;
+ }
+ 
+ input::-webkit-input-placeholder {
+ 	color: #C0C0C0!important;
+ }
