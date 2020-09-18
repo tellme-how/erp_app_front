@@ -2,6 +2,17 @@ import httpReqest from '../../utils/https';
 import QS from 'qs';
 
 const myDesk = {
+	// 根据ID查询工作事项模版主表分类
+	getWorkItemTypeModel(params) {
+		var valueS = '?';
+		for(var item in params) {
+			valueS += item + "=" + params[item] + "&";
+		}
+		if(valueS.slice(valueS.length - 1, valueS.length) === "&") {
+			valueS = valueS.slice(0, valueS.length - 1);
+		}
+		return httpReqest.get('/api/interfaces/workItem/findBySrcId' + valueS);
+	},
 	//页面配置url
 	postHttp(url,params){
 		return httpReqest.post('/api/wfInterfaces/' + url, params);

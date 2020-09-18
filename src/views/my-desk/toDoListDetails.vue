@@ -1,6 +1,6 @@
 <template>
 	<div class="flexMainre">
-		<tabViews :context="context" :is="context.classId"></tabViews>
+		<tabViews :context="context" :contextOther="contextOther" :is="context.classId"></tabViews>
 		<approvalProcess></approvalProcess>
 		<div style="height: 8vh;width: 100%;"></div>
 		<div class="nextBtn">
@@ -57,6 +57,7 @@
 	import TaskReport from '../../views/my-desk/components/TaskReport';
 	//一人一表  (自评)
 	import TaskSelfEvaluateApply from '../../views/my-desk/components/TaskSelfEvaluateApply';
+	import oaRouter from '../../views/my-desk/components/oaRouter';
 	export default {
 		components: {
 			DepartmentYearPlan,
@@ -74,6 +75,7 @@
 			CoordinationTask,
 			FormPost,
 			TemporaryMission,
+			oaRouter,
 			DepartmentMonthPlan
 		},
 		data() {
@@ -83,6 +85,7 @@
 				value2: "",
 				show: false,
 				context: {},
+				contextOther: {},
 				tabViews: "",
 				showShare: false,
 				options: [{
@@ -105,11 +108,16 @@
 			};
 		},
 		created() {
+
 			this.$store.commit("tabbarShow", false)
 			if(this.$route.params.row) {
 				sessionStorage.setItem("deskRow", JSON.stringify(this.$route.params.row));
 			}
+			if(this.$route.params.contextOther) {
+				sessionStorage.setItem("contextOther", JSON.stringify(this.$route.params.contextOther));
+			}
 			this.context = JSON.parse(sessionStorage.getItem("deskRow"))
+			this.contextOther = JSON.parse(sessionStorage.getItem("contextOther"))
 			this.$store.commit("titleShow", this.context.fsubject)
 			this.columns = []
 			//			this.$api.myDesk.getWFBizMailInfoByUserId({
@@ -180,9 +188,11 @@
 	/deep/.van-share-sheet__name {
 		height: 20px!important;
 	}
+	
 	/deep/.van-share-sheet__options {
 		line-height: 4vh!important;
 	}
+	
 	/deep/.van-share-sheet__option {
 		width: 25%;
 	}

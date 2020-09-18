@@ -54,9 +54,10 @@
 						localStorage.setItem('ms_roles', data.data.principal.roles);
 						//公司ID
 						localStorage.setItem('ms_companyId', data.data.principal.companyId);
+						//职位
+						localStorage.setItem('ms_ffirmpositionName', data.data.principal.ffirmpositionName);
 						this.$router.push("/erp")
 						this.$api.publicUrl.getCompanyData().then(data => {
-							console.log(data)
 							localStorage.setItem('CompanyData', JSON.stringify(data.data.data.rows));
 						})
 					})

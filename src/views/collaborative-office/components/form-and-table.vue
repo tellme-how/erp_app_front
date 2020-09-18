@@ -1,19 +1,26 @@
 <template>
 	<div class="formWrapper">
-		<formIcon :dis="dis" :showAdd="showAdd" :key="count" ref="mainTableChild" show="1" :form-data="formData.top">
-			<slot></slot>
-		</formIcon>
-		<!--<el-tabs v-model="activeName" type="border-card">
-			<el-tab-pane :label="item.showName" v-for="(item,index) in formData.bottom" :name="item.id" :key="index">
-				<formIcon :dis="dis" :showAdd="showAdd" :key="count" ref="refCon" show="2" v-if="item.type == 1" :form-data="item"></formIcon>
-				<tableDynamic :dis="dis" :key="count" ref="refCon" v-else :form-data="item"></tableDynamic>
-			</el-tab-pane>
-			<el-tab-pane name="wobuxinnengchongfu" label="附件">
-				<el-upload :disabled="dis == 1" :on-preview="downFiles" :auto-upload="false" :on-change="getFile" :on-remove="delFile" multiple :data="uploadData" ref="upload" class="upload-demo" action="" :file-list="fileList">
+		<formIcon :dis="dis" :showAdd="showAdd" :key="count" ref="mainTableChild" show="1" :form-data="formData.top"></formIcon>
+		<van-collapse v-model="activeNames">
+			<van-collapse-item :title="item.showName" :name="index" v-for="(item,index) in formData.bottom" :key="index">
+				<div class="children">
+					<formIcon :dis="dis" :showAdd="showAdd" :key="count" ref="refCon" show="2" v-if="item.type == 1" :form-data="item"></formIcon>
+					<tableDynamic :dis="dis" :key="count" ref="refCon" v-else :form-data="item"></tableDynamic>
+				</div>
+			</van-collapse-item>
+		</van-collapse>
+		<van-cell title="附件">
+			<template #default>
+				<el-upload :disabled="dis == 1" :on-preview="downFiles" :auto-upload="false" :on-change="getFile" multiple :data="uploadData" ref="upload" class="upload-demo" action="" :file-list="fileList">
 					<el-button size="small" type="primary">点击上传</el-button>
 				</el-upload>
-			</el-tab-pane>
-		</el-tabs>-->
+			</template>
+		</van-cell>
+		<van-cell title-class='titleClassBlue' v-for="(item,index) in fileList" :key="index" :title="item.name">
+			<template #default>
+				<van-icon @click="delUpload(index)" name="cross" />
+			</template>
+		</van-cell>
 	</div>
 </template>
 
@@ -48,6 +55,7 @@
 		},
 		data() {
 			return {
+				activeNames: [],
 				count: 0,
 				conData: {},
 				fileList: [],
@@ -78,6 +86,11 @@
 			}
 		},
 		created() {
+			this.formData.bottom.forEach(item => {
+				if(item.type == 2) {
+					item.rowList = item.conList
+				}
+			})
 			//获取上传数据,显示出来
 			if(this.files.length != 0) {
 				this.files.forEach(item => {
@@ -103,13 +116,11 @@
 						}
 					}
 				}
+				console.log(fileList)
 			},
 			//移除上传数据
-			delFile(file, fileList) {
-				if(typeof(file.id) != "undefined") {
-					this.delFiles.push(file.id)
-				}
-				this.fileList = fileList
+			delUpload(index) {
+				this.fileList.splice(index, 1)
 			},
 			//文件下载
 			downFiles(file) {
@@ -167,23 +178,25 @@
 					}
 				})
 				//删除之前上传过,现在被删除的文件
-				this.delFiles.forEach(item => {
-					this.$api.collaborativeOffice.deleteInfo({
-						id: item
-					}).then(data => {})
-				})
+				//				this.delFiles.forEach(item => {
+				//					this.$api.collaborativeOffice.deleteInfo({
+				//						id: item
+				//					}).then(data => {})
+				//				})
 			},
 			//提交
-			onSubmit() {
+			async onSubmit() {
 				//form 和 table 校验
 				var state = true
-				if(!this.$refs.mainTableChild.onSubmit()) {
-					state = false
-				}
+				await this.$refs.mainTableChild.onSubmit().then(data => {
+					state = data
+				})
 				if(typeof(this.$refs.refCon) != "undefined") {
 					this.$refs.refCon.forEach(item => {
-						if(!item.onSubmit()) {
-							state = false
+						if(item.formData.type == 1) {
+							if(!item.onSubmit()) {
+								state = false
+							}
 						}
 					})
 				}
@@ -200,7 +213,7 @@
 								this.conData[item.formData.id].push(item.ruleForm)
 								//table样式的子表
 							} else {
-								this.$set(this.conData, item.formData.id, item.ruleForm.lines)
+								this.$set(this.conData, item.formData.id, item.backList)
 							}
 						})
 					}
@@ -213,15 +226,43 @@
 </script>
 
 <style>
+	.titleClassBlue {
+		color: blue;
+	}
+	
 	.formWrapper {
 		overflow-y: scroll;
 		margin-bottom: 7vh;
+	}
+	
+	.children .van-cell {
+		background: #edf5ff;
+	}
+	
+	.children .van-dropdown-menu__item {
+		background: #edf5ff;
+	}
+	
+	.children .van-cell::after {
+		border-bottom: 1px solid #999999;
 	}
 </style>
 <style scoped>
 	>>>.el-upload--text {
 		height: 30px!important;
 		width: 80px!important;
+	}
+	
+	/deep/.van-cell__title {
+		text-align: left;
+	}
+	
+	/deep/.el-upload-list {
+		display: none;
+	}
+	
+	/deep/.van-collapse-item__content {
+		padding: 0px!important;
 	}
 	
 	.upload-btn {

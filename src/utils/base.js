@@ -7,12 +7,15 @@
   
   * 
   * */
-
+import { Notify } from 'vant';
 export default {
 	install(Vue, options) {
 		//警告框弹出
 		Vue.prototype.goOut = function(error) {
-			this.$notify({ type: 'danger', message: error });
+			Notify({
+				type: 'danger',
+				message: error
+			});
 		};
 		//警告框弹出
 		Vue.prototype.goOut2 = function(error) {
@@ -25,7 +28,10 @@ export default {
 		};
 		//成功框弹出
 		Vue.prototype.goOk = function(success) {
-			this.$notify({ type: 'success', message: success });
+			Notify({
+				type: 'success',
+				message: success
+			});
 		};
 		Vue.prototype.dateValue = function(dateValue, state) {
 			function formatTen(num) {

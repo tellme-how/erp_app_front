@@ -1,85 +1,53 @@
 <template>
 	<div>
-		<slot></slot>
-		<!--<el-form ref="ruleForm" :disabled="dis == '1'" class="demo-ruleForm" :model="ruleForm" label-width="120px" :rules="rules" :inline="formData.inline" :size="formData.size" :label-position="formData.labelPosition">-->
-		<van-form ref="ruleForm" @submit="onSubmitPhone">
+		<van-form ref="ruleForm">
 			<!--固定部分-->
 			<div v-if="show == 1">
-				<van-field required input-align="center" readonly clickable :value="ruleForm.company_NameShow" label="公司" placeholder="请选择公司" @click="showPicker = true" :rules="[{ required: true,message: '请选择公司',trigger: 'change'}]" />
-				<van-field input-align="center" readonly v-model="ruleForm.voucherId" label="单据编号" :rules="[{ required: true,}]" />
+				<van-field input-align="center" readonly v-model="ruleForm.voucherId" label="单据编号" />
 				<van-field required input-align="center" v-model="ruleForm.title" label="标题" placeholder="请填写标题" :rules="[{ required: true,message: '请填写标题',trigger: 'change'}]" />
-				<van-field input-align="center" readonly v-model="gestorName" label="经办人" :rules="[{ required: true,}]" />
-				<van-field input-align="center" readonly v-model="gestorDeptName" label="经办部门" :rules="[{ required: true,}]" />
-				<van-field input-align="center" readonly v-model="ruleForm.voucherTime" label="经办时间" :rules="[{ required: true,}]" />
+				<van-field input-align="center" readonly v-model="gestorName" label="经办人" />
+				<van-field input-align="center" readonly v-model="gestorDeptName" label="经办部门" />
+				<van-field input-align="center" readonly v-model="ruleForm.voucherTime" label="经办时间" />
 			</div>
+			<!--动态部分-->
 			<div v-for="(item,index) in formData.rowList" :key="index">
 				<div v-if="item.show">
 					<!--放大镜-->
-					<van-field :required="item.required" input-align="center" v-if="item.fieldTypeName == 'browseBox'" v-model="ruleForm[item.field+'_NameShow']" readonly center clearable :label="item.fieldName" :placeholder="'请选择'+item.fieldName" :rules="[{ required: true,}]">
+					<van-field :required="item.required" input-align="center" v-if="item.fieldTypeName == 'browseBox'" v-model="ruleForm[item.field+'_NameShow']" readonly center clearable :label="item.fieldName" :placeholder="'请选择'+item.fieldName" :rules="rules[item.field+'_NameShow']">
 						<template v-if="item.edit" #button>
-							<!--<van-button native-type="button" @click="findDialogVisible(item)" icon="search" size="small" type="primary"></van-button>-->
 							<van-button native-type="button" @click="findDialogVisible(item);showVanPopup = true" icon="search" size="small" type="primary"></van-button>
 						</template>
 					</van-field>
 					<!-- 字符型 / 文本框 / 整型 / 浮点型 -->
 					<van-field :required="item.required" input-align="center" v-if="item.fieldTypeName=='character' || item.fieldTypeName=='textType' || item.fieldTypeName=='integers' || item.fieldTypeName=='floatingPoint'" v-model="ruleForm[item.field]" :readonly="!item.edit" :label="item.fieldName" :placeholder="'请填写'+item.fieldName" :rules="rules[item.field]" @focus="fuwu(item)" />
 					<!-- 日期选择器 -->
-					<van-field :required="item.required" input-align="center" v-if="item.fieldTypeName == 'dateControl'" readonly clickable :value="ruleForm[item.field]" :label="item.fieldName" placeholder="请选择日期" @click="showCalendar = true;showCalendarValue = item" />
+					<van-field :required="item.required" input-align="center" v-if="item.fieldTypeName == 'dateControl'" readonly clickable :value="ruleForm[item.field]" :label="item.fieldName" placeholder="请选择日期" @click="showCalendar = true;showCalendarValue = item" :rules="rules[item.field]" />
 					<!--时间控件-->
-					<van-field :required="item.required" input-align="center" v-if="item.fieldTypeName == 'timeControl'" readonly clickable :value="ruleForm[item.field]" :label="item.fieldName" placeholder="请选择时间" @click="showPickerTime = true;showCalendarTimeValue = item" />
+					<van-field :required="item.required" input-align="center" v-if="item.fieldTypeName == 'timeControl'" readonly clickable :value="ruleForm[item.field]" :label="item.fieldName" placeholder="请选择时间" @click="showPickerTime = true;showCalendarTimeValue = item" :rules="rules[item.field]" />
 					<!-- 下拉框 -->
 					<van-field :required="item.required" input-align="center" v-if="item.fieldTypeName == 'select'" v-model="ruleForm[item.field]" clickable readonly :label="item.fieldName" :placeholder="'请选择'+item.fieldName" :rules="rules[item.field]">
 						<div slot="input" style="width: 100%;">
 							<van-dropdown-menu>
-								<van-dropdown-item @open="showDropdown(item)" v-model="ruleForm[item.field]" :options="actions" />
+								<van-dropdown-item @open="showDropdown(item)" @change="updDropdown(item.field)" v-model="ruleForm[item.field]" :options="optionsShow(item)" />
 							</van-dropdown-menu>
 						</div>
 					</van-field>
 					<!--复选框-->
 					<van-field :required="item.required" input-align="center" v-if="item.fieldTypeName == 'checkBox'" :label="item.fieldName">
 						<template #input>
-							<van-checkbox @change="checkboxShow(item)" v-model="checkboxValue" shape="square" />
+							<van-checkbox @change="checkboxShow(item)" v-model="checkboxValue[item.field]" shape="square" />
 						</template>
 					</van-field>
 					<!--富文本-->
-					<!--<vue-html5-editor v-if="item.fieldTypeName == 'richText'" :content="content" :height="400"  @change="updateData"></vue-html5-editor>-->
-					<!--<vue-html5-editor v-if="item.fieldTypeName == 'richText'" :height="140" style="width: 600px;" :show-module-name="true" :content="content" @change="updateContentData"></vue-html5-editor>-->
+					<van-field :required="item.required" v-model="ruleForm[item.field]" input-align="center" v-if="item.fieldTypeName == 'richText'" :label="item.fieldName" :rules="rules[item.field]">
+						<template #input>
+							<quill-editor style="width: 100%;" v-model="ruleForm[item.field]" ref="myQuillEditor" :options="editorOption"></quill-editor>
+						</template>
+					</van-field>
+					<van-divider style="display: none;" />
 				</div>
 			</div>
-
-			<!--动态部分-->
-			<el-row v-if="false" v-for="(val, index) in formData.rowList" :key="index">
-				<el-col v-for="(item,indexOther) in val.colList" :key="indexOther" :span="item.lengthType * 8">
-					<div v-if="item.show">
-						<el-form-item v-if="item.fieldTypeName == 'browseBox'" :label="item.fieldName" :prop="item.field+'_NameShow'">
-							<!-- 浏览框 -->
-							<a @click="toNew(ruleForm[item.field])" v-if="dis == '1' && item.toSelect.id == '7'" href="javascript:void(0)">{{ruleForm[item.field+'_NameShow']}}</a>
-							<el-input v-else style="width: 100%;" v-model="ruleForm[item.field+'_NameShow']" disabled>
-								<el-button @click="findDialogVisible(item)" v-if="item.edit" slot="append" icon="el-icon-search"></el-button>
-							</el-input>
-						</el-form-item>
-						<el-form-item v-else :label="item.fieldName" :prop="item.field">
-							<!-- 字符型 / 文本框 / 整型 / 浮点型 -->
-							<el-input @focus="fuwu(item)" v-if="item.fieldTypeName=='character' || item.fieldTypeName=='textType' || item.fieldTypeName=='integers' || item.fieldTypeName=='floatingPoint' && item.show" style="width: 100%;" v-model="ruleForm[item.field]" :disabled="!item.edit" />
-							<!--富文本-->
-							<quill-editor v-if="item.fieldTypeName == 'richText' && item.show" style="width: 100%;" v-model="ruleForm[item.field]" ref="myQuillEditor" :options="editorOption" @blur="onEditorBlur($event)" @focus="onEditorFocus($event,item.edit)" @change="onEditorChange($event)"></quill-editor>
-							<!-- 日期选择器 -->
-							<el-date-picker v-if="item.fieldTypeName == 'dateControl' && item.show" @change="getDate(item)" style="width: 100%;" :disabled="!item.edit" v-model="ruleForm[item.field]" type="date" value-format="yyyy-MM-dd" placeholder="选择日期" />
-							<!--时间控件-->
-							<el-date-picker value-format="yyyy-MM-dd HH:mm:ss" format="yyyy-MM-dd HH:mm:ss" type="datetime" placeholder="请选择日期时间" :disabled="!item.edit" v-if="item.fieldTypeName == 'timeControl' && item.show" style="width: 100%;" v-model="ruleForm[item.field]"></el-date-picker>
-							<!-- 下拉框 -->
-							<el-select v-if="item.fieldTypeName == 'select' && item.show" style="width: 100%;" v-model="ruleForm[item.field]" clearable :disabled="!item.edit" :placeholder="item.placeholder">
-								<el-option v-for="itemSelect in item.resList" :key="itemSelect.id" :label="itemSelect.name" :value="itemSelect.id" />
-							</el-select>
-							<!--复选框-->
-							<el-checkbox true-label='1' false-label='0' v-if="item.fieldTypeName == 'checkBox' && item.show" style="width: 100%;" v-model="ruleForm[item.field]" :disabled="!item.edit"></el-checkbox>
-						</el-form-item>
-					</div>
-				</el-col>
-			</el-row>
-
 		</van-form>
-		<!--</el-form>-->
 		<!--弹出框-->
 		<van-popup v-model="showVanPopup" position="right" :style="{ width: '100%' , height: '100%' }">
 			<formIconComponents v-if="showVanPopup" ref="child" :showFig="showCon" :dataCon="dataCon">
@@ -87,28 +55,14 @@
 				<van-button native-type="button" @click="getDialogVisible" size="small" type="primary">提交</van-button>
 			</formIconComponents>
 		</van-popup>
-		<!--<div v-if="dialogVisible">
-			<erpDialog :title="titleShow" erpDialogwidth="false" :dialogShow="dialogVisible">
-				<formIconComponents ref="child" :showFig="showCon" :dataCon="dataCon"></formIconComponents>
-				<div slot="footer">
-					<el-button @click="dialogVisible = false">取 消</el-button>
-					<el-button type="primary" @click="getDialogVisible">确 定</el-button>
-				</div>
-			</erpDialog>
-		</div>-->
-		<!--弹出框-工作流-->
-		<!--<workflowDialog ref="childWork" :status="status" title="工作事项"></workflowDialog>-->
-
 		<!--日期-->
 		<van-calendar v-model="showCalendar" @confirm="getDate" />
 		<!--时间-->
 		<van-popup v-model="showPickerTime" position="bottom">
 			<van-datetime-picker @cancel="showPickerTime = false" @confirm="onConfirmTime" type="datetime" title="日期时间" />
 		</van-popup>
-		<!--公司-->
-		<van-popup v-model="showPicker" position="bottom">
-			<van-picker show-toolbar :columns="CompanyData" value-key="name" @confirm="onConfirm" @cancel="showPicker = false" />
-		</van-popup>
+		<slot></slot>
+		<input style="display: none;" v-model="inputShow" />
 	</div>
 </template>
 
@@ -117,13 +71,13 @@
 	import formIconComponents from '../../../../views/collaborative-office/components/encapsulation/sub-components/form-icon-components';
 	import workflowDialog from '../../../../views/collaborative-office/components/encapsulation/sub-components/workflow-dialog';
 	//富文本
-	//	import { quillEditor } from 'vue-quill-editor'; //调用编辑器
-	//	import 'quill/dist/quill.snow.css';
-	//	import * as Quill from 'quill';
+	import { quillEditor } from 'vue-quill-editor'; //调用编辑器
+	import 'quill/dist/quill.snow.css';
+	import * as Quill from 'quill';
 	import { computed } from '../computed.js';
 	export default {
 		components: {
-			//			quillEditor,
+			quillEditor,
 			formIconComponents,
 			workflowDialog
 		},
@@ -151,9 +105,10 @@
 		},
 		data() {
 			return {
+				inputShow: 0,
 				showVanPopup: false,
 				content: "",
-				checkboxValue: false,
+				checkboxValue: {},
 				//枚举
 				showSheet: false,
 				showSheetValue: {},
@@ -219,6 +174,9 @@
 			}
 		},
 		created() {
+			if(this.show != 1) {
+				this.$set(this.formData, "rowList", this.formData.lines)
+			}
 			//判断是否有模板数据
 			if(!this.noObject(this.formData) && typeof(this.formData.rowList) != "undefined") {
 				//服务10需要特殊对待，进入页面就查询出来并赋值
@@ -229,6 +187,11 @@
 				if(this.show == 1) {
 					//新增2   查看1   修改3
 					if(this.dis == 2) {
+						this.formData.rowList.forEach(item => {
+							if(item.fieldTypeName == 'checkBox') {
+								this.ruleForm[item.field] = 1
+							}
+						})
 						//经办人，经办部门的展示数据（并不传走）
 						this.gestorName = localStorage.getItem('ms_username')
 						this.gestorDeptName = localStorage.getItem('ms_userDepartName')
@@ -281,6 +244,11 @@
 					//不显示固定栏（子表）
 				} else {
 					//整理子表数据
+					this.formData.rowList.forEach(item => {
+						if(item.fieldTypeName == 'checkBox' && this.showAdd == 1) {
+							this.ruleForm[item.field] = 1
+						}
+					})
 					this.get_NameShow(2)
 					if(this.dis == 3) {
 						this.$set(this.ruleForm, "oprStatus", 2)
@@ -289,16 +257,32 @@
 			}
 		},
 		methods: {
+			updDropdown(value) {
+				this.actions.forEach(item => {
+					if(item.value == this.ruleForm[value]) {
+						this.ruleForm[value + '_NameShow'] = item.text
+					}
+				})
+			},
 			updateData: function(data) {
-				console.log(data)
 				this.content = data
 			},
 			checkboxShow(row) {
-				if(this.checkboxValue) {
+				if(this.checkboxValue[row.field]) {
 					this.ruleForm[row.field] = 0
 				} else {
 					this.ruleForm[row.field] = 1
 				}
+			},
+			optionsShow(row) {
+				var list = []
+				row.resList.forEach(item => {
+					list.push({
+						value: item.id,
+						text: item.name,
+					})
+				})
+				return list
 			},
 			showDropdown(row) {
 				this.actions = []
@@ -315,23 +299,12 @@
 				this.actions = row.resList
 			},
 			onConfirmTime(timeData) {
-				console.log(timeData)
 				this.showPickerTime = false
 				this.ruleForm[this.showCalendarTimeValue.field] = this.dateValue(timeData, 2)
 			},
 			formatDate(date) {
 				return `${date.getMonth() + 1}-${date.getDate()}`;
 			},
-			onSubmitPhone() {
-				console.log(this.ruleForm)
-			},
-			//手机-公司选择器
-			onConfirm(value) {
-				this.ruleForm.company = value.id
-				this.ruleForm.company_NameShow = value.name
-				this.showPicker = false;
-			},
-
 			//工作流打开新页面
 			toNew(id) {
 				this.$api.collaborativeOffice.findDataBySrcId({
@@ -356,20 +329,16 @@
 					//row.parameter 计算公式
 					let result = computed(row.parameter, this.ruleForm)
 					if(result.successCon) {
-						this.formData.rowList.forEach(item => {
-							item.colList.forEach(val => {
-								if(val.field == row.field) {
-									if(val.fieldType == 4) {
-										this.ruleForm[row.field] = result.con.toFixed(0)
-									} else if(val.fieldType == 5) {
-										//this.ruleForm[row.field] = result.con.toFixed(4)
-										this.ruleForm[row.field] = result.con
-									} else {
-										//this.ruleForm[row.field] = result.con.toFixed(4)
-										this.ruleForm[row.field] = result.con
-									}
+						this.formData.rowList.forEach(val => {
+							if(val.field == row.field) {
+								if(val.fieldType == 4) {
+									this.$set(this.ruleForm, row.field, result.con.toFixed(0))
+								} else if(val.fieldType == 5) {
+									this.$set(this.ruleForm, row.field, result.con)
+								} else {
+									this.$set(this.ruleForm, row.field, result.con)
 								}
-							})
+							}
 						})
 					} else {
 						this.goOut("数据或者公式不正确, 请重新输入.")
@@ -388,6 +357,7 @@
 					}
 				} else {
 					//子表需要循环找到正确的数据
+					console.log(this.formData)
 					for(var key in this.formData.wholeData) {
 						if(key == this.formData.id) {
 							valObject = this.formData.wholeData[key][0]
@@ -411,8 +381,16 @@
 								this.$set(this.ruleForm, key, parseInt(valObject[key]))
 							} else if(item.fieldType == 5) {
 								this.$set(this.ruleForm, key, parseFloat(valObject[key]))
+							} else if(item.fieldType == 10) {
+								this.$set(this.ruleForm, key, valObject[key])
+								if(valObject[key] == 0) {
+									this.checkboxValue[key] = true
+								} else {
+									this.checkboxValue[key] = false
+								}
 							} else {
 								this.$set(this.ruleForm, key, valObject[key])
+								this.inputShow++;
 							}
 							/*
 							 * 设置浏览框展示数据 _NameShow(这些数据在新增或者修改返回时需要被删除)
@@ -654,7 +632,6 @@
 					}
 				})
 			},
-
 			//计算时间差值
 			getDate(valueDate) {
 				this.showCalendar = false
@@ -665,20 +642,18 @@
 					//同上（太长了，不想写一起，屏幕太小显示不下）noNull是非空的公共方法，详见base.js
 					if(!this.noNull(this.ruleForm[row.parameterList.left]) && !this.noNull(this.ruleForm[row.parameterList.right])) {
 						var state = false
-						this.formData.rowList.forEach((item, index) => {
-							item.colList.forEach((val, index2) => {
-								//确认当前控件里面有绑定的child数据（就是要接收差值的字段）并且服务code为“计算差值”
-								if(val.field == row.parameterList.child && val.serviceNow.fcode == "service05") {
-									state = true
+						this.formData.rowList.forEach((val, index2) => {
+							//确认当前控件里面有绑定的child数据（就是要接收差值的字段）并且服务code为“计算差值”
+							if(val.field == row.parameterList.child && val.serviceNow.fcode == "service05") {
+								state = true
+							}
+							//循环到最后，判断state状态，如果是true，代表满足条件，那么就需要改变child的值
+							if(index2 == this.formData.rowList.length - 1) {
+								if(state) {
+									//DateDiff 方法在下面，计算日期差值方法
+									this.$set(this.ruleForm, row.parameterList.child, this.DateDiff(this.ruleForm[row.parameterList.left], this.ruleForm[row.parameterList.right]))
 								}
-								//循环到最后，判断state状态，如果是true，代表满足条件，那么就需要改变child的值
-								if(index == this.formData.rowList.length - 1 && index2 == item.colList.length - 1) {
-									if(state) {
-										//DateDiff 方法在下面，计算日期差值方法
-										this.$set(this.ruleForm, row.parameterList.child, this.DateDiff(this.ruleForm[row.parameterList.left], this.ruleForm[row.parameterList.right]))
-									}
-								}
-							})
+							}
 						})
 					}
 				}
@@ -772,15 +747,15 @@
 				//通过传入的子查询字段，找到最终的传入值
 				for(var i = 0; i < row.length; i++) {
 					for(var i2 = 0; i2 < this.formData.rowList.length; i2++) {
-						if(listChild.colList[i2].field == row[i]) {
+						var listChild = this.formData.rowList[i2]
+						if(listChild.field == row[i]) {
 							//给服务条件赋值，serviceNow.code在之前已经获取到了，只需要传入查询id
-							listChild.colList[i2].serviceNow.fid = id
+							listChild.serviceNow.fid = id
 							//循环查询
-							var conNow = await this.$api.collaborativeOffice.findTServiceItemByParams(listChild.colList[i2].serviceNow).then(data => {
-								console.log(data)
+							var conNow = await this.$api.collaborativeOffice.findTServiceItemByParams(listChild.serviceNow).then(data => {
 								return new Promise(resolve => {
 									//把根据‘不同的服务’获取到的返回值从新赋值，都是id和name的形式，方便调用
-									switch(listChild.colList[i2].serviceNow.fcode) {
+									switch(listChild.serviceNow.fcode) {
 										case "service09":
 										case "service08":
 										case "service04":
@@ -808,8 +783,8 @@
 								});
 							})
 							//改变需要联动的值的内容和显示内容
-							this.$set(this.ruleForm, listChild.colList[i2].field, conNow.id)
-							this.$set(this.ruleForm, listChild.colList[i2].field + "_NameShow", conNow.name)
+							this.$set(this.ruleForm, listChild.field, conNow.id)
+							this.$set(this.ruleForm, listChild.field + "_NameShow", conNow.name)
 						}
 					}
 				}
@@ -930,27 +905,18 @@
 				//				}
 			},
 			//提交
-			onSubmit(formName) {
-				this.$refs.ruleForm.submit()
-				//				var returnData = false
-				//				this.$refs.ruleForm.submit((valid) => {
-				//					if(valid) {
-				//						returnData = true
-				//					}
-				//				});
-				//				return returnData
+			async onSubmit() {
+				var a = await this.$refs.ruleForm.validate().then(data => {
+					return new Promise(resolve => {
+						resolve(true)
+					});
+				}).catch(val => {
+					return new Promise(resolve => {
+						resolve(false)
+					});
+				})
+				return a
 			},
-			//富文本事件
-			onEditorBlur() {}, // 失去焦点事件
-			onEditorFocus(event, edit) {
-				//if(this.formDisabled == true) {
-				if(!edit) {
-					event.enable(false);
-				} else {
-					event.enable(true);
-				}
-			}, // 获得焦点事件
-			onEditorChange() {}, // 内容改变事件
 		}
 	};
 </script>
@@ -966,6 +932,7 @@
 		left: 30vw;
 		width: 70%;
 	}
+	
 	/deep/.van-field__error-message {
 		text-align: center!important;
 	}

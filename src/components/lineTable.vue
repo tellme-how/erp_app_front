@@ -32,7 +32,8 @@
 		color: #2771ca;
 		width: 120px
 	}
-	#classTd{
+	
+	#classTd {
 		border: solid 1px #a9c0df;
 	}
 </style>

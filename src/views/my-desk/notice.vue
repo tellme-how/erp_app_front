@@ -51,12 +51,14 @@
 					page: 1,
 					size: 20,
 					fpid: "",
-					fdocstatus: "已发布"
+					fdocstatus: "3",
+					fuserid : localStorage.getItem('ms_userId')
 				},
 				formListAll: {
 					page: 1,
 					size: 20,
-					fdocstatus: "已发布"
+					fdocstatus: "3",
+					fuserid : localStorage.getItem('ms_userId')
 				},
 				list: [],
 				loading: false,
@@ -87,7 +89,8 @@
 				this.formListAll = {
 					page: 1,
 					size: 20,
-					fdocstatus: "已发布"
+					fdocstatus: "3",
+					fuserid : localStorage.getItem('ms_userId')
 				}
 				this.list = []
 				this.onLoad(1)

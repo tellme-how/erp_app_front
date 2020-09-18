@@ -1,73 +1,30 @@
 <template>
 	<div>
-		<el-form :model="ruleForm" :disabled="dis == '1'" :rules="rules" ref="ruleFormTable">
-			<el-table size="small" height="400" :data="ruleForm.lines.filter(v => v.oprStatus != 3)" border style="width: 100%">
-				<el-table-column v-for="(item,index) in formData.conList" :key="index" prop="field" :label="item.fieldName" align="center">
-					<template slot-scope="scope">
-						<el-form-item v-if="item.fieldTypeName == 'browseBox' && item.show" :prop="'lines[' + scope.$index + '].' + item.field +'_NameShow'" :rules="rules[item.field + '_NameShow']">
-							<!-- 浏览框 -->
-							<a v-if="dis == '1' && item.toSelect.id == '7'" href="javascript:void(0)">{{scope.row[item.field + '_NameShow']}}</a>
-							<el-input v-else style="width: 100%;" v-model="scope.row[item.field + '_NameShow']" disabled>
-								<el-button @click=" findDialogVisible(item,scope.row)" slot="append" icon="el-icon-search"></el-button>
-							</el-input>
-						</el-form-item>
-						<el-form-item v-else :prop="'lines[' + scope.$index + '].' + item.field" :rules="rules[item.field]">
-							<!-- 字符型 / 文本框 / 整型 / 浮点型 -->
-							<el-input @focus="fuwu(item,scope.row)" v-model="scope.row[item.field]" v-if="item.fieldTypeName=='character' || item.fieldTypeName=='textType' || item.fieldTypeName=='integers' || item.fieldTypeName=='floatingPoint' && item.show" style="width: 100%;" :disabled="!item.edit" />
-							<!--富文本-->
-							<quill-editor v-if="item.fieldTypeName=='richText' && item.show" style="width: 100%;" v-model="scope.row[item.field]" ref="myQuillEditor" :options="editorOption" @blur="onEditorBlur($event)" @focus="onEditorFocus($event)" @change="onEditorChange($event)"></quill-editor>
-							<!-- 日期选择器 -->
-							<el-date-picker v-if="item.fieldTypeName=='dateControl' && item.show" @change="getDate(item)" style="width: 100%;" :disabled="!item.edit" v-model="scope.row[item.field]" type="date" value-format="yyyy-MM-dd" placeholder="选择日期" />
-							<!--时间控件-->
-							<el-date-picker value-format="yyyy-MM-dd HH:mm:ss" format="yyyy-MM-dd HH:mm:ss" placeholder="请选择日期时间" type="datetime" v-if="item.fieldTypeName == 'timeControl' && item.show" style="width: 100%;" v-model="ruleForm[item.field]"></el-date-picker>
-							<!-- 下拉框 -->
-							<el-select v-if="item.fieldTypeName=='select' && item.show" style="width: 100%;" v-model="scope.row[item.field]" clearable :disabled="!item.edit" :placeholder="item.placeholder">
-								<el-option v-for="itemSelect in item.resList" :key="itemSelect.id" :label="itemSelect.name" :value="itemSelect.id" />
-							</el-select>
-							<!--复选框-->
-							<el-checkbox true-label='1' false-label='0' v-if="item.fieldTypeName == 'checkBox' && item.show" style="width: 100%;" v-model="scope.row[item.field]" :disabled="!item.edit"></el-checkbox>
-						</el-form-item>
-					</template>
-				</el-table-column>
-				<el-table-column v-if="dis != '1'" align="right" width="100">
-					<template slot="header" slot-scope="scope">
-						<el-button size="mini" @click="addRow()">新建</el-button>
-					</template>
-					<template slot-scope="scope">
-						<el-button size="mini" type="danger" @click="delRow(scope.$index,scope.row)">删除</el-button>
-					</template>
-				</el-table-column>
-			</el-table>
-		</el-form>
-		<!--弹出框-->
-		<div v-if="dialogVisible">
-			<el-dialog :title="titleShow" top="1vh" destroy-on-close center :visible.sync="dialogVisible" width="80%">
-				<formIconComponents ref="child" :showFig="showCon" :dataCon="dataCon"></formIconComponents>
-				<div slot="footer" class="dialog-footer">
-					<el-button @click="dialogVisible = false">取 消</el-button>
-					<el-button type="primary" @click="getDialogVisible">确 定</el-button>
-				</div>
-			</el-dialog>
-		</div>
-		<!--弹出框-工作流-->
-		<!--<workflowDialog ref="childWork"></workflowDialog>-->
+		<lineTable2 :linesList="linesList"></lineTable2>
+		<van-popup v-model="showUp" position="right" :style="{ width: '100%' , height: '90%' }">
+			<formIcon v-if="showUp" ref="formDataChildren" :dis="dis" showAdd='1' show="2" :form-data="formData">
+				<el-button @click="toSave">提交</el-button>
+			</formIcon>
+		</van-popup>
 	</div>
 </template>
 
 <script>
 	//所有弹出框
+	import formIcon from '../../../../views/collaborative-office/components/encapsulation/form-dynamic';
 	import formIconComponents from '../../../../views/collaborative-office/components/encapsulation/sub-components/form-icon-components';
-//	import workflowDialog from '../../../../views/collaborative-office/components/encapsulation/sub-components/workflow-dialog';
+	//	import workflowDialog from '../../../../views/collaborative-office/components/encapsulation/sub-components/workflow-dialog';
 	//富文本
-//	import { quillEditor } from 'vue-quill-editor'; //调用编辑器
-//	import 'quill/dist/quill.snow.css';
-//	import * as Quill from 'quill';
+	import { quillEditor } from 'vue-quill-editor'; //调用编辑器
+	import 'quill/dist/quill.snow.css';
+	import * as Quill from 'quill';
 	import { computed } from '../computed.js';
 	export default {
 		components: {
-//			quillEditor,
+			quillEditor,
 			formIconComponents,
-//			workflowDialog
+			formIcon,
+			//			workflowDialog
 		},
 		props: {
 			//传入的data值
@@ -82,6 +39,10 @@
 		},
 		data() {
 			return {
+				showUp: false,
+				linesList: [{
+					list: ["poiul1"]
+				}],
 				rules: {}, //表单
 				ruleForm: {
 					lines: [],
@@ -107,10 +68,20 @@
 				userList: JSON.parse(localStorage.getItem('userList')),
 				//职务
 				positionList: JSON.parse(localStorage.getItem('positionList')),
-				stateType: 0
+				stateType: 0,
+				backList: []
 			}
 		},
 		created() {
+			var list = JSON.parse(JSON.stringify(this.formData.conList))
+			list.forEach(item => {
+				this.linesList.push({
+					value: item.field,
+					list: [item.fieldName],
+					type: item.fieldType
+				})
+			})
+			console.log(this.linesList)
 			if(typeof(this.formData.conList) != "undefined" && this.formData.conList.length != 0) {
 				//查看1  新增2  修改3
 				this.$api.collaborativeOffice.findPage({
@@ -133,6 +104,51 @@
 		},
 		//注释同form-dynamic 
 		methods: {
+			toAdd() {
+				this.showUp = true
+			},
+			toDel(key) {
+				this.linesList.forEach(item => {
+					item.list.splice(key, 1)
+				})
+				this.backList.splice(key - 1, 1)
+			},
+			toSave() {
+				this.$refs.formDataChildren.onSubmit().then(data => {
+					if(data) {
+						var list = this.$refs.formDataChildren.ruleForm
+						this.backList.push(list)
+						this.linesList[0].list.push('poiul2')
+						this.linesList.forEach((item, index) => {
+							var state = true
+							if(index != 0) {
+								for(var key in list) {
+									if(item.value == key) {
+										state = false
+										if(typeof(list[key + '_NameShow']) == "undefined") {
+											if(item.type == 10) {
+												if(list[key] == 0) {
+													item.list.push('已选中')
+												} else {
+													item.list.push('未选中')
+												}
+											} else {
+												item.list.push(list[key])
+											}
+										} else {
+											item.list.push(list[key + '_NameShow'])
+										}
+									}
+								}
+								if(state) {
+									item.list.push("")
+								}
+							}
+						})
+						this.showUp = false
+					}
+				})
+			},
 			fuwu(row, rowTable) {
 				if(row.serviceId == 11) {
 					let result = computed(row.parameter, rowTable)
@@ -591,16 +607,6 @@
 						break;
 				}
 			},
-			//提交
-			onSubmit(formName) {
-				var returnData = false
-				this.$refs.ruleFormTable.validate((valid) => {
-					if(valid) {
-						returnData = true
-					}
-				});
-				return returnData
-			},
 			//富文本事件
 			onEditorBlur() {}, // 失去焦点事件
 			onEditorFocus(event) {
@@ -615,7 +621,7 @@
 	};
 </script>
 
-<style scoped>
+<style>
 	.treeDivClass {
 		height: 300px;
 		overflow: auto;
@@ -625,5 +631,13 @@
 		border-bottom: 1px solid #dcdfe6;
 		min-height: calc(100vh - 300px);
 		overflow-y: auto;
+	}
+	
+	.el-table .el-table__expanded-cell {
+		background-color: transparent;
+	}
+	
+	.el-table th .el-table tr {
+		background-color: transparent;
 	}
 </style>

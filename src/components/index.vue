@@ -2,7 +2,7 @@
 	<div>
 		<div>
 			<van-swipe style="border-radius:30px;margin:10px;height: 20vh;" class="my-swipe" :autoplay="3000" indicator-color="white">
-				<van-swipe-item v-for="item in 20">
+				<van-swipe-item v-for="(item,index) in 20"  :key="index">
 					<van-image width="100%" height="100%" fit="fill" :src="$GLOBAL.htmlUrl + '/壁纸/'+item+'.jpg'" />
 				</van-swipe-item>
 			</van-swipe>
@@ -11,7 +11,7 @@
 			<van-grid-item @click="toName(value)" v-for="value in list" :key="value.id" :icon="value.icon" :text="value.name" />
 		</van-grid>
 		<el-card style="margin: 10px;">
-			<van-cell v-for="item in moreList">
+			<van-cell v-for="(item,index) in moreList" :key="index">
 				<van-row>
 					<van-col style="font-weight: bold;" span="20">
 						<el-divider direction="vertical"></el-divider>{{item.text}}</van-col>
@@ -147,14 +147,19 @@
 						fpid: list[i].foid,
 						page: 1,
 						size: 5,
-						fdocstatus: "已发布"
+						fdocstatus: 3,
+						fuserid : localStorage.getItem('ms_userId')
 					}).then(data => {
 						state = true
+						var rows = []
+						if(data.data.code == 0){
+							rows = data.data.data.rows
+						}
 						return new Promise(resolve => {
 							resolve({
 								text: list[i].fname,
 								value: list[i].foid,
-								children: data.data.data.rows,
+								children: rows,
 								listChildren: list[i].children
 							})
 						});

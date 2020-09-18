@@ -9,7 +9,7 @@
 			</van-row>
 		</div>
 		<div class="s"></div>
-		<router-view :class="{homeBottom :$store.state.tabbar}">
+		<router-view :class="{homeBottom :$store.state.tabbar}" style="margin-bottom: 20vh;">
 		</router-view>
 		<van-tabbar v-if="$store.state.tabbar" v-model="active" @change="toName">
 			<van-tabbar-item v-if="show.a" name="1-1" :icon="this.$GLOBAL.htmlUrl + '待办.png'">待办</van-tabbar-item>
@@ -78,6 +78,9 @@
 							e: false,
 							f: true,
 						}
+						this.$router.push({
+							name: 'personal',
+						})
 						break;
 				}
 			},

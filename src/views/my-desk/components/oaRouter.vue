@@ -1,82 +1,68 @@
 <template>
 	<div>
-		<van-form ref="ruleForm"></van-form>
-		<formAndTable v-if="showFormAndTable" :files="files" dis="2" showAdd="1" ref="child" :form-data="conData"></formAndTable>
-		<div class="nextBtn">
-			<!--<van-button style="float: left;margin-left: 20px;" @click="selectMainTable" type="primary">选择模板</van-button>-->
-			<van-button style="float: right;margin-right: 20px;" @click="submitForm(2)" type="primary">提交</van-button>
-		</div>
-		<!--<van-popup v-model="showMainTable" position="top" style="height: 90%;width: 100%;">
-		</van-popup>-->
-		<!--公司-->
-		<van-popup v-model="showPicker" position="bottom">
-			<van-picker show-toolbar :columns="CompanyData" value-key="name" @confirm="onConfirm" @cancel="showPicker = false" />
-		</van-popup>
+		<formAndTable v-if="showNow" :files="context.files" dis="1" showAdd="2" ref="child" :form-data="conData"></formAndTable>
 	</div>
 </template>
+
 <script>
-	import formAndTable from './form-and-table';
+	import formAndTable from '../../../views/collaborative-office/components/form-and-table';
 	export default {
 		components: {
 			formAndTable
 		},
 		props: {
-			//值
-			context: Object
+			contextOther: Object
 		},
 		data() {
 			return {
-				//				showMainTable: false,
-				showPicker: false,
-				showFormAndTable: false,
-				files: [],
-				//提交/暂存按钮显示
-				showFig: false,
-				//主表弹出框
-				dialogVisible: false,
-				//选择公司
-				company: {},
+				showNow :false,
+				context: {},
 				UserId: "",
 				companyID: {},
+				//主表弹出框
+				dialogVisible: false,
+				company: "",
+				//主表ID
+				tempId: "",
+				conData: {
+					top: {},
+					bottom: []
+				},
+				//主表tableName
+				tableName: "",
+				//主表ID
+				tempId: "",
 				//全部服务
 				tServiceByParams: JSON.parse(localStorage.getItem('tServiceByParams')),
 				//全部公司
 				CompanyData: JSON.parse(localStorage.getItem('CompanyData')),
 				//全部枚举
-				selectList: JSON.parse(localStorage.getItem('selectList')),
+				selectList: "",
 				//全部工作事项
 				fieldBrowseList: JSON.parse(localStorage.getItem('fieldBrowseList')),
 				//公司部门职位的合集
 				allOrganizationInfo: JSON.parse(localStorage.getItem('allOrganizationInfo')),
-				//主表tableName
-				tableName: "",
-				//主表ID
-				tempId: "",
-				//传走的值 top主表  bottom子表List
-				conData: {
-					top: {},
-					bottom: []
-				}
-			}
+			};
 		},
 		created() {
-			this.$store.commit("tabbarShow", false)
-			this.$store.commit("titleShow", "新增工作事项")
-			this.getDialogVisible(this.context.id)
+			this.context = this.contextOther
+			this.$api.collaborativeOffice.findList({}).then(data => {
+				this.selectList = data.data.data
+				this.getDialogVisible()
+			})
+			console.log(this.conData)
 		},
-
 		methods: {
-			//手机-公司选择器
-			onConfirm(value) {
-				this.company.id = value.id
-				this.company.company_NameShow = value.name
-				this.company.code = value.code
-				this.showPicker = false;
+			//选择模板
+			selectMainTable() {
+				this.companyID = this.company;
+				this.UserId = localStorage.getItem("ms_userId");
+				this.dialogVisible = true;
 			},
 			//提交/暂存
-			async submitForm(status) {
+			submitForm(status) {
 				//校验所有必填字段
-				if(await this.$refs.child.onSubmit()) {
+				if(this.$refs.child.onSubmit()) {
 					//获取返回字段的合集
 					var backData = {
 						jsonStr: this.$refs.child.conData
@@ -85,27 +71,32 @@
 					 * 存入外层信息
 					 * */
 					//单据编号
-					backData.voucherId = JSON.parse(JSON.stringify(backData.jsonStr.voucherId))
+					backData.voucherId = "";
 					//标题
 					backData.title = JSON.parse(JSON.stringify(backData.jsonStr.title))
 					//经办人
-					backData.gestor = localStorage.getItem('ms_staffId');
+					backData.gestor = JSON.parse(JSON.stringify(backData.jsonStr.gestor))
 					//经办部门
 					backData.gestorDept = JSON.parse(JSON.stringify(backData.jsonStr.gestorDept))
 					//经办时间
+
 					backData.voucherTime = JSON.parse(JSON.stringify(backData.jsonStr.voucherTime))
 					//公司code
+
 					backData.companyCode = this.company.code
-					//主表字段
-					backData.activityId = this.activityId
 					//登陆人
 					backData.creator = localStorage.getItem('ms_userId')
 					//暂存1 提交2
 					backData.status = status
 					//主表名称
 					backData.tableName = this.tableName
+					//主表字段-业务活动ID
+					backData.activityId = this.activityId
 					//主表Id
 					backData.tempId = this.tempId
+					backData.srcId = JSON.parse(JSON.stringify(this.$refs.child.conData.id))
+					backData.oprStatus = 2
+
 					/*
 					 * 存入里层信息
 					 * */
@@ -113,8 +104,6 @@
 					backData.jsonStr.status = status
 					//公司ID
 					backData.jsonStr.company = this.company.id
-					//新增状态
-					backData.jsonStr.oprStatus = 1
 					/*
 					 * 删除所有显示内容  _NameShow
 					 * */
@@ -131,9 +120,10 @@
 									if(keyItem.indexOf("_NameShow") != -1) {
 										item[keyItem] = undefined
 									}
+									if(keyItem.indexOf("state") != -1) {
+										item[keyItem] = undefined
+									}
 								}
-								//添加新增状态
-								item.oprStatus = 1
 							})
 						}
 						//删除外层（主表）的显示数据
@@ -143,9 +133,9 @@
 					}
 					//后台需要json格式的数据 
 					backData.jsonStr = JSON.stringify(con)
-					this.$api.collaborativeOffice.apiUrl("workItem/insertWorkItem", backData).then(data => {
-						if(this.dataBack(data, "新增成功")) {
-							this.$refs.child.toUpload(data.data.data)
+					this.$api.collaborativeOffice.updateWorkItem(backData).then(data => {
+						if(this.dataBack(data, "修改成功")) {
+							this.$refs.child.toUpload(this.context.id)
 							this.$parent.toSelect()
 						}
 					})
@@ -154,23 +144,21 @@
 				}
 			},
 			//选择模板
-			getDialogVisible(id) {
-				//				this.tempId = this.$refs.childMain.rowClick.id
-				this.tempId = id
-				//根据主表ID查询详细信息
+			getDialogVisible() {
+				//获取模板详细数据
 				this.$api.collaborativeOffice.findById({
-					id: id
+					id: this.context.tempId
 				}).then(data => {
 					this.activityId = data.data.data.workItemTemp.activityId
-					//主表Name
+					//整理传入子组件的数据top 主表  bottom 子表
+					this.tempId = this.context.tempId
 					this.tableName = data.data.data.workItemTemp.tableName
-					//整理传入子组件的数据主表top  子表bottom 
 					this.conData.top = data.data.data.workItemTemp
+					this.$set(this.conData.top, "wholeData", this.context)
 					this.conData.bottom = data.data.data.workItemTempSub
-					//整理主表数据（主表1，子表2）
 					this.preview(this.conData.top.lines, "", 1)
-					//循环整理子表数据
 					this.conData.bottom.forEach((val, index) => {
+						this.$set(val, "wholeData", this.context)
 						this.preview(val.lines, index, 2)
 					})
 					//子表模板排序
@@ -179,9 +167,10 @@
 						return Number(a1.orderNum) - Number(b1.orderNum)
 					})
 					//关闭弹出框
-					this.showFormAndTable = true
+					this.dialogVisible = false
 					//显示提交按钮
 					this.showFig = true
+					this.showNow = true
 				})
 			},
 			//数据整理（传入数据rowConList，下标rowIndex(子表用)，状态(主1子2)）
@@ -391,14 +380,9 @@
 				}
 			},
 		}
-	}
+	};
 </script>
-<style scoped="scoped">
-	.nextBtn {
-		margin: 0px;
-	}
-	
-	/deep/.van-field__error-message {
-		text-align: center!important;
-	}
+
+<style scoped>
+
 </style>

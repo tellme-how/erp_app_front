@@ -8,6 +8,21 @@
   * 
   * */
 const htmlUrl = 'http://192.168.85.87:9010/pic/'
+//const htmlUrl = 'http://218.25.137.122:9010/pic/'
+const editorOption = {
+	placeholder: '请输入内容',
+	modules: {
+		toolbar: [
+			['bold'], //加粗
+			[{ 'color': [] }], 
+			[{
+				align: []
+			}], //对齐方式
+		]
+	}
+}
 export default {
-	htmlUrl
+	htmlUrl,
+	//富文本
+	editorOption,
 }
