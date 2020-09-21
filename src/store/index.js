@@ -10,6 +10,9 @@ export default new Vuex.Store({
 	},
 	mutations: {
 		titleShow: function(state, con) {
+			if(con.length > 20){
+				con = con.slice(0,20)+'...'
+			}
 			state.title = con
 		},
 		tabbarShow: function(state, con) {

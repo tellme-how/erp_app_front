@@ -2,6 +2,48 @@ import httpReqest from '../../utils/https';
 import QS from 'qs';
 
 const myDesk = {
+	//新增审批回复信息
+	addAuditReply(params) {
+		return httpReqest.post('/api/wfInterfaces/workFlow/processMonitor/addAuditReply', params);
+	},
+	//获取审批信息及回复信息
+	getAuditAndReplyMsg(params) {
+		var valueS = '?';
+		for(var item in params) {
+			valueS += item + "=" + params[item] + "&";
+		}
+		if(valueS.slice(valueS.length - 1, valueS.length) === "&") {
+			valueS = valueS.slice(0, valueS.length - 1);
+		}
+		return httpReqest.get('/api/wfInterfaces/workFlow/processMonitor/getAuditAndReplyMsg' + valueS);
+	},
+	//附件预览
+	getHtmlPreviewAttachmentById(params) {
+		var valueS = '?';
+		for(var item in params) {
+			valueS += item + "=" + params[item] + "&";
+		}
+		if(valueS.slice(valueS.length - 1, valueS.length) === "&") {
+			valueS = valueS.slice(0, valueS.length - 1);
+		}
+		return httpReqest.get('/api/interfaces/attachment/getHtmlPreviewAttachmentById' + valueS);
+	},
+	//查询所有附件信息
+	findInfosList(params) {
+		return httpReqest.post('/api/interfaces/attachment/findInfosList', params);
+	},
+	//查询文件管理 by foid
+	findDocumentManageById(params) {
+		return httpReqest.post('/api/interfaces/documentmanage/findDocumentManageById', params);
+	},
+	//取消关注
+	deleteAttention(params) {
+		return httpReqest.post('/api/wfInterfaces/workFlow/deleteAttention', params);
+	},
+	//关注
+	addAttention(params) {
+		return httpReqest.post('/api/wfInterfaces/workFlow/addAttention', params);
+	},
 	// 根据ID查询工作事项模版主表分类
 	getWorkItemTypeModel(params) {
 		var valueS = '?';
@@ -14,7 +56,7 @@ const myDesk = {
 		return httpReqest.get('/api/interfaces/workItem/findBySrcId' + valueS);
 	},
 	//页面配置url
-	postHttp(url,params){
+	postHttp(url, params) {
 		return httpReqest.post('/api/wfInterfaces/' + url, params);
 	},
 	//查询文件管理:分页
@@ -55,8 +97,8 @@ const myDesk = {
 	findStaffByPage(params) {
 		return httpReqest.post('/api/interfaces/staffManage/findStaffByPage', params);
 	},
-	//一人一表
-	findPersonalTableTaskById(params) {
+	// 获取待办事项的popForm表单数据(一人一表任务表)
+	findTaskEvaluateAndAdjustById(params) {
 		var valueS = '?';
 		for(var item in params) {
 			valueS += item + "=" + params[item] + "&";
@@ -64,7 +106,7 @@ const myDesk = {
 		if(valueS.slice(valueS.length - 1, valueS.length) === "&") {
 			valueS = valueS.slice(0, valueS.length - 1);
 		}
-		return httpReqest.post('/api/scha/personalTableResult/findPersonalTableTaskById' + valueS);
+		return httpReqest.post('/api/scha/taskEvaluate/findTaskEvaluateAndAdjustById' + valueS);
 	},
 	//是否审批
 	getWFBizMailInfoByUserId(params) {

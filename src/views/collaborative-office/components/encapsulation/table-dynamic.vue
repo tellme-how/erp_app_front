@@ -1,8 +1,8 @@
 <template>
 	<div>
-		<lineTable2 :linesList="linesList"></lineTable2>
+		<lineTable2 :dis="dis" :linesList="linesList"></lineTable2>
 		<van-popup v-model="showUp" position="right" :style="{ width: '100%' , height: '90%' }">
-			<formIcon v-if="showUp" ref="formDataChildren" :dis="dis" showAdd='1' show="2" :form-data="formData">
+			<formIcon v-if="showUp" ref="formDataChildren" :dis="2" showAdd='1' show="4" :form-data="formData">
 				<el-button @click="toSave">提交</el-button>
 			</formIcon>
 		</van-popup>
@@ -40,9 +40,7 @@
 		data() {
 			return {
 				showUp: false,
-				linesList: [{
-					list: ["poiul1"]
-				}],
+				linesList: [],
 				rules: {}, //表单
 				ruleForm: {
 					lines: [],
@@ -73,6 +71,11 @@
 			}
 		},
 		created() {
+			if(this.dis != 1) {
+				this.linesList = [{
+					list: ["poiul1"]
+				}]
+			}
 			var list = JSON.parse(JSON.stringify(this.formData.conList))
 			list.forEach(item => {
 				this.linesList.push({
@@ -81,7 +84,6 @@
 					type: item.fieldType
 				})
 			})
-			console.log(this.linesList)
 			if(typeof(this.formData.conList) != "undefined" && this.formData.conList.length != 0) {
 				//查看1  新增2  修改3
 				this.$api.collaborativeOffice.findPage({
@@ -90,6 +92,19 @@
 					creator: localStorage.getItem('ms_userId')
 				}).then(data => {
 					this.get_NameShow(data.data.data.rows)
+					this.ruleForm.lines.forEach((val, index) => {
+						if(this.dis != 1){
+							this.linesList[0].list.push("poiul2")
+						}
+						this.linesList.forEach((item, index2) => {
+							for(var key in val) {
+								if(key == item.value) {
+									item.list.push(val[key + '_NameShow'])
+								}
+							}
+						})
+					})
+					this.backList = this.ruleForm.lines
 				})
 				this.formData.conList.forEach(item => {
 					this.$set(this.rowNow, item.field, "")
@@ -117,6 +132,7 @@
 				this.$refs.formDataChildren.onSubmit().then(data => {
 					if(data) {
 						var list = this.$refs.formDataChildren.ruleForm
+						console.log(list)
 						this.backList.push(list)
 						this.linesList[0].list.push('poiul2')
 						this.linesList.forEach((item, index) => {
@@ -191,6 +207,17 @@
 																nameList = nameList + itemChild.fname + ","
 															}
 														}
+														if(typeof(itemChild.children) != "undefined") {
+															itemChild.children.forEach(itemChild2 => {
+																if(itemChild2.foid == val) {
+																	if(indexVal == idList.length - 1) {
+																		nameList = nameList + itemChild2.fname
+																	} else {
+																		nameList = nameList + itemChild2.fname + ","
+																	}
+																}
+															})
+														}
 													})
 												})
 												this.$set(val, keyVal + "_NameShow", nameList)
@@ -200,6 +227,13 @@
 												var idList = val[keyVal].split(',')
 												idList.forEach((val, indexVal) => {
 													item.browseBoxList.forEach(itemChild => {
+														if(itemChild.foid == val) {
+															if(indexVal == idList.length - 1) {
+																nameList = nameList + itemChild.fname
+															} else {
+																nameList = nameList + itemChild.fname + ","
+															}
+														}
 														if(typeof(itemChild.children) != "undefined") {
 															itemChild.children.forEach(itemChild2 => {
 																if(itemChild2.foid == val) {
@@ -220,8 +254,22 @@
 												var idList = val[keyVal].split(',')
 												idList.forEach((val, indexVal) => {
 													item.browseBoxList.forEach(itemChild => {
+														if(itemChild.foid == val) {
+															if(indexVal == idList.length - 1) {
+																nameList = nameList + itemChild.fname
+															} else {
+																nameList = nameList + itemChild.fname + ","
+															}
+														}
 														if(typeof(itemChild.children) != "undefined") {
 															itemChild.children.forEach(itemChild2 => {
+																if(itemChild2.foid == val) {
+																	if(indexVal == idList.length - 1) {
+																		nameList = nameList + itemChild2.fname
+																	} else {
+																		nameList = nameList + itemChild2.fname + ","
+																	}
+																}
 																if(typeof(itemChild2.children) != "undefined") {
 																	itemChild2.children.forEach(itemChild3 => {
 																		if(itemChild3.foid == val) {

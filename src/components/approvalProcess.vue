@@ -7,19 +7,19 @@
 			<table :style="{ width : widthTable + '%' }" class="mailTable" cellspacing="0" cellpadding="0">
 				<tr v-for="(item,index) in linesList">
 					<td id="classTd" :class="[key == 0 ?'classZero':'']" v-for="(val,key) in item.list">
-						<van-button v-if="val == '展开'" @click="showPopup(item)" size="mini" plain type="primary">展开</van-button>
+						<van-button v-if="val == '展开'" @click="showPopup(key)" size="mini" plain type="primary">展开</van-button>
 						<span v-else>{{val | valShow(key)}}</span>
 					</td>
 				</tr>
 			</table>
 		</div>
-		<vanPopupReply @showClose='showClose' :rowChild="rowChild" :show="show"></vanPopupReply>
+		<vanPopupReply @showClose='showClose' :context="auditReplyMsg" v-if="show" :show="show"></vanPopupReply>
 	</div>
 </template>
 <script>
 	export default {
 		props: {
-			context: Object
+			contextOther: Object
 		},
 		filters: {
 			valShow(status, key) {
@@ -28,25 +28,34 @@
 				} else {
 					return status
 				}
-			},
+			}
 		},
 		data() {
 			return {
-				rowChild:{},
+				auditReplyMsg: [],
 				show: false,
 				showOne: false,
 				widthTable: 100,
-				linesList: [{
+				linesList: [],
+				context: []
+			};
+		},
+		created() {
+			this.getContext()
+		},
+		methods: {
+			getContext() {
+				this.linesList = [{
 					name: "流程节点",
-					value: "fname",
+					value: "nodName",
 					list: []
 				}, {
 					name: "审批人",
-					value: "handlerName",
+					value: "staffName",
 					list: []
 				}, {
 					name: "审批结论",
-					value: "fresult",
+					value: "auditResult",
 					list: []
 				}, {
 					name: "审批说明",
@@ -54,11 +63,11 @@
 					list: []
 				}, {
 					name: "审批时间",
-					value: "fcreateTime",
+					value: "fcreatetime",
 					list: []
 				}, {
 					name: "标准时间",
-					value: "fmaxWorkTime",
+					value: "standardTime",
 					list: []
 				}, {
 					name: "耗时",
@@ -69,23 +78,32 @@
 					value: "展开",
 					list: []
 				}]
-			};
-		},
-		created() {
-			this.linesList.forEach(item => {
-				item.list.push(item.name)
-				if(item.name == "回复") {
-					item.list.push("展开")
-				}
-			})
-			this.widthTable = 80
-		},
-		methods: {
-			showClose(){
+				this.$api.myDesk.getAuditAndReplyMsg({
+					foid: this.contextOther.foid
+				}).then(res => {
+					console.log(res)
+					this.context = res.data.data
+					this.linesList.forEach(item => {
+						item.list.push(item.name)
+						this.context.forEach(val => {
+							for(var key in val) {
+								if(key == item.value) {
+									item.list.push(val[key])
+								}
+							}
+						})
+						if(item.name == "回复") {
+							item.list.push("展开")
+						}
+					})
+				})
+				this.widthTable = 80
+			},
+			showClose() {
 				this.show = false;
 			},
-			showPopup(row) {
-				this.rowChild = row
+			showPopup(key) {
+				this.auditReplyMsg = this.context[key - 1]
 				this.show = true;
 			},
 		},

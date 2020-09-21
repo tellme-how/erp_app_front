@@ -1,9 +1,9 @@
 <template>
 	<div class="flexMainre">
-		<tabViews :context="context" :contextOther="contextOther" :is="context.classId"></tabViews>
-		<approvalProcess></approvalProcess>
+		<tabViews :context="context" :valueState="valueState" :contextOther="contextOther" :is="context.classId"></tabViews>
+		<approvalProcess :contextOther = "context"></approvalProcess>
 		<div style="height: 8vh;width: 100%;"></div>
-		<div class="nextBtn">
+		<div class="nextBtn" v-if="valueState == 1">
 			<van-row>
 				<van-col span="6">
 					<van-field readonly clickable :value="value" label="" placeholder="审批" @click="show = true" />
@@ -20,6 +20,10 @@
 					<van-icon size="20" @click="showShare = true" name="bars" />
 					<van-share-sheet cancel-text="关闭" v-model="showShare" :options="options" @select="onSelect" /></van-col>
 			</van-row>
+		</div>
+		<div class="nextBtn4" v-if="valueState == 4 || valueState == 3 || valueState == 2">
+			<van-icon size="20" @click="showShare = true" name="bars" />
+			<van-share-sheet cancel-text="关闭" v-model="showShare" :options="options" @select="onSelect" />
 		</div>
 	</div>
 </template>
@@ -80,6 +84,7 @@
 		},
 		data() {
 			return {
+				valueState: "",
 				columns: [],
 				value: "",
 				value2: "",
@@ -88,35 +93,23 @@
 				contextOther: {},
 				tabViews: "",
 				showShare: false,
-				options: [{
-						name: '转发',
-						icon: this.$GLOBAL.htmlUrl + '1.png'
-					},
-					{
-						name: '委托',
-						icon: this.$GLOBAL.htmlUrl + '2.png'
-					},
-					{
-						name: '关注',
-						icon: this.$GLOBAL.htmlUrl + '3.png'
-					},
-					{
-						name: '加签',
-						icon: this.$GLOBAL.htmlUrl + '5.png'
-					}
-				],
+				options: [],
+				approvalProcess: [],
 			};
 		},
 		created() {
-
 			this.$store.commit("tabbarShow", false)
 			if(this.$route.params.row) {
 				sessionStorage.setItem("deskRow", JSON.stringify(this.$route.params.row));
+			}
+			if(this.$route.params.valueState) {
+				sessionStorage.setItem("valueState", JSON.stringify(this.$route.params.valueState));
 			}
 			if(this.$route.params.contextOther) {
 				sessionStorage.setItem("contextOther", JSON.stringify(this.$route.params.contextOther));
 			}
 			this.context = JSON.parse(sessionStorage.getItem("deskRow"))
+			this.valueState = JSON.parse(sessionStorage.getItem("valueState"))
 			this.contextOther = JSON.parse(sessionStorage.getItem("contextOther"))
 			this.$store.commit("titleShow", this.context.fsubject)
 			this.columns = []
@@ -135,17 +128,86 @@
 					})
 				}
 			})
+			this.optionsShow()
 		},
 		methods: {
+			optionsShow() {
+				if(this.valueState == 1) {
+					this.options = [{
+							name: '转发',
+							icon: this.$GLOBAL.htmlUrl + '1.png'
+						},
+						{
+							name: '委托',
+							icon: this.$GLOBAL.htmlUrl + '2.png'
+						},
+						{
+							name: '关注',
+							icon: this.$GLOBAL.htmlUrl + '3.png'
+						},
+						{
+							name: '加签',
+							icon: this.$GLOBAL.htmlUrl + '5.png'
+						}
+					]
+				} else if(this.valueState == 2) {
+					this.options = [{
+							name: '转发',
+							icon: this.$GLOBAL.htmlUrl + '1.png'
+						},
+						{
+							name: '关注',
+							icon: this.$GLOBAL.htmlUrl + '3.png'
+						}
+					]
+				} else if(this.valueState == 3) {
+					this.options = [{
+							name: '转发',
+							icon: this.$GLOBAL.htmlUrl + '1.png'
+						},
+						{
+							name: '关注',
+							icon: this.$GLOBAL.htmlUrl + '3.png'
+						},
+						{
+							name: '加签',
+							icon: this.$GLOBAL.htmlUrl + '5.png'
+						}
+					]
+				} else if(this.valueState == 4) {
+					this.options = [{
+							name: '转发',
+							icon: this.$GLOBAL.htmlUrl + '1.png'
+						},
+						{
+							name: '关注',
+							icon: this.$GLOBAL.htmlUrl + '3.png'
+						}
+					]
+				}
+			},
 			toDo() {
 
 			},
 			onSelect(option) {
-				if(option.name == "关注") {
+				if(option.name == "关注" || option.name == "已关注") {
 					if(option.icon == this.$GLOBAL.htmlUrl + '4.png') {
-						option.icon = this.$GLOBAL.htmlUrl + '3.png'
+						this.$api.myDesk.deleteAttention({
+							fvoucherOid: this.context.fsrcoId,
+							fattentionOid: localStorage.getItem("ms_userId")
+						}).then(data => {
+							option.name = "关注"
+							option.icon = this.$GLOBAL.htmlUrl + '3.png'
+						});
 					} else {
-						option.icon = this.$GLOBAL.htmlUrl + '4.png'
+						this.$api.myDesk.addAttention({
+							fvoucherOid: this.context.fsrcoId,
+							fattentionOid: localStorage.getItem("ms_userId")
+						}).then(data => {
+							console.log(data)
+							option.name = "已关注"
+							option.icon = this.$GLOBAL.htmlUrl + '4.png'
+						});
 					}
 				} else {
 					this.$router.push({
@@ -178,6 +240,15 @@
 		background-color: #fff;
 		margin: 1px;
 		border-top: 1px solid black;
+	}
+	
+	.nextBtn4 {
+		position: fixed;
+		bottom: 0;
+		right: 0;
+		width: 10%;
+		background-color: red;
+		margin: 1px;
 	}
 	
 	input {

@@ -4,7 +4,7 @@
 			<!--固定部分-->
 			<div v-if="show == 1">
 				<van-field input-align="center" readonly v-model="ruleForm.voucherId" label="单据编号" />
-				<van-field required input-align="center" v-model="ruleForm.title" label="标题" placeholder="请填写标题" :rules="[{ required: true,message: '请填写标题',trigger: 'change'}]" />
+				<van-field required input-align="center" :readonly="dis == 1" v-model="ruleForm.title" label="标题" placeholder="请填写标题" :rules="[{ required: true,message: '请填写标题',trigger: 'change'}]" />
 				<van-field input-align="center" readonly v-model="gestorName" label="经办人" />
 				<van-field input-align="center" readonly v-model="gestorDeptName" label="经办部门" />
 				<van-field input-align="center" readonly v-model="ruleForm.voucherTime" label="经办时间" />
@@ -15,33 +15,33 @@
 					<!--放大镜-->
 					<van-field :required="item.required" input-align="center" v-if="item.fieldTypeName == 'browseBox'" v-model="ruleForm[item.field+'_NameShow']" readonly center clearable :label="item.fieldName" :placeholder="'请选择'+item.fieldName" :rules="rules[item.field+'_NameShow']">
 						<template v-if="item.edit" #button>
-							<van-button native-type="button" @click="findDialogVisible(item);showVanPopup = true" icon="search" size="small" type="primary"></van-button>
+							<van-button native-type="button" :disabled="dis == 1" @click="findDialogVisible(item);showVanPopup = true" icon="search" size="small" type="primary"></van-button>
 						</template>
 					</van-field>
 					<!-- 字符型 / 文本框 / 整型 / 浮点型 -->
-					<van-field :required="item.required" input-align="center" v-if="item.fieldTypeName=='character' || item.fieldTypeName=='textType' || item.fieldTypeName=='integers' || item.fieldTypeName=='floatingPoint'" v-model="ruleForm[item.field]" :readonly="!item.edit" :label="item.fieldName" :placeholder="'请填写'+item.fieldName" :rules="rules[item.field]" @focus="fuwu(item)" />
+					<van-field :required="item.required" input-align="center" v-if="item.fieldTypeName=='character' || item.fieldTypeName=='textType' || item.fieldTypeName=='integers' || item.fieldTypeName=='floatingPoint'" v-model="ruleForm[item.field]" :readonly="!item.edit || dis == 1" :label="item.fieldName" :placeholder="'请填写'+item.fieldName" :rules="rules[item.field]" @focus="fuwu(item)" />
 					<!-- 日期选择器 -->
-					<van-field :required="item.required" input-align="center" v-if="item.fieldTypeName == 'dateControl'" readonly clickable :value="ruleForm[item.field]" :label="item.fieldName" placeholder="请选择日期" @click="showCalendar = true;showCalendarValue = item" :rules="rules[item.field]" />
+					<van-field :required="item.required" input-align="center" v-if="item.fieldTypeName == 'dateControl'" readonly clickable :value="ruleForm[item.field]" :label="item.fieldName" placeholder="请选择日期" @click="aaa(item)" :rules="rules[item.field]" />
 					<!--时间控件-->
-					<van-field :required="item.required" input-align="center" v-if="item.fieldTypeName == 'timeControl'" readonly clickable :value="ruleForm[item.field]" :label="item.fieldName" placeholder="请选择时间" @click="showPickerTime = true;showCalendarTimeValue = item" :rules="rules[item.field]" />
+					<van-field :required="item.required" input-align="center" v-if="item.fieldTypeName == 'timeControl'" readonly clickable :value="ruleForm[item.field]" :label="item.fieldName" placeholder="请选择时间" @click="bbb(item)" :rules="rules[item.field]" />
 					<!-- 下拉框 -->
 					<van-field :required="item.required" input-align="center" v-if="item.fieldTypeName == 'select'" v-model="ruleForm[item.field]" clickable readonly :label="item.fieldName" :placeholder="'请选择'+item.fieldName" :rules="rules[item.field]">
 						<div slot="input" style="width: 100%;">
-							<van-dropdown-menu>
-								<van-dropdown-item @open="showDropdown(item)" @change="updDropdown(item.field)" v-model="ruleForm[item.field]" :options="optionsShow(item)" />
+							<van-dropdown-menu >
+								<van-dropdown-item :disabled="dis == 1" @open="showDropdown(item)" @change="updDropdown(item.field)" v-model="ruleForm[item.field]" :options="optionsShow(item)" />
 							</van-dropdown-menu>
 						</div>
 					</van-field>
 					<!--复选框-->
 					<van-field :required="item.required" input-align="center" v-if="item.fieldTypeName == 'checkBox'" :label="item.fieldName">
 						<template #input>
-							<van-checkbox @change="checkboxShow(item)" v-model="checkboxValue[item.field]" shape="square" />
+							<van-checkbox @change="checkboxShow(item)" :disabled="dis == 1" v-model="checkboxValue[item.field]" shape="square" />
 						</template>
 					</van-field>
 					<!--富文本-->
 					<van-field :required="item.required" v-model="ruleForm[item.field]" input-align="center" v-if="item.fieldTypeName == 'richText'" :label="item.fieldName" :rules="rules[item.field]">
 						<template #input>
-							<quill-editor style="width: 100%;" v-model="ruleForm[item.field]" ref="myQuillEditor" :options="editorOption"></quill-editor>
+							<quill-editor style="width: 100%;" :disabled="dis == 1" v-model="ruleForm[item.field]" ref="myQuillEditor" :options="editorOption"></quill-editor>
 						</template>
 					</van-field>
 					<van-divider style="display: none;" />
@@ -219,6 +219,7 @@
 							this.$set(this.ruleForm, "title", this.formData.wholeData.title)
 							this.$set(this.ruleForm, "voucherTime", this.conversionTime(this.formData.wholeData.voucherTime))
 						}
+						console.log(this.ruleForm)
 					} else if(this.dis == 3) {
 						//整理主表数据
 						this.get_NameShow(1)
@@ -255,8 +256,26 @@
 					}
 				}
 			}
+			if(this.show == 4) {
+				this.ruleForm = {
+					tableName: this.formData.tableName
+				}
+			}
+
 		},
 		methods: {
+			aaa(item) {
+				if(this.dis != 1) {
+					this.showCalendar = true;
+					this.showCalendarValue = item
+				}
+			},
+			bbb(item) {
+				if(this.dis != 1) {
+					this.showPickerTime = true;
+					this.showCalendarTimeValue = item
+				}
+			},
 			updDropdown(value) {
 				this.actions.forEach(item => {
 					if(item.value == this.ruleForm[value]) {
@@ -421,6 +440,13 @@
 										var idList = valObject[key].split(',')
 										idList.forEach((val, indexVal) => {
 											item.browseBoxList.forEach(itemChild => {
+												if(itemChild.foid == val) {
+													if(indexVal == idList.length - 1) {
+														nameList = nameList + itemChild2.fname
+													} else {
+														nameList = nameList + itemChild2.fname + ","
+													}
+												}
 												if(typeof(itemChild.children) != "undefined") {
 													itemChild.children.forEach(itemChild2 => {
 														if(itemChild2.foid == val) {
@@ -633,29 +659,30 @@
 				})
 			},
 			//计算时间差值
-			getDate(valueDate) {
-				this.showCalendar = false
-				var row = this.showCalendarValue
-				this.ruleForm[row.field] = this.dateValue(valueDate, 1)
+			getDate(row) {
 				//change写在所有的时间控件中，首先判断当前点击控件是否需要计算差值，且双方必须都有值
-				if(typeof(row.parameterList.child) != "undefined") {
+				if(row.parameterList.length != 0) {
 					//同上（太长了，不想写一起，屏幕太小显示不下）noNull是非空的公共方法，详见base.js
-					if(!this.noNull(this.ruleForm[row.parameterList.left]) && !this.noNull(this.ruleForm[row.parameterList.right])) {
-						var state = false
-						this.formData.rowList.forEach((val, index2) => {
-							//确认当前控件里面有绑定的child数据（就是要接收差值的字段）并且服务code为“计算差值”
-							if(val.field == row.parameterList.child && val.serviceNow.fcode == "service05") {
-								state = true
-							}
-							//循环到最后，判断state状态，如果是true，代表满足条件，那么就需要改变child的值
-							if(index2 == this.formData.rowList.length - 1) {
-								if(state) {
-									//DateDiff 方法在下面，计算日期差值方法
-									this.$set(this.ruleForm, row.parameterList.child, this.DateDiff(this.ruleForm[row.parameterList.left], this.ruleForm[row.parameterList.right]))
-								}
-							}
-						})
-					}
+					row.parameterList.forEach(item => {
+						if(!this.noNull(this.ruleForm[item.left]) && !this.noNull(this.ruleForm[item.right])) {
+							var state = false
+							this.formData.rowList.forEach((item1, index) => {
+								item1.colList.forEach((val, index2) => {
+									//确认当前控件里面有绑定的child数据（就是要接收差值的字段）并且服务code为“计算差值”
+									if(val.field == item.child && val.serviceNow.fcode == "service05") {
+										state = true
+									}
+									//循环到最后，判断state状态，如果是true，代表满足条件，那么就需要改变child的值
+									if(index == this.formData.rowList.length - 1 && index2 == item1.colList.length - 1) {
+										if(state) {
+											//DateDiff 方法在下面，计算日期差值方法
+											this.$set(this.ruleForm, item.child, this.DateDiff(this.ruleForm[item.left], this.ruleForm[item.right]))
+										}
+									}
+								})
+							})
+						}
+					})
 				}
 			},
 			//计算日期差值

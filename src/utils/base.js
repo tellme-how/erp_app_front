@@ -106,6 +106,15 @@ export default {
 			if(date.toString().length == 1) {
 				date = '0' + date
 			}
+			if(hour.toString().length == 1) {
+				hour = '0' + hour
+			}
+			if(minute.toString().length == 1) {
+				minute = '0' + minute
+			}
+			if(second.toString().length == 1) {
+				second = '0' + second
+			}
 			return year + "-" + month + "-" + date + " " + hour + ":" + minute + ":" + second;
 		};
 		//时间戳转正常格式(干掉时分秒)

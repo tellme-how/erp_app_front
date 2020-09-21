@@ -15,7 +15,7 @@
 				<div v-for="(item,key) in list" :key="key">
 					<van-row>
 						<van-col span="24">
-							<van-cell :class="{ 'bbb': item.fstatus=='已完成' , 'ccc': item.fstatus=='编辑中', 'ddd': item.fstatus=='超时' , 'eee' : item.classId == '0001-1'}" @click="toUrl(item)">
+							<van-cell :class="tableRowClassName(item)" @click="toUrl(item)">
 								<van-row>
 									<van-row>
 										{{item.fsubject}}
@@ -74,6 +74,19 @@
 			this.onLoad()
 		},
 		methods: {
+			//根据状态改背景色
+			tableRowClassName(row) {
+				if(row.fstatus === "暂停") {
+					return "ccc";
+				} else if(row.fstatus === "已作废") {
+					return "eee";
+				} else if(row.fstatus === "已完结") {
+					return "bbb";
+				} else if(row.timeOutStatus == '1') {
+					return "ddd";
+				}
+				return "";
+			},
 			toChange(val) {
 				this.formData = {
 					userId: localStorage.getItem('ms_userId'),
@@ -88,6 +101,8 @@
 				return row.fstatus + " " + row.fsrcCompany + " " + row.factivityName
 			},
 			toUrl(row) {
+				//审批信息
+
 				if(row.classId.indexOf('OA') != -1) {
 					row.classId = 'oaRouter'
 					this.$api.myDesk.getWorkItemTypeModel({
@@ -111,7 +126,8 @@
 									name: "toDoListDetails",
 									params: {
 										row: row,
-										contextOther: conNow
+										contextOther: conNow,
+										valueState: this.value
 									}
 								})
 							})
@@ -125,7 +141,6 @@
 						}
 					})
 				}
-
 			},
 			beginOnLoad() {
 				this.formData = {

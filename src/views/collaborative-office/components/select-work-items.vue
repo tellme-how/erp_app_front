@@ -40,6 +40,9 @@
 			this.$api.collaborativeOffice.getCompanyData().then(data => {
 				this.option = []
 				data.data.data.rows.forEach(item => {
+					if(item.id == "BFPID000000LQX00SR"){
+						console.log(item)
+					}
 					this.option.push({
 						text: item.name,
 						value: item.id

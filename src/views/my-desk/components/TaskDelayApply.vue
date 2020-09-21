@@ -159,10 +159,9 @@
 			};
 		},
 		created() {
-			this.$api.myDesk.findPersonalTableTaskById({
+			this.$api.myDesk.findTaskEvaluateAndAdjustById({
 				id: this.context.fsrcoId
 			}).then(data => {
-				console.log(data)
 				this.formContext = data.data.data
 //				this.showName(this.formContext)
 				var lines = [{

@@ -1,15 +1,11 @@
 <template>
 	<van-popup :close-on-click-overlay="showClose" @click-overlay="closeVan" v-model:show="show" position="bottom" :style="{ height: '30%' }">
-		<van-cell v-for="(item,key) in list" :key="key" value-class="valueClass">
-			<template v-if="item.freplyedPesronName == ''" #default>
-				<span @click="toReply(item,1)" class="spanClss">{{item.freplyPesronName}} : </span>
-				<span>{{item.freplyContent}}</span>
-			</template>
-			<template v-else #default>
-				<span @click="toReply(item,1)" class="spanClss">{{item.freplyPesronName}}</span>
+		<van-cell v-for="(item,key) in replyList" :key="key" value-class="valueClass">
+			<template #default>
+				<span @click="toReply(item,1)" class="spanClss">{{item.staffName}}</span>
 				<span> 回复 </span>
-				<span @click="toReply(item,2)" class="spanClss">{{item.freplyedPesronName}} : </span>
-				<span>{{item.freplyContent}}</span>
+				<span @click="toReply(item,2)" class="spanClss">{{item.replyedName}} : </span>
+				<span>{{item.replyContent}}</span>
 			</template>
 		</van-cell>
 		<van-row align="bottom">
@@ -34,7 +30,8 @@
 	export default {
 		props: {
 			show: Boolean,
-			rowChild: Object
+			//			rowChild: Object
+			context: Object
 		},
 		data() {
 			return {
@@ -42,97 +39,77 @@
 				checked: false,
 				valueName: "",
 				valueItem: {},
-				list: [{
-						freplyPesronName: "孟鹏飞",
-						freplyContent: "我就是打酱油的",
-						freplyedPesronName: "",
-						type: 1
-					},
-					{
-						freplyPesronName: "曲帅",
-						freplyContent: "我就是打酱油的2",
-						freplyedPesronName: "孟鹏飞",
-						type: 2
-					},
-					{
-						freplyPesronName: "其他",
-						freplyContent: "大家别误会,其实我不是针对谁,我想说在座的各位都是打酱油的",
-						freplyedPesronName: "",
-						type: 1
-					}, {
-						freplyPesronName: "申广超",
-						freplyContent: "我就是打酱油的3",
-						freplyedPesronName: "",
-						type: 1
-					}
-				]
+				replyList: []
 			};
 		},
 		created() {
-//			this.$api.myDesk.selectAuditReplyInfo({
-//				faudit: this.rowChild.foid,
-//				userId: localStorage.getItem('ms_userId')
-//			}).then(data => {
-//				this.list = data.data
-//				//过滤数据,取出   登陆人等于被回复人  或者  公开的 数据
-//				this.list = data.data.filter(item => {
-//					return item.freplyedPesron == localStorage.getItem('ms_userId') || item.fpublish == 1
-//				})
-//				//如果回复人等于被回复人,那么只显示回复人 
-//				this.list.forEach(item => {
-//					if(item.freplyPesron == item.freplyedPesron) {
-//						item.freplyedPesronName = ""
-//						item.freplyedPesron = ""
-//					}
-//				})
-//			})
+			this.context.auditReplyMsg.forEach(item => {
+				this.getReply(item)
+			})
+			console.log(this.replyList)
+			for(var i = this.replyList.length - 1 ; i >= 0 ; i -- ){
+				console.log(this.replyList[i].fpublish)
+			}
+			//			this.$api.myDesk.selectAuditReplyInfo({
+			//				faudit: this.rowChild.foid,
+			//				userId: localStorage.getItem('ms_userId')
+			//			}).then(data => {
+			//				this.list = data.data
+			//				//过滤数据,取出   登陆人等于被回复人  或者  公开的 数据
+			//				this.list = data.data.filter(item => {
+			//					return item.freplyedPesron == localStorage.getItem('ms_userId') || item.fpublish == 1
+			//				})
+			//				//如果回复人等于被回复人,那么只显示回复人 
+			//				this.list.forEach(item => {
+			//					if(item.freplyPesron == item.freplyedPesron) {
+			//						item.replyedName = ""
+			//						item.freplyedPesron = ""
+			//					}
+			//				})
+			//			})
 		},
 		methods: {
+			getReply(row) {
+				this.replyList.push(row)
+				if(!this.noNull(row.childReply)) {
+					row.childReply.forEach(item => {
+						this.getReply(item)
+					})
+				}
+			},
 			closeVan() {
 				this.$emit("showClose")
 			},
 			toReply(item, key) {
+				var con = {}
 				if(key == 1) {
-					item.name = item.freplyPesronName
-					item.id = item.freplyPesron
+					con.name = item.staffName
+					con.id = item.staffId
 				} else {
-					item.name = item.freplyedPesronName
-					item.id = item.freplyedPesron
+					con.name = item.replyedName
+					con.id = item.replyedStaff
 				}
-				this.valueItem = item
-				this.valueName = "@" + item.name + ": "
+				this.valueItem = con
+				this.valueName = "@" + con.name + ": "
 			},
 			reply() {
-				var checke = false
-				if(this.checked) {
-					checke = true
-				}
-				var con = {
-					//审核ID
-					faudit: this.rowChild.foid,
-					//是否公开
-					fpublish: checke,
-					//回复人
-					freplyPesron: localStorage.getItem('ms_userId'),
-					//用户ID
-					userId: localStorage.getItem('ms_userId')
-				}
+				var backCon = {}
+				backCon.fpublish = this.checked == undefined || this.checked == false ? 0 : 1
+				backCon.fcreator = localStorage.getItem('ms_userId')
+				backCon.faudit = this.context.foid
 				if(this.valueName.indexOf(":") == -1) {
 					//回复信息
-					con.freplyContent = this.valueName
+					backCon.freplycontent = this.valueName
 					//被回复人
-					con.freplyedPesron = this.rowChild.handlerId
+					backCon.freplyedpesron = this.context.staffId
 				} else {
 					//回复信息
-					con.freplyContent = this.valueName.substring(this.valueName.indexOf(":"))
+					backCon.freplycontent = this.valueName.substring(this.valueName.indexOf(":"))
 					//被回复人
-					con.freplyedPesron = this.valueItem.id
+					backCon.freplyedpesron = this.valueItem.id
 				}
-				this.$api.myDesk.saveAuditReplyInfo({
-					jsonStr: JSON.stringify(con)
-				}).then(data => {
-					console.log(data)
-					this.$emit("showClose")
+				this.$api.myDesk.addAuditReply(backCon).then(data => {
+					this.$parent.getContext()
 				})
 
 			}

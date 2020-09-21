@@ -7,12 +7,10 @@
 <script>
 	import selectWorkItems from '../../views/collaborative-office/components/select-work-items';
 	import addWorkItem from '../../views/collaborative-office/components/add-work-items';
-	import seeWorkItem from '../../views/collaborative-office/components/see-work-items';
 	export default {
 		components: {
 			selectWorkItems,
-			addWorkItem,
-			seeWorkItem
+			addWorkItem
 		},
 		data() {
 			return {

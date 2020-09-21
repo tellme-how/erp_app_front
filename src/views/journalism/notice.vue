@@ -18,7 +18,7 @@
 		</van-row>
 		<van-pull-refresh v-model="isLoading" @refresh="list=[];formListAll.page='1';getAll();">
 			<van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="toMore">
-				<div style="margin: 10px;" v-for="(item,key) in list">
+				<div style="margin: 10px;" v-for="(item,key) in list" @click="toDo(item)">
 					<van-row>
 						<van-row class="noticetitle">
 							{{item.fname}}
@@ -52,13 +52,13 @@
 					size: 20,
 					fpid: "",
 					fdocstatus: "3",
-					fuserid : localStorage.getItem('ms_userId')
+					fuserid: localStorage.getItem('ms_userId')
 				},
 				formListAll: {
 					page: 1,
 					size: 20,
 					fdocstatus: "3",
-					fuserid : localStorage.getItem('ms_userId')
+					fuserid: localStorage.getItem('ms_userId')
 				},
 				list: [],
 				loading: false,
@@ -69,28 +69,48 @@
 				rowNow: {}
 			};
 		},
+		beforeRouteLeave(to, from, next) {
+			if(typeof(this.$route.params.moreList) != "undefined" && this.$route.params.moreList.length != 0) {
+				sessionStorage.setItem("moreList", JSON.stringify(this.$route.params.moreList));
+			}
+			next()
+		},
 		created() {
+			var moreList = this.$route.params.moreList
 			if(this.$route.params.id) {
 				this.showFig = false
 				this.optionValue = this.$route.params.id
 				this.rowNow = this.$route.params.rowNow
 				this.$store.commit("titleShow", this.$route.params.rowNow.text)
 			} else {
+				if(JSON.parse(sessionStorage.getItem("moreList"))) {
+					moreList = JSON.parse(sessionStorage.getItem("moreList"))
+				} else {
+					moreList = this.$route.params.moreList
+				}
 				this.showFig = true
-				this.optionValue = this.$route.params.moreList[0].value
-				this.$store.commit("titleShow", this.$route.params.moreList[0].text)
+				this.optionValue = moreList[0].value
+				this.$store.commit("titleShow", moreList[0].text)
 			}
-			this.option = this.$route.params.moreList
+			this.option = moreList
 			this.$store.commit("tabbarShow", true)
 			this.onLoad()
 		},
 		methods: {
+			toDo(row) {
+				this.$router.push({
+					name: 'noticeSee',
+					params: {
+						foid: row.foid
+					}
+				})
+			},
 			toChangeRight(aaa) {
 				this.formListAll = {
 					page: 1,
 					size: 20,
 					fdocstatus: "3",
-					fuserid : localStorage.getItem('ms_userId')
+					fuserid: localStorage.getItem('ms_userId')
 				}
 				this.list = []
 				this.onLoad(1)

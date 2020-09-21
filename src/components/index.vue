@@ -58,6 +58,7 @@
 			this.$store.commit("titleShow", "工作助理")
 			//获取工作事项相关参数
 			this.getContext();
+			console.log(this.moreList)
 		},
 		methods: {
 			/*
@@ -168,6 +169,7 @@
 					if(i == list.length - 1 && state) {
 						this.show = true
 						this.moreList = this.moreListOther
+						console.log(this.moreList)
 					}
 				}
 

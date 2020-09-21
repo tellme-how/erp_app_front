@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<formAndTable v-if="showNow" :files="context.files" dis="1" showAdd="2" ref="child" :form-data="conData"></formAndTable>
+		<formAndTable v-if="showNow" :files="context.files" :dis="valueState == 1 ? a : b" showAdd="2" ref="child" :form-data="conData"></formAndTable>
 	</div>
 </template>
 
@@ -11,10 +11,13 @@
 			formAndTable
 		},
 		props: {
-			contextOther: Object
+			contextOther: Object,
+			valueState: Number
 		},
 		data() {
 			return {
+				a:"3",
+				b:"1",
 				showNow :false,
 				context: {},
 				UserId: "",
@@ -328,7 +331,7 @@
 							}
 							item.browseBoxList = list
 							*/
-							let ComData = this.maketree(list, '公司');
+							let ComData=this.maketree(list,'公司');
 							item.browseBoxList = ComData;
 							//部门
 						} else if(item.toSelect.id == 2) {
@@ -342,11 +345,11 @@
 							})
 							item.browseBoxList = list
 							*/
-							let ZhiwuData = this.maketree(list, '职位');
-							item.browseBoxList = ZhiwuData
+							let ZhiwuData=this.maketree(list,'职位');
+							item.browseBoxList = ZhiwuData[0].children
 							//职位（无需删除，保留原数据）
 						} else if(item.toSelect.id == 3) {
-							item.browseBoxList = list
+							item.browseBoxList = list[0].children
 						}
 						return "browseBox"
 						break;

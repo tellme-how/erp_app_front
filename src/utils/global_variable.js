@@ -21,8 +21,15 @@ const editorOption = {
 		]
 	}
 }
+const editorOptionNull = {
+	placeholder: '请输入内容',
+	modules: {
+		toolbar: null
+	}
+}
 export default {
 	htmlUrl,
 	//富文本
 	editorOption,
+	editorOptionNull,
 }

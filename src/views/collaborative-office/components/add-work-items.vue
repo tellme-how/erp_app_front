@@ -218,10 +218,12 @@
 							var right = item.parameter.substring(index + 1)
 							//两个字段都要添加属性parameterList，里面存储需要计算的字段名和需要显示的字段名child
 							if(left == itemChild.field || right == itemChild.field) {
-								itemChild.parameterList = {}
-								itemChild.parameterList.left = left
-								itemChild.parameterList.right = right
-								itemChild.parameterList.child = item.field
+								var a = {
+									left: left,
+									right: right,
+									child: item.field
+								}
+								itemChild.parameterList.push(a)
 							}
 						}
 						//发现被添加服务的字段后，绑定双方
