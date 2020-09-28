@@ -3,7 +3,7 @@
 		<van-row style="background: #C0C0C0;">
 			<van-col span="6">
 				<van-dropdown-menu>
-					<van-dropdown-item @change="toChange" v-model="value" :options="contextListA" />
+					<van-dropdown-item v-model="optionValue" :options="option" @change="toChangeRight" />
 				</van-dropdown-menu>
 			</van-col>
 			<van-col span="12">
@@ -12,7 +12,7 @@
 			</van-col>
 			<van-col span="6">
 				<van-dropdown-menu>
-					<van-dropdown-item v-model="optionValue" :options="option" @change="toChangeRight" />
+					<van-dropdown-item @change="toChange" v-model="value" :options="contextListA" />
 				</van-dropdown-menu>
 			</van-col>
 		</van-row>
@@ -52,12 +52,16 @@
 					size: 20,
 					fpid: "",
 					fdocstatus: "3",
+					from: "1",
+					roleIdSet: localStorage.getItem('ms_roles').split(','),
 					fuserid: localStorage.getItem('ms_userId')
 				},
 				formListAll: {
 					page: 1,
 					size: 20,
 					fdocstatus: "3",
+					from: "1",
+					roleIdSet: localStorage.getItem('ms_roles').split(','),
 					fuserid: localStorage.getItem('ms_userId')
 				},
 				list: [],
@@ -81,7 +85,7 @@
 				this.showFig = false
 				this.optionValue = this.$route.params.id
 				this.rowNow = this.$route.params.rowNow
-				this.$store.commit("titleShow", this.$route.params.rowNow.text)
+				this.$store.commit("titleShow", '新闻资讯')
 			} else {
 				if(JSON.parse(sessionStorage.getItem("moreList"))) {
 					moreList = JSON.parse(sessionStorage.getItem("moreList"))
@@ -110,6 +114,8 @@
 					page: 1,
 					size: 20,
 					fdocstatus: "3",
+					from: "1",
+					roleIdSet: localStorage.getItem('ms_roles').split(','),
 					fuserid: localStorage.getItem('ms_userId')
 				}
 				this.list = []
@@ -289,5 +295,9 @@
 	
 	/deep/.van-dropdown-menu__bar {
 		box-shadow: 0 0px 0px rgba(100, 101, 102, .12)!important;
+	}
+	
+	/deep/.van-dropdown-menu__title::after {
+		right: 3px!important
 	}
 </style>

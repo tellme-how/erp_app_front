@@ -1,8 +1,8 @@
 <template>
 	<div>
 		<div>
-			<van-swipe style="border-radius:30px;margin:10px;height: 20vh;" class="my-swipe" :autoplay="3000" indicator-color="white">
-				<van-swipe-item v-for="(item,index) in 20"  :key="index">
+			<van-swipe style="border-radius:15px;margin:10px;height: 20vh;" class="my-swipe" :autoplay="3000" indicator-color="white">
+				<van-swipe-item v-for="(item,index) in 3" :key="index">
 					<van-image width="100%" height="100%" fit="fill" :src="$GLOBAL.htmlUrl + '/壁纸/'+item+'.jpg'" />
 				</van-swipe-item>
 			</van-swipe>
@@ -14,22 +14,33 @@
 			<van-cell v-for="(item,index) in moreList" :key="index">
 				<van-row>
 					<van-col style="font-weight: bold;" span="20">
-						<el-divider direction="vertical"></el-divider>{{item.text}}</van-col>
+						<el-divider direction="vertical"></el-divider>{{item.text | showName}}</van-col>
 					<van-col @click="toMore(item)" style="text-align: right;font-weight: bold;" span="4">more ></van-col>
 				</van-row>
 				<van-divider />
-				<van-row style="margin-top: 3px;" v-for="val in item.children">
-					<van-col style="padding-left: 10px;" span="14">{{val.fname}}</van-col>
+				<van-row @click="toSee(val)" style="margin-top: 3px;" v-for="(val,index1) in item.children" :key="index1">
+					<van-col :class="val.fisread == 1 ? 'aaa':'bbb'" span="14">{{val.fname | showName}}<span v-if="val.fisread == 0" class="li-after "></span></van-col>
 					<van-col span="10" style="text-align: right;">{{flastupdtimeShow(val.flastupdtime)}}</van-col>
 				</van-row>
 			</van-cell>
 		</el-card>
-
+		<!--<van-row>
+			没有更多了
+		</van-row>-->
 	</div>
 </template>
 
 <script>
 	export default {
+		filters: {
+			showName(status) {
+				if(status.length > 20) {
+					return status.slice(0, 20) + "..."
+				} else {
+					return status
+				}
+			}
+		},
 		data() {
 			return {
 				list: [{
@@ -54,13 +65,43 @@
 			};
 		},
 		created() {
-			this.getMoreList()
+			//			this.getMoreList()
 			this.$store.commit("titleShow", "工作助理")
+			this.$store.commit("tabbarShow", true)
 			//获取工作事项相关参数
 			this.getContext();
-			console.log(this.moreList)
+			this.getNotice()
 		},
 		methods: {
+			getNotice() {
+				this.$api.myDesk.getDocumentCategoryOrgArchForPhone({
+					fdocstatus: 3,
+					from: 1,
+					fuserid: localStorage.getItem('ms_userId'),
+					page: 1,
+					roleIdSet: localStorage.getItem('ms_roles').split(','),
+					size: 5,
+				}).then(data => {
+					data.data.data.forEach(item => {
+						var a = {
+							text: item.fname,
+							value: item.foid,
+							children: item.manageResVos,
+							listChildren: item.categoryResVos
+						}
+						this.moreList.push(a)
+					})
+					this.show = true
+				})
+			},
+			toSee(row) {
+				this.$router.push({
+					name: 'noticeSee',
+					params: {
+						foid: row.foid
+					}
+				})
+			},
 			/*
 			 * 孟鹏飞 2020-08-06
 			 *
@@ -112,6 +153,9 @@
 			},
 			toName(row) {
 				if(this.show) {
+					if(row.url == 'notice') {
+						this.getNotice()
+					}
 					this.$router.push({
 						name: row.url,
 						params: {
@@ -133,58 +177,36 @@
 			flastupdtimeShow(val) {
 				return this.conversionTime2(val)
 			},
-			getMoreList() {
-				this.$api.myDesk.getDocumentCategoryOrgArch({
-					isportalshow: 1
-				}).then(data => {
-					this.getMore(eval("(" + data.data.data + ")"))
-				})
-			},
-			async getMore(list) {
-				this.moreList = []
-				var state = false
-				for(var i = 0; i < list.length; i++) {
-					var conNow = await this.$api.myDesk.findDocumentManageByPage({
-						fpid: list[i].foid,
-						page: 1,
-						size: 5,
-						fdocstatus: 3,
-						fuserid : localStorage.getItem('ms_userId')
-					}).then(data => {
-						state = true
-						var rows = []
-						if(data.data.code == 0){
-							rows = data.data.data.rows
-						}
-						return new Promise(resolve => {
-							resolve({
-								text: list[i].fname,
-								value: list[i].foid,
-								children: rows,
-								listChildren: list[i].children
-							})
-						});
-					})
-					this.moreListOther.push(conNow)
-					if(i == list.length - 1 && state) {
-						this.show = true
-						this.moreList = this.moreListOther
-						console.log(this.moreList)
-					}
-				}
-
-			}
 		}
 	};
 </script>
 <style scoped="scoped">
+	.li-after {
+		display: inline-block;
+		margin: 0 0 3px 4px;
+		width: 4px;
+		height: 4px;
+		background-color: red;
+		border-radius: 4px;
+	}
+	
+	.aaa {
+		padding-left: 10px;
+	}
+	
+	.bbb {
+		padding-left: 10px;
+		color: red;
+	}
+	
 	/deep/.van-grid-item__content--center {
 		background: #F5F5F5FF;
+		padding: 8px 8px;
 	}
 	
 	/deep/.van-icon__image {
-		width: 3em;
-		height: 3em;
+		width: 2em!important;
+		height: 2em!important;
 	}
 	
 	/deep/.el-divider--vertical {

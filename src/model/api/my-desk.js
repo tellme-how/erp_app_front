@@ -2,6 +2,25 @@ import httpReqest from '../../utils/https';
 import QS from 'qs';
 
 const myDesk = {
+	getDocumentCategoryOrgArchForPhone(params) {
+		return httpReqest.post('/api/interfaces/documentcategory/getDocumentCategoryOrgArchForPhone', params);
+	},
+	//加批
+	addSign(params) {
+		return httpReqest.post('/api/wfInterfaces/workFlow/addSign', params);
+	},
+	//委托
+	transmit(params) {
+		return httpReqest.post('/api/wfInterfaces/workFlow/transmit', params);
+	},
+	//加签
+	SeTaddTag(params) {
+		return httpReqest.post('/api/wfInterfaces/workFlow/addTag', params);
+	},
+	//待办事项-转发
+	setencyclic(params) {
+		return httpReqest.post('/api/wfInterfaces/workFlow/encyclic', params);
+	},
 	//新增审批回复信息
 	addAuditReply(params) {
 		return httpReqest.post('/api/wfInterfaces/workFlow/processMonitor/addAuditReply', params);

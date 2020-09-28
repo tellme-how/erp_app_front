@@ -81,23 +81,24 @@
 				this.$api.myDesk.getAuditAndReplyMsg({
 					foid: this.contextOther.foid
 				}).then(res => {
-					console.log(res)
 					this.context = res.data.data
+					this.widthTable = 40 + 40 * this.context.length
 					this.linesList.forEach(item => {
 						item.list.push(item.name)
-						this.context.forEach(val => {
-							for(var key in val) {
-								if(key == item.value) {
-									item.list.push(val[key])
+						if(!this.noNull(this.context)) {
+							this.context.forEach(val => {
+								for(var key in val) {
+									if(key == item.value) {
+										item.list.push(val[key])
+									}
 								}
+							})
+							if(item.name == "回复") {
+								item.list.push("展开")
 							}
-						})
-						if(item.name == "回复") {
-							item.list.push("展开")
 						}
 					})
 				})
-				this.widthTable = 80
 			},
 			showClose() {
 				this.show = false;

@@ -2,16 +2,11 @@
 	<div>
 		<van-row style="background: #FFFFFF;">
 			<van-col span="10">
-				<!--<van-image width="35vw" height="20vh" src="https://img.yzcdn.cn/vant/cat.jpeg" />-->
-				<van-swipe style="border-radius:30px;margin:10px;height: 20vh;" class="my-swipe" :autoplay="3000" indicator-color="white">
-					<van-swipe-item v-for="(item,index) in list" :key="index">
-						<van-image width="35vw" height="20vh" fit="fill" :src="$GLOBAL.htmlUrl + item+'.jpg'" />
-					</van-swipe-item>
-				</van-swipe>
+				<van-image style="border-radius:30px;margin:10px;height: 20vh;width: 35vw;" width="35vw" height="20vh" fit="fill" src="https://b.yzcdn.cn/vant/icon-demo-1126.png" />
 			</van-col>
 			<van-col span="14">
 				<van-row class="rowClassA">
-					{{userName}}
+					{{userName | showUserName}}
 				</van-row>
 				<van-row class="rowClassB">
 					{{company}}
@@ -33,6 +28,15 @@
 <script>
 	import { Dialog } from 'vant';
 	export default {
+		filters: {
+			showUserName(status) {
+				if(status.length > 10){
+					return status.slice(0,10) + "..."
+				}else{
+					return status
+				}
+			}
+		},
 		data() {
 			return {
 				userName: localStorage.getItem('ms_username'),
@@ -40,10 +44,10 @@
 				department: localStorage.getItem('ms_userDepartName'),
 				ffirmpositionname: localStorage.getItem('ms_ffirmpositionName'),
 				list: ["龙", "颖", "健", "曲"]
-			};
+			}
 		},
 		created() {
-			this.$store.commit("titleShow", "个人设置")
+			this.$store.commit("titleShow", "个人中心")
 			this.$store.commit("tabbarShow", true)
 		},
 		methods: {

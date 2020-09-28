@@ -85,7 +85,7 @@
 				} else if(row.timeOutStatus == '1') {
 					return "ddd";
 				}
-				return "";
+				return "fff";
 			},
 			toChange(val) {
 				this.formData = {
@@ -101,8 +101,11 @@
 				return row.fstatus + " " + row.fsrcCompany + " " + row.factivityName
 			},
 			toUrl(row) {
+				if(row.fsubject.indexOf('退回') != -1 && row.classId.indexOf('OA') == -1) {
+					this.goOut("此类单据请至系统中进行编辑")
+					return
+				}
 				//审批信息
-
 				if(row.classId.indexOf('OA') != -1) {
 					row.classId = 'oaRouter'
 					this.$api.myDesk.getWorkItemTypeModel({
@@ -137,7 +140,8 @@
 					this.$router.push({
 						name: "toDoListDetails",
 						params: {
-							row: row
+							row: row,
+							valueState: this.value
 						}
 					})
 				}
@@ -226,8 +230,8 @@
 	.ddd {
 		height: auto;
 		padding: 1vh;
-		background: #ffcf91;
-		border-left: 20px solid #fff4e5;
+		background: #fff4e5;
+		border-left: 20px solid #ffcf91;
 	}
 	
 	.eee {
@@ -235,5 +239,12 @@
 		padding: 1vh;
 		background: brown;
 		border-left: 20px solid #fff4e5;
+	}
+	
+	.fff {
+		height: auto;
+		padding: 1vh;
+		background: #fff;
+		border-left: 20px solid #fff;
 	}
 </style>

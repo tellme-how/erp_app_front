@@ -1,14 +1,17 @@
 <template>
-	<van-popup :close-on-click-overlay="showClose" @click-overlay="closeVan" v-model:show="show" position="bottom" :style="{ height: '30%' }">
-		<van-cell v-for="(item,key) in replyList" :key="key" value-class="valueClass">
-			<template #default>
-				<span @click="toReply(item,1)" class="spanClss">{{item.staffName}}</span>
-				<span> 回复 </span>
-				<span @click="toReply(item,2)" class="spanClss">{{item.replyedName}} : </span>
-				<span>{{item.replyContent}}</span>
-			</template>
-		</van-cell>
-		<van-row align="bottom">
+	<van-popup :close-on-click-overlay="showClose" @click-overlay="closeVan" v-model:show="show" position="bottom" :style="{ height: '60%' }">
+		<div style="min-height: 90%;">
+			<van-cell v-for="(item,key) in replyList" :key="key" value-class="valueClass">
+				<template #default>
+					<span @click="toReply(item,1)" class="spanClss">{{item.staffName}}</span>
+					<span> 回复 </span>
+					<span @click="toReply(item,2)" class="spanClss">{{item.replyedName}} : </span>
+					<span>{{item.replyContent}}</span>
+				</template>
+			</van-cell>
+		</div>
+
+		<van-row align="bottom" style="height: 10%;">
 			<van-col span="7">
 				<van-cell>
 					<template #default>
@@ -43,13 +46,14 @@
 			};
 		},
 		created() {
-			this.context.auditReplyMsg.forEach(item => {
-				this.getReply(item)
-			})
-			console.log(this.replyList)
-			for(var i = this.replyList.length - 1 ; i >= 0 ; i -- ){
-				console.log(this.replyList[i].fpublish)
+			if(!this.noNull(this.context.auditReplyMsg)) {
+				this.context.auditReplyMsg.forEach(item => {
+					this.getReply(item)
+				})
 			}
+			//			for(var i = this.replyList.length - 1; i >= 0; i--) {
+			//				console.log(this.replyList[i].fpublish)
+			//			}
 			//			this.$api.myDesk.selectAuditReplyInfo({
 			//				faudit: this.rowChild.foid,
 			//				userId: localStorage.getItem('ms_userId')

@@ -27,7 +27,7 @@
 					<!-- 下拉框 -->
 					<van-field :required="item.required" input-align="center" v-if="item.fieldTypeName == 'select'" v-model="ruleForm[item.field]" clickable readonly :label="item.fieldName" :placeholder="'请选择'+item.fieldName" :rules="rules[item.field]">
 						<div slot="input" style="width: 100%;">
-							<van-dropdown-menu >
+							<van-dropdown-menu>
 								<van-dropdown-item :disabled="dis == 1" @open="showDropdown(item)" @change="updDropdown(item.field)" v-model="ruleForm[item.field]" :options="optionsShow(item)" />
 							</van-dropdown-menu>
 						</div>
@@ -250,7 +250,9 @@
 							this.ruleForm[item.field] = 1
 						}
 					})
-					this.get_NameShow(2)
+					if(this.dis != 2) {
+						this.get_NameShow(2)
+					}
 					if(this.dis == 3) {
 						this.$set(this.ruleForm, "oprStatus", 2)
 					}
@@ -659,31 +661,32 @@
 				})
 			},
 			//计算时间差值
-			getDate(row) {
+			getDate(data) {
+				this.ruleForm[this.showCalendarValue.field] = this.conversionTime2(data)
+				var row = this.showCalendarValue
 				//change写在所有的时间控件中，首先判断当前点击控件是否需要计算差值，且双方必须都有值
 				if(row.parameterList.length != 0) {
 					//同上（太长了，不想写一起，屏幕太小显示不下）noNull是非空的公共方法，详见base.js
 					row.parameterList.forEach(item => {
 						if(!this.noNull(this.ruleForm[item.left]) && !this.noNull(this.ruleForm[item.right])) {
 							var state = false
-							this.formData.rowList.forEach((item1, index) => {
-								item1.colList.forEach((val, index2) => {
-									//确认当前控件里面有绑定的child数据（就是要接收差值的字段）并且服务code为“计算差值”
-									if(val.field == item.child && val.serviceNow.fcode == "service05") {
-										state = true
+							this.formData.rowList.forEach((val, index) => {
+								//确认当前控件里面有绑定的child数据（就是要接收差值的字段）并且服务code为“计算差值”
+								if(val.field == item.child && val.serviceNow.fcode == "service05") {
+									state = true
+								}
+								//循环到最后，判断state状态，如果是true，代表满足条件，那么就需要改变child的值
+								if(index == this.formData.rowList.length - 1) {
+									if(state) {
+										//DateDiff 方法在下面，计算日期差值方法
+										this.$set(this.ruleForm, item.child, this.DateDiff(this.ruleForm[item.left], this.ruleForm[item.right]) +1)
 									}
-									//循环到最后，判断state状态，如果是true，代表满足条件，那么就需要改变child的值
-									if(index == this.formData.rowList.length - 1 && index2 == item1.colList.length - 1) {
-										if(state) {
-											//DateDiff 方法在下面，计算日期差值方法
-											this.$set(this.ruleForm, item.child, this.DateDiff(this.ruleForm[item.left], this.ruleForm[item.right]))
-										}
-									}
-								})
+								}
 							})
 						}
 					})
 				}
+				this.showCalendar = false
 			},
 			//计算日期差值
 			DateDiff(sDate1, sDate2) {

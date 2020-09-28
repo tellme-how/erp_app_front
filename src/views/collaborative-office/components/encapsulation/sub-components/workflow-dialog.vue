@@ -40,7 +40,6 @@
 
 <style scoped>
 	.treeDivClass {
-		height: 600px;
 		overflow: auto;
 	}
 

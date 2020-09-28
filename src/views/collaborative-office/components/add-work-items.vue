@@ -208,7 +208,6 @@
 					/*
 					 * 时间控件计算差值
 					 */
-					item.parameterList = []
 					rowConList.forEach(itemChild => {
 						//通过‘-’符号确定需要计算的两边
 						if(item.serviceId == 5 && !this.noNull(item.parameter) && item.parameter.indexOf('-') != -1) {
@@ -223,11 +222,17 @@
 									right: right,
 									child: item.field
 								}
+								if(typeof(itemChild.parameterList) == "undefined") {
+									itemChild.parameterList = []
+								}
 								itemChild.parameterList.push(a)
 							}
 						}
 						//发现被添加服务的字段后，绑定双方
 						if(itemChild.parameter == item.field) {
+							if(typeof(item.parameterList) == "undefined") {
+								item.parameterList = []
+							}
 							item.parameterList.push(itemChild.field)
 						}
 

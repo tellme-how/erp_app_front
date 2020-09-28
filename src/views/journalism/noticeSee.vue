@@ -22,7 +22,7 @@
 			<quill-editor style="width: 100%;" disabled v-model="context.fcontent" ref="myQuillEditor" :options="editorOption"></quill-editor>
 		</van-cell-group>
 		<van-cell-group v-for="(item,index) in fileList" :key="index">
-			<van-row style="height: 6vh;line-height: 6vh;" @click="aaa(item)">
+			<van-row style="height: auto;line-height: auto;text-align:center;padding: 10px;" @click="aaa(item)">
 				{{item.fileName}}
 			</van-row>
 		</van-cell-group>

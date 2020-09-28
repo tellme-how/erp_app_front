@@ -1,5 +1,5 @@
 <!--
-	临时任务派发
+	经济指标
 -->
 <template>
 	<div>
@@ -68,6 +68,7 @@
 			this.$api.myDesk.getEconomicIndicatorsDetail({
 				id: this.context.fsrcoId
 			}).then(data => {
+				console.log(data)
 				this.formContext = data.data.data
 				var lines = data.data.data.optionIndexLine
 				this.linesList.forEach(item => {

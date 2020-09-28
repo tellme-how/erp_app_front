@@ -2,7 +2,7 @@
 	<div>
 		<lineTable2 :dis="dis" :linesList="linesList"></lineTable2>
 		<van-popup v-model="showUp" position="right" :style="{ width: '100%' , height: '90%' }">
-			<formIcon v-if="showUp" ref="formDataChildren" :dis="2" showAdd='1' show="4" :form-data="formData">
+			<formIcon v-if="showUp" ref="formDataChildren" dis="2" showAdd='1' show="4" :form-data="formData">
 				<el-button @click="toSave">提交</el-button>
 			</formIcon>
 		</van-popup>
@@ -671,7 +671,6 @@
 
 <style>
 	.treeDivClass {
-		height: 300px;
 		overflow: auto;
 	}
 	

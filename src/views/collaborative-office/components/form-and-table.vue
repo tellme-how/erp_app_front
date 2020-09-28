@@ -232,7 +232,7 @@
 	
 	.formWrapper {
 		overflow-y: scroll;
-		margin-bottom: 7vh;
+		margin-bottom: 2vh;
 	}
 	
 	.children .van-cell {
