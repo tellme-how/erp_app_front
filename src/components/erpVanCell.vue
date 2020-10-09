@@ -10,6 +10,7 @@
 </template>
 <script>
 	export default {
+		
 		props: {
 			formContext: Object,
 			rowCell: Object

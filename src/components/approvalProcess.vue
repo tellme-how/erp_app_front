@@ -1,18 +1,22 @@
 <template>
 	<div>
-		<erpVanCellTitle title="审批详情">
+		<!--<erpVanCellTitle title="审批详情">
 			<van-button @click="showOne = !showOne" size="mini" plain type="primary">展开明细</van-button>
-		</erpVanCellTitle>
-		<div v-if="showOne" style="width:100%; overflow:scroll;">
-			<table :style="{ width : widthTable + '%' }" class="mailTable" cellspacing="0" cellpadding="0">
-				<tr v-for="(item,index) in linesList">
-					<td id="classTd" :class="[key == 0 ?'classZero':'']" v-for="(val,key) in item.list">
-						<van-button v-if="val == '展开'" @click="showPopup(key)" size="mini" plain type="primary">展开</van-button>
-						<span v-else>{{val | valShow(key)}}</span>
-					</td>
-				</tr>
-			</table>
-		</div>
+		</erpVanCellTitle>-->
+		<van-collapse v-model="activeNames">
+			<van-collapse-item title="审批详情" name="1">
+				<div style="width:100%; overflow:scroll;">
+					<table :style="{ width : widthTable + '%' }" class="mailTable" cellspacing="0" cellpadding="0">
+						<tr v-for="(item,index) in linesList">
+							<td id="classTd" :class="[key == 0 ?'classZero':'']" v-for="(val,key) in item.list">
+								<van-button v-if="val == '展开'" @click="showPopup(key)" size="mini" plain type="primary">展开</van-button>
+								<span v-else>{{val | valShow(key)}}</span>
+							</td>
+						</tr>
+					</table>
+				</div>
+			</van-collapse-item>
+		</van-collapse>
 		<vanPopupReply @showClose='showClose' :context="auditReplyMsg" v-if="show" :show="show"></vanPopupReply>
 	</div>
 </template>
@@ -32,6 +36,7 @@
 		},
 		data() {
 			return {
+				activeNames:[],
 				auditReplyMsg: [],
 				show: false,
 				showOne: false,
@@ -41,6 +46,7 @@
 			};
 		},
 		created() {
+			console.log(this.contextOther)
 			this.getContext()
 		},
 		methods: {
@@ -79,8 +85,11 @@
 					list: []
 				}]
 				this.$api.myDesk.getAuditAndReplyMsg({
-					foid: this.contextOther.foid
+					foid: this.contextOther.foid,
+					loadUser: localStorage.getItem("ms_userId"),
+					module: '1'
 				}).then(res => {
+					console.log(res)
 					this.context = res.data.data
 					this.widthTable = 40 + 40 * this.context.length
 					this.linesList.forEach(item => {
@@ -112,15 +121,5 @@
 </script>
 
 <style scoped>
-	.valueClass {
-		text-align: left;
-	}
 	
-	/deep/.van-cell__title {
-		max-width: 30%;
-	}
-	
-	/deep/.van-cell__value {
-		color: #000000;
-	}
 </style>

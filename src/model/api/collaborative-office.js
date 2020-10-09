@@ -73,7 +73,7 @@ const collaborativeOffice = {
 	},
 	// 查询公司
 	getCompanyData() {
-		return httpReqest.get('/api/interfaces/organization/getCompanyData');
+		return httpReqest.get('/api/uaa/findRoleCompanyDataVoByMactivity?fmactivity=111712011447700301');
 	},
 	// 修改工作事项模版主表分类
 	updateWorkItemTypeModel(params) {

@@ -2,6 +2,21 @@ import httpReqest from '../../utils/https';
 import QS from 'qs';
 
 const myDesk = {
+	//公司部门人员树
+	findCompanyDeptStaffInfoByOrgUnitIdFromRedis(params) {
+		var valueS = '?';
+		for(var item in params) {
+			valueS += item + "=" + params[item] + "&";
+		}
+		if(valueS.slice(valueS.length - 1, valueS.length) === "&") {
+			valueS = valueS.slice(0, valueS.length - 1);
+		}
+		return httpReqest.get('/api/wfInterfaces/workFlow/findCompanyDeptStaffInfoByOrgUnitIdFromRedis' + valueS);
+	},
+	// 用户-列表查询
+	findUserBypage(params) {
+		return httpReqest.post('/api/interfaces/userManage/findUserBypage', params);
+	},
 	getDocumentCategoryOrgArchForPhone(params) {
 		return httpReqest.post('/api/interfaces/documentcategory/getDocumentCategoryOrgArchForPhone', params);
 	},

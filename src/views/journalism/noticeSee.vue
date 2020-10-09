@@ -19,7 +19,8 @@
 			</van-row>
 		</van-cell-group>
 		<van-cell-group>
-			<quill-editor style="width: 100%;" disabled v-model="context.fcontent" ref="myQuillEditor" :options="editorOption"></quill-editor>
+			<!--<quill-editor style="width: 100%;" disabled v-model="context.fcontent" ref="myQuillEditor" :options="editorOption"></quill-editor>-->
+			<div v-html="context.fcontent"></div>
 		</van-cell-group>
 		<van-cell-group v-for="(item,index) in fileList" :key="index">
 			<van-row style="height: auto;line-height: auto;text-align:center;padding: 10px;" @click="aaa(item)">

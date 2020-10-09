@@ -3,11 +3,8 @@
 		<van-form ref="ruleForm"></van-form>
 		<formAndTable v-if="showFormAndTable" :files="files" dis="2" showAdd="1" ref="child" :form-data="conData"></formAndTable>
 		<div class="nextBtn">
-			<!--<van-button style="float: left;margin-left: 20px;" @click="selectMainTable" type="primary">选择模板</van-button>-->
 			<van-button style="float: right;margin-right: 20px;" @click="submitForm(2)" type="primary">提交</van-button>
 		</div>
-		<!--<van-popup v-model="showMainTable" position="top" style="height: 90%;width: 100%;">
-		</van-popup>-->
 		<!--公司-->
 		<van-popup v-model="showPicker" position="bottom">
 			<van-picker show-toolbar :columns="CompanyData" value-key="name" @confirm="onConfirm" @cancel="showPicker = false" />

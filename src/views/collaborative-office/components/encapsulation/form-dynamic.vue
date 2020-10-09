@@ -28,7 +28,7 @@
 					<van-field :required="item.required" input-align="center" v-if="item.fieldTypeName == 'select'" v-model="ruleForm[item.field]" clickable readonly :label="item.fieldName" :placeholder="'请选择'+item.fieldName" :rules="rules[item.field]">
 						<div slot="input" style="width: 100%;">
 							<van-dropdown-menu>
-								<van-dropdown-item :disabled="dis == 1" @open="showDropdown(item)" @change="updDropdown(item.field)" v-model="ruleForm[item.field]" :options="optionsShow(item)" />
+								<van-dropdown-item :disabled="dis == 1" @open="showDropdown(item)" @change="updDropdown(item.field)" v-model="ruleForm[item.field]" :options="optionsShow(item)"></van-dropdown-item>
 							</van-dropdown-menu>
 						</div>
 					</van-field>
@@ -51,12 +51,18 @@
 		<!--弹出框-->
 		<van-popup v-model="showVanPopup" position="right" :style="{ width: '100%' , height: '100%' }">
 			<formIconComponents v-if="showVanPopup" ref="child" :showFig="showCon" :dataCon="dataCon">
-				<van-button native-type="button" @click="showVanPopup = false" size="small" type="primary">返回</van-button>
-				<van-button native-type="button" @click="getDialogVisible" size="small" type="primary">提交</van-button>
+				<div slot="title" style="text-align: center;margin: 1vh 0px;height: 4vh;line-height: 4vh;">
+					<van-button icon="arrow-left" style='float: left;margin-left: 1vw;width: 15vw;' native-type="button" @click="showVanPopup = false" size="small" type="primary"></van-button>
+					{{titleShow}}
+					<van-button style='float: right;margin-right: 1vw;width: 15vw;' native-type="button" @click="getDialogVisible" size="small" type="primary">提交</van-button>
+				</div>
 			</formIconComponents>
 		</van-popup>
 		<!--日期-->
-		<van-calendar v-model="showCalendar" @confirm="getDate" />
+		<!--<van-calendar v-model="showCalendar" @confirm="getDate" />-->
+		<van-popup v-model="showCalendar" position="bottom">
+			<van-datetime-picker @cancel="showCalendar = false" @confirm="getDate" type="date" title="选择年月日" />
+		</van-popup>
 		<!--时间-->
 		<van-popup v-model="showPickerTime" position="bottom">
 			<van-datetime-picker @cancel="showPickerTime = false" @confirm="onConfirmTime" type="datetime" title="日期时间" />
@@ -679,7 +685,7 @@
 								if(index == this.formData.rowList.length - 1) {
 									if(state) {
 										//DateDiff 方法在下面，计算日期差值方法
-										this.$set(this.ruleForm, item.child, this.DateDiff(this.ruleForm[item.left], this.ruleForm[item.right]) +1)
+										this.$set(this.ruleForm, item.child, this.DateDiff(this.ruleForm[item.left], this.ruleForm[item.right]) + 1)
 									}
 								}
 							})
@@ -726,6 +732,10 @@
 			//除了工作流其他弹出框确定
 			getDialogVisible() {
 				var dataBack = this.$refs.child.getDataBack()
+				if(dataBack.length == 0) {
+					this.goOut("请选择数据")
+					return
+				}
 				if(!this.dialogVisibleCon.choice) {
 					if(dataBack.length > 1) {
 						this.goOut("请单选")
@@ -952,6 +962,18 @@
 </script>
 
 <style scoped>
+	/deep/.van-field__error-message {
+		word-break: break-all;
+	}
+	
+	.nextBtnOther {
+		position: fixed;
+		bottom: 0;
+		height: 7vh;
+		line-height: 7vh;
+		width: 100%;
+	}
+	
 	/deep/.van-dropdown-menu__bar {
 		max-height: 4vh;
 		box-shadow: none;

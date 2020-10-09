@@ -17,7 +17,7 @@
 			</van-col>
 		</van-row>
 		<van-pull-refresh v-model="isLoading" @refresh="list=[];formListAll.page='1';getAll();">
-			<van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="toMore">
+			<van-list v-model="loading" :finished="finished" :finished-text="overList" @load="toMore">
 				<div style="margin: 10px;" v-for="(item,key) in list" @click="toDo(item)">
 					<van-row>
 						<van-row class="noticetitle">
@@ -41,6 +41,7 @@
 	export default {
 		data() {
 			return {
+				overList:"",
 				isLoading: false,
 				optionValue: "",
 				option: [],
@@ -75,8 +76,9 @@
 		},
 		beforeRouteLeave(to, from, next) {
 			if(typeof(this.$route.params.moreList) != "undefined" && this.$route.params.moreList.length != 0) {
-				sessionStorage.setItem("moreList", JSON.stringify(this.$route.params.moreList));
+				sessionStorage.setItem("moreList", JSON.stringify(this.option));
 			}
+			console.log(JSON.parse(sessionStorage.getItem("moreList")))
 			next()
 		},
 		created() {
@@ -185,6 +187,7 @@
 						this.loading = false
 						if(data.data.data.rows.length < 20) {
 							this.finished = true
+							this.overList = "总共"+ data.data.data.total +"条"
 						}
 						this.showState = false
 						this.isLoading = false
@@ -243,6 +246,7 @@
 						this.loading = false
 						if(data.data.data.rows.length < 20) {
 							this.finished = true
+							this.overList = "总共"+ data.data.data.total +"条"
 						}
 						this.showState = false
 					})

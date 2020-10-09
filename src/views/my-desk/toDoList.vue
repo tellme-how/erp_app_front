@@ -7,11 +7,11 @@
 				</van-dropdown-menu>
 			</van-col>
 			<van-col span="16">
-				<van-search @search="onSearch" input-align="center" v-model="searchValue" shape="round" background="#C0C0C0" placeholder="请输入搜索关键词" />
+				<van-search @search="onSearch" @clear="onSearchClear" input-align="center" v-model="searchValue" shape="round" background="#C0C0C0" placeholder="请输入搜索关键词" />
 			</van-col>
 		</van-row>
 		<van-pull-refresh v-model="isLoading" @refresh="beginOnLoad();">
-			<van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="onLoad" style="min-height: 80vh;">
+			<van-list :finished="finished" :finished-text="overList" @load="onLoad" style="min-height: 80vh;">
 				<div v-for="(item,key) in list" :key="key">
 					<van-row>
 						<van-col span="24">
@@ -41,7 +41,6 @@
 	export default {
 		data() {
 			return {
-				loading: false,
 				finished: false,
 				isLoading: false,
 				value: 1,
@@ -66,6 +65,7 @@
 				list: [],
 				searchValue: "",
 				showState: false,
+				overList: ""
 			};
 		},
 		created() {
@@ -76,18 +76,31 @@
 		methods: {
 			//根据状态改背景色
 			tableRowClassName(row) {
-				if(row.fstatus === "暂停") {
-					return "ccc";
-				} else if(row.fstatus === "已作废") {
-					return "eee";
-				} else if(row.fstatus === "已完结") {
+				if(row.fstatus === "已完结") {
 					return "bbb";
 				} else if(row.timeOutStatus == '1') {
 					return "ddd";
+				} else if((row.fsubject.substring(0, 3) == '退回：' && row.fcreator == localStorage.getItem("ms_userId")) || row.fcode == 'manpower') {
+					return 'ccc'
 				}
 				return "fff";
 			},
 			toChange(val) {
+				this.searchValue = ""
+				switch(val) {
+					case 1:
+						this.$store.commit("titleShow", "待办事项")
+						break;
+					case 2:
+						this.$store.commit("titleShow", "关注事项")
+						break;
+					case 3:
+						this.$store.commit("titleShow", "已办事项")
+						break;
+					case 4:
+						this.$store.commit("titleShow", "已发事项")
+						break;
+				}
 				this.formData = {
 					userId: localStorage.getItem('ms_userId'),
 					infosBeginNum: 1,
@@ -96,7 +109,26 @@
 				this.list = []
 				this.onLoad()
 			},
-			onSearch(val) {},
+			onSearch() {
+				this.formData = {
+					userId: localStorage.getItem('ms_userId'),
+					subject: this.searchValue,
+					infosBeginNum: 1,
+					infosEndNum: 20
+				}
+				this.list = []
+				this.onLoad()
+			},
+			onSearchClear() {
+				this.formData = {
+					userId: localStorage.getItem('ms_userId'),
+					subject: "",
+					infosBeginNum: 1,
+					infosEndNum: 20
+				}
+				this.list = []
+				this.onLoad()
+			},
 			labelShow(row) {
 				return row.fstatus + " " + row.fsrcCompany + " " + row.factivityName
 			},
@@ -179,12 +211,12 @@
 						this.formData.infosBeginNum += 20;
 						this.formData.infosEndNum += 20;
 						this.isLoading = false
-						this.loading = false
 						data.data.data.rows.forEach(item => {
 							this.list.push(item)
 						})
 						if(data.data.data.rows.length < 20) {
 							this.finished = true;
+							this.overList = "总共" + data.data.data.total + "条"
 						}
 						this.showState = false
 					})
@@ -232,13 +264,6 @@
 		padding: 1vh;
 		background: #fff4e5;
 		border-left: 20px solid #ffcf91;
-	}
-	
-	.eee {
-		height: auto;
-		padding: 1vh;
-		background: brown;
-		border-left: 20px solid #fff4e5;
 	}
 	
 	.fff {

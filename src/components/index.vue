@@ -69,6 +69,7 @@
 			this.$store.commit("titleShow", "工作助理")
 			this.$store.commit("tabbarShow", true)
 			//获取工作事项相关参数
+			this.getUser();
 			this.getContext();
 			this.getNotice()
 		},
@@ -102,6 +103,35 @@
 					}
 				})
 			},
+			getUser() {
+				this.$api.myDesk.getUserInfo().then(data => {
+					//账户ID
+					localStorage.setItem('ms_userId', data.data.principal.accountId);
+					//人员ID
+					localStorage.setItem('ms_staffId', data.data.principal.staffId);
+					//用户名称
+					localStorage.setItem('ms_username', data.data.principal.fullname);
+					//用户code
+					localStorage.setItem('ms_accountNo', data.data.principal.accountNo);
+					//部门ID
+					localStorage.setItem('ms_userDepartId', data.data.principal.deptmentId);
+					//部门名称
+					localStorage.setItem('ms_userDepartName', data.data.principal.deptmentName);
+					//公司ID
+					localStorage.setItem('ms_companyId', data.data.principal.companyId);
+					//公司名称
+					localStorage.setItem('ms_companyName', data.data.principal.companyName);
+					//该用户所拥有角色
+					localStorage.setItem('ms_roles', data.data.principal.roles);
+					//公司ID
+					localStorage.setItem('ms_companyId', data.data.principal.companyId);
+					//职位
+					localStorage.setItem('ms_ffirmpositionName', data.data.principal.ffirmpositionName);
+					this.$api.publicUrl.getCompanyData().then(data => {
+						localStorage.setItem('CompanyData', JSON.stringify(data.data.data.rows));
+					})
+				})
+			},
 			/*
 			 * 孟鹏飞 2020-08-06
 			 *
@@ -112,10 +142,6 @@
 				//全部枚举
 				this.$api.collaborativeOffice.findList({}).then(data => {
 					localStorage.setItem('selectList', JSON.stringify(data.data.data));
-				})
-				//最上端公司选择
-				this.$api.collaborativeOffice.getCompanyData().then(data => {
-					localStorage.setItem('CompanyData', JSON.stringify(data.data.data.rows));
 				})
 				//全部服务
 				this.$api.collaborativeOffice.findTServiceByParams({}).then(data => {

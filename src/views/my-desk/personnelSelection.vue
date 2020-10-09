@@ -13,19 +13,21 @@
 				<van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="onLoad">
 					<van-checkbox-group v-model="result">
 						<div style="margin: 5px;" v-for="(item,key) in list">
-							<van-checkbox @click="getCon(item)" shape="square" :name="item.toid">
+							<van-checkbox @click="getCon(item)" shape="square" :name="item.foid">
 								<van-row>
-									<van-col span="4">img</van-col>
-									<van-col span="20">
-										<van-row>
-											<van-col span="12">{{item.tname}}</van-col>
-											<van-col style="font-size: 14px;color: DarkGray;" span="12">{{item.ffirmpositionname}}</van-col>
-										</van-row>
-										<van-row>
-											<van-col style="font-size: 10px!important;color: DarkGray;" span="12">{{item.tcompanyname}}</van-col>
-											<van-col style="font-size: 10px;color: DarkGray;" span="12">{{item.tdepartmentname}}</van-col>
-										</van-row>
-									</van-col>
+									<!--<van-col span="4">
+										<van-icon style="height: 100%;width: 100%;" name="manager-o" />
+									</van-col>-->
+									<!--<van-col span="20">-->
+									<van-row>
+										<van-col span="12">{{item.fname}}</van-col>
+										<van-col style="font-size: 14px;color: DarkGray;" span="12">{{item.foid}}</van-col>
+									</van-row>
+									<van-row>
+										<van-col style="font-size: 10px!important;color: DarkGray;" span="12">{{item.fcompanyname}}</van-col>
+										<van-col style="font-size: 10px;color: DarkGray;" span="12">{{item.departmentname}}</van-col>
+									</van-row>
+									<!--</van-col>-->
 								</van-row>
 							</van-checkbox>
 							<van-divider />
@@ -40,27 +42,27 @@
 				<div class="sa"></div>
 			</div>
 			<div style="margin-top: 5vh;" v-if="!showDiv">
-				<van-search background="#C0C0C0" @clear="toGet" v-model="value2" show-action placeholder="请输入搜索关键词" @search="onSearch">
+				<van-search background="#C0C0C0" @clear="toGet(1)" v-model="value2" show-action placeholder="请输入搜索关键词" @search="onSearch1">
 					<template #action>
 						<van-button @click="onSearch1" size="small" type="info">搜索</van-button>
 					</template>
 				</van-search>
 				<van-list finished-text="没有更多了">
-					<draggable v-model="checkListShow" :options="{animation:500}">
+					<draggable v-model="showList" :options="{animation:500}">
 						<transition-group>
-							<div style="margin: 5px;" v-for="(item,val) in checkListShow" :key="val">
-								<van-row style="height: 8vh;">
-									<van-col style="height: 8vh;line-height: 8vh;" span="2">
-										<van-icon size="1.2em" name="close" @click="clearCheck(item)" />
+							<div style="margin: 5px;" v-for="(item,val) in showList" :key="val">
+								<van-row>
+									<van-col @click="clearCheck(item)" style="height: 8vh;line-height: 8vh;" span="2">
+										<van-icon size="1.2em" name="close" />
 									</van-col>
 									<van-col span="20">
-										<van-row>
-											<van-col span="12">{{item.tname}}</van-col>
-											<van-col style="font-size: 14px;color: DarkGray;" span="12">{{item.ffirmpositionname}}</van-col>
+										<van-row style="margin-top: 10px;">
+											<van-col span="12">{{item.fname}}</van-col>
+											<van-col style="font-size: 14px;color: DarkGray;" span="12">{{item.fcode}}</van-col>
 										</van-row>
-										<van-row>
-											<van-col style="font-size: 10px!important;color: DarkGray;" span="12">{{item.tcompanyname}}</van-col>
-											<van-col style="font-size: 10px;color: DarkGray;" span="12">{{item.tdepartmentname}}</van-col>
+										<van-row style="margin-top: 10px;">
+											<van-col style="font-size: 10px!important;color: DarkGray;" span="12">{{item.fcompanyname}}</van-col>
+											<van-col style="font-size: 10px;color: DarkGray;" span="12">{{item.departmentname}}</van-col>
 										</van-row>
 									</van-col>
 									<van-col style="height: 6vh;line-height: 6vh;color: #999999;" span="2">
@@ -73,19 +75,19 @@
 					</draggable>
 				</van-list>
 				<div class="sa"></div>
-				<div class="nextBtn">
-					<van-button style="float: left;margin:1vh;width: 20vw;" @click="showDiv = true" icon="arrow-left" size="small" type="info" plain hairline>
-						返回
-					</van-button>
-					<van-button style="margin:1vh;width: 20vw;" @click="checkList = [];result=[];checkListShow=[]" icon="delete" size="small" type="info" plain hairline>
-						清空
-					</van-button>
-				</div>
 			</div>
 		</van-popup>
-		<div class="nextBtn">
+		<div class="nextBtn" v-if="!showDiv">
+			<van-button style="float: left;margin:1vh;width: 20vw;" @click="showDiv = true;showName=showNameOld" icon="arrow-left" size="small" type="info" plain hairline>
+				返回
+			</van-button>
+			<van-button style="margin:1vh;width: 20vw;" @click="checkList = [];result=[];checkListShow=[];showList=[]" icon="delete" size="small" type="info" plain hairline>
+				清空
+			</van-button>
+		</div>
+		<div class="nextBtn" v-if="showDiv">
 			<van-button style="width: 20vw;" size="small" @click="$parent.showUserClose()" icon="cross" plain hairline type="info">取消</van-button>
-			<van-button style="margin-left: 10px;margin-right :10px;width: 20vw;" size="small" @click="toGet();showDiv = false" icon="friends-o" plain hairline type="info">已选({{result.length}})</van-button>
+			<van-button style="margin-left: 10px;margin-right :10px;width: 20vw;" size="small" @click="toGet();showDiv = false" icon="friends-o" plain hairline type="info">已选({{listLength}})</van-button>
 			<van-button @click="toSave" style="margin-right :10px;width: 20vw;" size="small" icon="edit" plain hairline type="info">确定</van-button>
 			<van-image width="5rem" height="5rem" @click="showFig = !showFig" id="circle" :src="showImg" />
 			<div v-if="showFig">
@@ -125,6 +127,8 @@
 		},
 		data() {
 			return {
+				showNameOld: "",
+				showList: [],
 				formData: {
 					checkbox: false,
 					remark: ""
@@ -158,11 +162,18 @@
 				dataBack: []
 			};
 		},
+		computed: {
+			listLength() {
+				return this.checkList.length + this.checkListShow.length
+			}
+		},
 		created() {
 			this.context = JSON.parse(sessionStorage.getItem("deskRow"))
-			this.$store.commit("titleShow", "常用人")
-			this.$api.myDesk.getStaffTree({}).then(data => {
-				this.dataTree = eval('(' + data.data.data + ')')
+			this.$api.myDesk.findCompanyDeptStaffInfoByOrgUnitIdFromRedis({
+				queryType: ""
+			}).then(data => {
+				console.log(eval('(' + data.data.data + ')').JsonInfo)
+				this.dataTree = eval('(' + data.data.data + ')').JsonInfo
 				this.dataTreeShow(this.dataTree)
 			})
 			this.getresultId()
@@ -171,7 +182,7 @@
 			dataTreeShow(treeList) {
 				treeList.forEach((item, index) => {
 					if(typeof(item.children) == "undefined") {
-						if(typeof(item.fstruid) == "undefined") {
+						if(item.types == 2) {
 							item.disabled = false
 						} else {
 							item.disabled = true
@@ -199,7 +210,7 @@
 				var cur = []
 				let obj = {};
 				this.checkList.concat(this.checkListShow).forEach(item => {
-					obj[item.toid] ? "" : obj[item.toid] = true && cur.push(item);
+					obj[item.foid] ? "" : obj[item.foid] = true && cur.push(item);
 				})
 				var curList = []
 				if(!this.noNull(JSON.parse(localStorage.getItem("resultId")))) {
@@ -209,10 +220,14 @@
 				}
 				let obj2 = {}
 				localStorage.setItem('resultId', JSON.stringify(curList.reduce((cur, next) => {
-					obj2[next.toid] ? "" : obj2[next.toid] = true && cur.push(next);
+					obj2[next.foid] ? "" : obj2[next.foid] = true && cur.push(next);
 					return cur;
 				}, [])));
 				this.dataBack = cur
+				if(this.dataBack.length == 0) {
+					this.goOut("请选择人员")
+					return
+				}
 				if(this.showChild == 1) {
 					this.show1 = true
 				} else if(this.showChild == 2) {
@@ -226,23 +241,24 @@
 				this.checkListShow = []
 				this.result = b.checkedKeys
 				b.checkedNodes.forEach(item => {
+					console.log(item)
 					this.checkListShow.push({
-						toid: item.foid,
-						tname: item.fname,
+						foid: item.foid,
+						fname: item.fname,
 						ffirmpositionname: item.firmpositiName,
-						tcompanyname: item.fcompanyName,
-						tdepartmentname: item.fdepartmentName
+						fcompanyName: item.fcompanyName,
+						departmentname: item.fdepartmentName
 					})
 				})
 			},
 			getCon(item) {
 				if(this.result.filter(val => {
-						return val == item.toid
+						return val == item.foid
 					}).length == 0) {
 					this.checkList = this.checkList.filter(s => {
 						var state = false
 						this.result.forEach(d => {
-							if(s.toid == d) {
+							if(s.foid == d) {
 								state = true
 							}
 						})
@@ -255,29 +271,41 @@
 				}
 			},
 			onSearch1() {
-				this.checkListShow = this.checkList.filter(item => {
-					return item.tname.indexOf(this.value2) != -1
+				this.showList = this.checkList.filter(item => {
+					return item.fname.indexOf(this.value2) != -1
 				})
+				if(this.showList.length == 0) {
+					this.goOut("没有符合条件的数据")
+				}
 			},
 			clearCheck(row) {
+				this.showList.forEach((item, index) => {
+					if(item.foid == row.foid) {
+						this.showList.splice(index, 1);
+					}
+				})
 				this.checkList.forEach((item, index) => {
-					if(item.toid == row.toid) {
+					if(item.foid == row.foid) {
 						this.checkList.splice(index, 1);
 					}
 				})
 				this.result.forEach((item, index) => {
-					if(item == row.toid) {
+					if(item == row.foid) {
 						this.result.splice(index, 1);
 					}
 				})
 				this.checkListShow.forEach((item, index) => {
-					if(item.toid == row.toid) {
+					if(item.foid == row.foid) {
 						this.checkListShow.splice(index, 1);
 					}
 				})
 			},
-			toGet() {
-				this.checkListShow = JSON.parse(JSON.stringify(this.checkList))
+			toGet(a) {
+				if(a != 1) {
+					this.showNameOld = this.showName
+					this.showName = "已选中"
+				}
+				this.showList = JSON.parse(JSON.stringify(this.checkList.concat(this.checkListShow)))
 			},
 			onSearch() {
 				this.list = []
@@ -285,7 +313,8 @@
 				this.formList = {
 					page: 1,
 					size: 20,
-					tname: this.value
+					fname: this.value,
+					fstatus: 3,
 				}
 				this.getList()
 			},
@@ -306,6 +335,8 @@
 				this.formList = {
 					page: 1,
 					size: 20,
+					//1111
+					fstatus: 3,
 				}
 				this.getList()
 			},
@@ -318,7 +349,9 @@
 				this.formList = {
 					page: 1,
 					size: 20,
-					tdepartmentname: localStorage.getItem("ms_userDepartName")
+					//1111
+					fstatus: 3,
+					departmentname: localStorage.getItem("ms_userDepartName")
 				}
 				this.getList()
 			},
@@ -331,15 +364,15 @@
 			},
 			getList() {
 				this.formList.fpositionstate = 1
-				this.$api.myDesk.findStaffByPage(this.formList).then(data => {
+				this.$api.myDesk.findUserBypage(this.formList).then(data => {
 					console.log(data)
 					data.data.data.rows.forEach(item => {
 						this.list.push(item)
 						this.loading = false
-						if(data.data.data.rows.length < 20) {
-							this.finished = true
-						}
 					})
+					if(data.data.data.rows.length < 20) {
+						this.finished = true
+					}
 				})
 				this.showFig = false
 			},

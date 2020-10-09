@@ -9,21 +9,22 @@
 
 <template>
 	<div>
+		<slot></slot>
+		<slot name="title"></slot>
 		<div v-if="showFig == 'organization' " class="treeDivClass">
-			<slot></slot>
 			<el-tree :default-checked-keys="dataCon.echo" :default-expanded-keys="dataCon.echo" show-checkbox ref="treeDialogVisible" highlight-current :data="dataCon.context" :props="defaultProps" node-key="foid" accordion></el-tree>
 		</div>
 		<div v-if="showFig == 'personnel'" style="margin-bottom: 40px;">
-			<van-search background="#C0C0C0" @clear="allName" v-model="value" show-action placeholder="请输入搜索关键词" @search="onSearch">
-				<template #action>
+			<van-search background="#C0C0C0" @clear="allName" v-model="value" placeholder="请输入搜索关键词" @search="onSearch">
+				<!--<template #action>
 					<slot></slot>
-				</template>
+				</template>-->
 			</van-search>
 			<van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="onLoad">
 				<van-row type="flex" justify="end">
-					<van-col span="7">编码</van-col>
+					<van-col span="7">人员编码</van-col>
 					<van-col span="15">
-						名称
+						人员名称
 					</van-col>
 				</van-row>
 				<van-divider />
@@ -51,16 +52,16 @@
 			</van-list>
 		</div>
 		<div v-if="showFig == 'user'" style="margin-bottom: 40px;">
-			<van-search background="#C0C0C0" @clear="allName" v-model="value" show-action placeholder="请输入搜索关键词" @search="onSearch">
-				<template #action>
+			<van-search background="#C0C0C0" @clear="allName" v-model="value" placeholder="请输入搜索关键词" @search="onSearch">
+				<!--<template #action>
 					<slot></slot>
-				</template>
+				</template>-->
 			</van-search>
 			<van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="onLoad">
 				<van-row type="flex" justify="end">
-					<van-col span="7">编码</van-col>
+					<van-col span="7">用户编码</van-col>
 					<van-col span="15">
-						名称
+						用户名称
 					</van-col>
 				</van-row>
 				<van-divider />
@@ -88,16 +89,16 @@
 			</van-list>
 		</div>
 		<div v-if="showFig == 'jobSet'" style="margin-bottom: 40px;">
-			<van-search background="#C0C0C0" @clear="allName" v-model="value" show-action placeholder="请输入搜索关键词" @search="onSearch">
-				<template #action>
+			<van-search background="#C0C0C0" @clear="allName" v-model="value" placeholder="请输入搜索关键词" @search="onSearch">
+				<!--<template #action>
 					<slot></slot>
-				</template>
+				</template>-->
 			</van-search>
 			<van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="onLoad">
 				<van-row type="flex" justify="end">
-					<van-col span="7">编码</van-col>
+					<van-col span="7">职务编码</van-col>
 					<van-col span="15">
-						名称
+						职务名称
 					</van-col>
 				</van-row>
 				<van-divider />
@@ -125,15 +126,15 @@
 			</van-list>
 		</div>
 		<div v-if="showFig == 'workItems'" style="margin-bottom: 40px;">
-			<van-search background="#C0C0C0" @clear="allName" v-model="value" show-action placeholder="请输入搜索关键词" @search="onSearch">
-				<template #action>
+			<van-search background="#C0C0C0" @clear="allName" v-model="value" placeholder="请输入搜索关键词" @search="onSearch">
+				<!--<template #action>
 					<slot></slot>
-				</template>
+				</template>-->
 			</van-search>
 			<van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="onLoad">
 				<van-row type="flex" justify="end">
 					<van-col span="22">
-						标题
+						工作事项
 					</van-col>
 				</van-row>
 				<van-divider />
@@ -369,7 +370,6 @@
 	/deep/.van-divider {
 		margin: 6px 0;
 	}
-	
 	
 	.treeDivClass {
 		overflow: auto;

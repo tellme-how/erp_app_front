@@ -6,7 +6,7 @@
 		<div class="nextBtn" v-if="valueStateShow">
 			<van-row>
 				<van-col span="6">
-					<van-field readonly clickable :value="value" label="" placeholder="审批" @click="show = true" />
+					<van-field readonly clickable :value="value" label="" placeholder="决策类型" @click="show = true" />
 					<van-action-sheet v-model="show" :actions="columns" @select="onConfirm" />
 				</van-col>
 				<van-col span="16">
@@ -27,9 +27,9 @@
 			<van-share-sheet cancel-text="关闭" v-model="showShare" :options="options" @select="onSelect" />
 		</div>
 		<personnelSelection v-if="showUser" :showChild="showChild" :showUser="showUser" @dataBackMethod="getDataBack"></personnelSelection>
-		<van-popup v-model="showOther" :style="{ height: '20%',width:'100%' }">
-			<van-field v-model="remark" rows="3" autosize label="加批意见" type="textarea" />
-			<van-button type="primary" @click="toDoOher">提交</van-button>
+		<van-popup v-model="showOther" :style="{ height: '12%',width:'100%' }">
+			<van-field v-model="remark" autosize label="加批意见" type="input" />
+			<van-button  type="primary" size='small' @click="toDoOher">提交</van-button>
 		</van-popup>
 	</div>
 </template>
@@ -148,6 +148,7 @@
 				}
 			})
 			this.optionsShow()
+			console.log(this.context)
 		},
 		methods: {
 			getDataBack(dataBack, index, formData) {
@@ -299,7 +300,7 @@
 
 			},
 			onSelect(option) {
-				if(option.name == "关注" || option.name == "已关注") {
+				if(option.name == "关注" || option.name == "取消关注") {
 					if(option.icon == this.$GLOBAL.htmlUrl + '已关注.png') {
 						this.$api.myDesk.deleteAttention({
 							fvoucherOid: this.context.fsrcoId,
@@ -315,7 +316,7 @@
 							fattentionOid: localStorage.getItem("ms_userId")
 						}).then(data => {
 							console.log(data)
-							option.name = "已关注"
+							option.name = "取消关注"
 							option.icon = this.$GLOBAL.htmlUrl + '已关注.png'
 						});
 					}
@@ -323,6 +324,7 @@
 					Dialog.confirm({
 						message: '确认要对选中的邮件进行附加批注么',
 					}).then(() => {
+						this.remark = ''
 						this.showOther = true
 					}).catch(() => {});
 				} else {
@@ -337,6 +339,10 @@
 				}
 			},
 			toDoOher() {
+				if(this.noNull(this.remark)){
+					this.goOut('请输入加批意见')
+					return
+				}
 				this.$api.myDesk.addSign({
 					currUserId: localStorage.getItem('ms_userId'),
 					bizMailId: this.context.fsrcoId,

@@ -16,11 +16,20 @@
 		},
 		filters: {
 			valShow(status, key) {
-				if(key == 0 && status.length > 6) {
-					return status.slice(0, 6) + "..."
+				if(typeof(status) == 'boolean') {
+					if(status){
+						return "是"
+					}else{
+						return '否'
+					}
 				} else {
-					return status
+					if(key == 0 && status.length > 6) {
+						return status.slice(0, 6) + "..."
+					} else {
+						return status
+					}
 				}
+
 			},
 		}
 	}

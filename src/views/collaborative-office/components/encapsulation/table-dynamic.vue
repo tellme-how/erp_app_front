@@ -2,9 +2,12 @@
 	<div>
 		<lineTable2 :dis="dis" :linesList="linesList"></lineTable2>
 		<van-popup v-model="showUp" position="right" :style="{ width: '100%' , height: '90%' }">
-			<formIcon v-if="showUp" ref="formDataChildren" dis="2" showAdd='1' show="4" :form-data="formData">
-				<el-button @click="toSave">提交</el-button>
-			</formIcon>
+			<formIcon v-if="showUp" ref="formDataChildren" dis="2" showAdd='1' show="4" :form-data="formData"></formIcon>
+			<div style="margin-top: 10vh;">
+				<van-button style="margin: 10px;" @click="showUp = false"  type="primary">返回</van-button>
+				<van-button style="margin: 10px;" @click="toSave" type="primary">提交</van-button>
+			</div>
+
 		</van-popup>
 	</div>
 </template>
@@ -93,9 +96,6 @@
 				}).then(data => {
 					this.get_NameShow(data.data.data.rows)
 					this.ruleForm.lines.forEach((val, index) => {
-						if(this.dis != 1){
-							this.linesList[0].list.push("poiul2")
-						}
 						this.linesList.forEach((item, index2) => {
 							for(var key in val) {
 								if(key == item.value) {
@@ -111,10 +111,8 @@
 				})
 				this.$set(this.rowNow, "tableName", this.formData.tableName)
 				this.$set(this.rowNow, "oprStatus", 1)
-				if(this.dis == 2) {
-					this.ruleForm.lines.push(JSON.parse(JSON.stringify(this.rowNow)))
-				}
 				this.getrulesList()
+				console.log(this.linesList)
 			}
 		},
 		//注释同form-dynamic 
