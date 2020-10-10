@@ -4,7 +4,7 @@
 		<van-popup v-model="showUp" position="right" :style="{ width: '100%' , height: '90%' }">
 			<formIcon v-if="showUp" ref="formDataChildren" dis="2" showAdd='1' show="4" :form-data="formData"></formIcon>
 			<div style="margin-top: 10vh;">
-				<van-button style="margin: 10px;" @click="showUp = false"  type="primary">返回</van-button>
+				<van-button style="margin: 10px;" @click="showUp = false" type="primary">返回</van-button>
 				<van-button style="margin: 10px;" @click="toSave" type="primary">提交</van-button>
 			</div>
 
@@ -74,12 +74,17 @@
 			}
 		},
 		created() {
+			var list = JSON.parse(JSON.stringify(this.formData.conList))
 			if(this.dis != 1) {
 				this.linesList = [{
 					list: ["poiul1"]
 				}]
+				if(list.length != 0) {
+					list.forEach(item => {
+						this.linesList[0].list.push('poiul2')
+					})
+				}
 			}
-			var list = JSON.parse(JSON.stringify(this.formData.conList))
 			list.forEach(item => {
 				this.linesList.push({
 					value: item.field,
@@ -99,7 +104,11 @@
 						this.linesList.forEach((item, index2) => {
 							for(var key in val) {
 								if(key == item.value) {
-									item.list.push(val[key + '_NameShow'])
+									if(typeof(val[key + '_NameShow']) != 'undefined') {
+										item.list.push(val[key + '_NameShow'])
+									} else {
+										item.list.push(val[key])
+									}
 								}
 							}
 						})

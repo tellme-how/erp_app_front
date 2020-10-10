@@ -140,43 +140,14 @@
 				//审批信息
 				if(row.classId.indexOf('OA') != -1) {
 					row.classId = 'oaRouter'
-					this.$api.myDesk.getWorkItemTypeModel({
-						srcId: row.fsrcoId
-					}).then(data => {
-						this.$api.collaborativeOffice.findDataBySrcId({
-							srcId: data.data.data.srcId,
-							tempId: data.data.data.tempId,
-							tableName: data.data.data.tableName
-						}).then(val => {
-							var conNow = JSON.parse(val.data.data)
-							//附件
-							this.$api.collaborativeOffice.findlnfosList({
-								voucherId: conNow.id,
-								userCode: localStorage.getItem('ms_userId'),
-								menuCode: "workItem"
-							}).then(con => {
-								conNow.tempId = data.data.data.tempId
-								conNow.files = con.data.data
-								this.$router.push({
-									name: "toDoListDetails",
-									params: {
-										row: row,
-										contextOther: conNow,
-										valueState: this.value
-									}
-								})
-							})
-						})
-					})
-				} else {
-					this.$router.push({
-						name: "toDoListDetails",
-						params: {
-							row: row,
-							valueState: this.value
-						}
-					})
 				}
+				this.$router.push({
+					name: "toDoListDetails",
+					params: {
+						row: row,
+						valueState: this.value
+					}
+				})
 			},
 			beginOnLoad() {
 				this.formData = {

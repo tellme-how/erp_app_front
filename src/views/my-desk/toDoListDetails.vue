@@ -1,6 +1,6 @@
 <template>
 	<div class="flexMainre">
-		<tabViews :context="context" :valueState="valueState" :contextOther="contextOther" :is="context.classId"></tabViews>
+		<tabViews :context="context" :valueState="valueState" :is="context.classId" :showSeeOrUpd="showSeeOrUpd"></tabViews>
 		<approvalProcess :contextOther="context"></approvalProcess>
 		<div style="height: 8vh;width: 100%;"></div>
 		<div class="nextBtn" v-if="valueStateShow">
@@ -29,7 +29,7 @@
 		<personnelSelection v-if="showUser" :showChild="showChild" :showUser="showUser" @dataBackMethod="getDataBack"></personnelSelection>
 		<van-popup v-model="showOther" :style="{ height: '12%',width:'100%' }">
 			<van-field v-model="remark" autosize label="加批意见" type="input" />
-			<van-button  type="primary" size='small' @click="toDoOher">提交</van-button>
+			<van-button type="primary" size='small' @click="toDoOher">提交</van-button>
 		</van-popup>
 	</div>
 </template>
@@ -102,7 +102,6 @@
 				show: false,
 				showOther: false,
 				context: {},
-				contextOther: {},
 				tabViews: "",
 				showShare: false,
 				options: [],
@@ -110,6 +109,7 @@
 				dataBack: [],
 				showUser: false,
 				showChild: 3,
+				showSeeOrUpd : "1",
 			};
 		},
 		created() {
@@ -120,18 +120,19 @@
 			if(this.$route.params.valueState) {
 				sessionStorage.setItem("valueState", JSON.stringify(this.$route.params.valueState));
 			}
-			if(this.$route.params.contextOther) {
-				sessionStorage.setItem("contextOther", JSON.stringify(this.$route.params.contextOther));
-			}
 			if(this.$route.params.dataBack) {
 				sessionStorage.setItem("dataBack", JSON.stringify(this.$route.params.dataBack));
 			}
 			this.dataBack = JSON.parse(sessionStorage.getItem("dataBack"))
 			this.context = JSON.parse(sessionStorage.getItem("deskRow"))
 			this.valueState = JSON.parse(sessionStorage.getItem("valueState"))
-			this.contextOther = JSON.parse(sessionStorage.getItem("contextOther"))
 			this.$store.commit("titleShow", this.context.fsubject)
 			this.columns = []
+			if((this.context.fsubject.substring(0, 3) == '退回：' && this.context.fcreator == localStorage.getItem("ms_userId")) || this.context.fcode == 'manpower') {
+				this.showSeeOrUpd = "3";
+			} else {
+				this.showSeeOrUpd = "1";
+			}
 			//			this.$api.myDesk.getWFBizMailInfoByUserId({
 			//				mailId: this.context.foid,
 			//				userId: localStorage.getItem('ms_userId')
@@ -148,7 +149,6 @@
 				}
 			})
 			this.optionsShow()
-			console.log(this.context)
 		},
 		methods: {
 			getDataBack(dataBack, index, formData) {
@@ -306,7 +306,6 @@
 							fvoucherOid: this.context.fsrcoId,
 							fattentionOid: localStorage.getItem("ms_staffId")
 						}).then(data => {
-							console.log(data)
 							option.name = "关注"
 							option.icon = this.$GLOBAL.htmlUrl + '关注.png'
 						});
@@ -315,7 +314,6 @@
 							fvoucherOid: this.context.fsrcoId,
 							fattentionOid: localStorage.getItem("ms_userId")
 						}).then(data => {
-							console.log(data)
 							option.name = "取消关注"
 							option.icon = this.$GLOBAL.htmlUrl + '已关注.png'
 						});
@@ -339,7 +337,7 @@
 				}
 			},
 			toDoOher() {
-				if(this.noNull(this.remark)){
+				if(this.noNull(this.remark)) {
 					this.goOut('请输入加批意见')
 					return
 				}
