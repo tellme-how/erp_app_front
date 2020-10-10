@@ -21,7 +21,8 @@
 									<!--<van-col span="20">-->
 									<van-row>
 										<van-col span="12">{{item.fname}}</van-col>
-										<van-col style="font-size: 14px;color: DarkGray;" span="12">{{item.foid}}</van-col>
+										<!-- todo -->
+										<van-col style="font-size: 14px;color: DarkGray;" span="12">{{item.firmpositionName}}</van-col>
 									</van-row>
 									<van-row>
 										<van-col style="font-size: 10px!important;color: DarkGray;" span="12">{{item.fcompanyname}}</van-col>
