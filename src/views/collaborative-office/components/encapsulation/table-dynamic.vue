@@ -79,10 +79,12 @@
 				this.linesList = [{
 					list: ["poiul1"]
 				}]
-				if(list.length != 0) {
-					list.forEach(item => {
-						this.linesList[0].list.push('poiul2')
-					})
+				if(this.dis == 3) {
+					if(list.length != 0) {
+						list.forEach(item => {
+							this.linesList[0].list.push('poiul2')
+						})
+					}
 				}
 			}
 			list.forEach(item => {
@@ -121,7 +123,6 @@
 				this.$set(this.rowNow, "tableName", this.formData.tableName)
 				this.$set(this.rowNow, "oprStatus", 1)
 				this.getrulesList()
-				console.log(this.linesList)
 			}
 		},
 		//注释同form-dynamic 
@@ -139,7 +140,6 @@
 				this.$refs.formDataChildren.onSubmit().then(data => {
 					if(data) {
 						var list = this.$refs.formDataChildren.ruleForm
-						console.log(list)
 						this.backList.push(list)
 						this.linesList[0].list.push('poiul2')
 						this.linesList.forEach((item, index) => {

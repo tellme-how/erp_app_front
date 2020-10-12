@@ -1,12 +1,12 @@
 <template>
 	<div class="flexMainre">
-		<tabViews :context="context" :valueState="valueState" :is="context.classId" :showSeeOrUpd="showSeeOrUpd"></tabViews>
+		<tabViews ref="childOher" :context="context" :valueState="valueState" :is="context.classId" :showSeeOrUpd="showSeeOrUpd"></tabViews>
 		<approvalProcess :contextOther="context"></approvalProcess>
 		<div style="height: 8vh;width: 100%;"></div>
-		<div class="nextBtn" v-if="valueStateShow">
+		<div class="nextBtn" v-if="valueStateShow && showSeeOrUpd == '1'">
 			<van-row>
 				<van-col span="6">
-					<van-field readonly clickable :value="value" label="" placeholder="决策类型" @click="show = true" />
+					<van-field readonly clickable :value="value1" label="" placeholder="决策类型" @click="show = true" />
 					<van-action-sheet v-model="show" :actions="columns" @select="onConfirm" />
 				</van-col>
 				<van-col span="16">
@@ -20,6 +20,11 @@
 					<van-icon size="20" @click="showShare = true" name="bars" />
 					<van-share-sheet cancel-text="关闭" v-model="showShare" :options="options" @select="onSelect" />
 				</van-col>
+			</van-row>
+		</div>
+		<div class="nextBtn" v-if="valueStateShow && showSeeOrUpd == '3'">
+			<van-row>
+				<van-button @click="toSave" icon="success" size="mini" type="primary">提交</van-button>
 			</van-row>
 		</div>
 		<div class="nextBtn4" v-if="!valueStateShow">
@@ -98,6 +103,7 @@
 				valueState: "",
 				columns: [],
 				value: "",
+				value1: "",
 				value2: "",
 				show: false,
 				showOther: false,
@@ -109,7 +115,8 @@
 				dataBack: [],
 				showUser: false,
 				showChild: 3,
-				showSeeOrUpd : "1",
+				showSeeOrUpd: "1",
+				participator: ""
 			};
 		},
 		created() {
@@ -133,24 +140,26 @@
 			} else {
 				this.showSeeOrUpd = "1";
 			}
-			//			this.$api.myDesk.getWFBizMailInfoByUserId({
-			//				mailId: this.context.foid,
-			//				userId: localStorage.getItem('ms_userId')
-			//			}).then(data => {
-			//				console.log(data)
-			//			})
 			this.$api.myDesk.getWfDecisionTypeConByCurNode({
 				mailId: this.context.foid
 			}).then(data => {
 				for(var key in data.data.data) {
 					this.columns.push({
-						name: data.data.data[key]
+						name: data.data.data[key],
+						id: key
 					})
 				}
 			})
 			this.optionsShow()
 		},
 		methods: {
+			toSave() {
+				this.$refs.childOher.$refs.childOtherChild.forEach(item => {
+					if((item.context.gestor == localStorage.getItem('ms_staffId') || typeof(item.context.gestor) == 'undefined') && this.showSeeOrUpd == 3) {
+						item.submitForm(2)
+					}
+				})
+			},
 			getDataBack(dataBack, index, formData) {
 				let participator = '';
 				for(let j = 0; j < dataBack.length; j++) {
@@ -297,7 +306,130 @@
 				}
 			},
 			toDo() {
-
+				if(this.noNull(this.value)) {
+					this.goOut("请选择决策类型")
+				} else {
+					if(this.noNull(this.value2)) {
+						this.goOut('请填写审批意见')
+					} else {
+						if(this.context.fsubject.indexOf("正在加签") > -1) {
+							this.goOut('加签未结束，请结束加签再提交!')
+						} else {
+							Dialog.confirm({
+								message: '单据提交后将流转到下一个节点，确实要提交当前数据吗？'
+							}).then(() => {
+								this.doSome()
+							}).catch(() => {
+								this.goOut("已取消")
+							});
+						}
+					}
+				}
+			},
+			doSome() {
+				this.$api.myDesk.getProcessorByMaile({
+					foid: this.context.foid,
+					fcreator: localStorage.getItem("ms_userId")
+				}).then(res => {
+					console.log(res)
+					if(res.data.code == 0) {
+						if(res.data.data) {
+							//手工指定下一节点
+							if(res.data.data.fmntnextjoin === 1) {
+								if(this.value === 2) {
+									this.submitMethod('', '');
+								} else {
+									//this.baseInputTable("手工指定下一节点");
+								}
+							} else {
+								//正常提交
+								this.submitMethod('', '');
+							}
+						} else {
+							//正常提交
+							this.submitMethod('', '');
+						}
+					} else {
+						this.goOut('提交失败')
+					}
+				});
+			},
+			submitMethod(name, val) {
+				if(name === '手工指定') {
+					this.participator = "3|" + val;
+				}
+				//获取人员岗位的接口
+				this.$api.myDesk.getStaffAllFirmpositionname({
+					foid: localStorage.getItem('ms_userId')
+				}).then(res => {
+					console.log(res)
+					if(res.data) {
+						if(res.data.code == 0) {
+							if(res.data.data.length >= 2) {
+								//当存在兼职的时候，弹出pop框
+								//								this.jobVisible = true;
+								//								for(var i = 0; i < res.data.data.length; i++) {
+								//									res.data.data[i]['index'] = i + 1;
+								//								}
+								//								this.tableData = res.data.data;
+							} else {
+								this.submitData();
+							}
+						} else {
+							this.$message.error(res.data.msg);
+						}
+					} else {
+						this.$message.error("系统异常,请填联系管理员!");
+					}
+				})
+			},
+			//提交保存的接口
+			submitData(Data) {
+				let paramsData = {};
+				let twfbizmailReqVoObj = {};
+				let FoidS = '';
+				let fsrcoId = '';
+				paramsData["mactivityOid"] = this.context.factivity;
+				paramsData["srcOid"] = this.context.fsrcoId;
+				paramsData["subject"] = this.context.fsubject;
+				twfbizmailReqVoObj["foid"] = this.context.foid;
+				FoidS = this.context.foid;
+				fsrcoId = this.context.fsrcoId;
+				paramsData["currUserId"] = localStorage.getItem("ms_userId");
+				paramsData["processCode"] = "schedule";
+				paramsData["twfbizmailReqVo"] = twfbizmailReqVoObj;
+				let twfauditObj = {};
+				//加签的直接默认同意
+				if(this.context.fsubject.substring(0, 2).indexOf("加签") > -1) {
+					twfauditObj["fresult"] = 1;
+				} else {
+					twfauditObj["fresult"] = this.value;
+				}
+				twfauditObj["fopinion"] = this.value2;
+				paramsData["twfaudit"] = twfauditObj;
+				if(this.participator != '') {
+					paramsData["participator"] = this.participator;
+				}
+				if(Data) {
+					paramsData["position"] = Data;
+				}
+				this.$api.myDesk.addWfsubmit(paramsData).then(res => {
+					if(res.data) {
+						if(res.data.code == 0) {
+							//							if(this.uploadFiles != null) {
+							//								this.uploadFile("WApplicantApproval", FoidS, fsrcoId);
+							//							}
+							//							if(this.delFileFoids != null) {
+							//								this.delFile();
+							//							}
+							this.goOk('保存成功');
+						} else {
+							this.goOut('提交失败')
+						}
+					} else {
+						this.goOut('提交失败')
+					}
+				});
 			},
 			onSelect(option) {
 				if(option.name == "关注" || option.name == "取消关注") {
@@ -351,7 +483,8 @@
 				});
 			},
 			onConfirm(value) {
-				this.value = value.name
+				this.value = value.id
+				this.value1 = value.name
 				this.show = false;
 			},
 			toUrl() {

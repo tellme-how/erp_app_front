@@ -11,14 +11,14 @@
 		</van-collapse>
 		<van-cell title="附件">
 			<template #default>
-				<el-upload :disabled="dis == 1" :on-preview="downFiles" :auto-upload="false" :on-change="getFile" multiple :data="uploadData" ref="upload" class="upload-demo" action="" :file-list="fileList">
+				<el-upload v-if="dis == 3" :disabled="dis == 1" :on-preview="downFiles" :auto-upload="false" :on-change="getFile" multiple :data="uploadData" ref="upload" class="upload-demo" action="" :file-list="fileList">
 					<el-button size="small" type="primary">点击上传</el-button>
 				</el-upload>
 			</template>
 		</van-cell>
 		<van-cell title-class='titleClassBlue' v-for="(item,index) in fileList" :key="index" :title="item.name">
 			<template #default>
-				<van-icon @click="delUpload(index)" name="cross" />
+				<van-icon v-if="dis == 3" @click="delUpload(index)" name="cross" />
 			</template>
 		</van-cell>
 	</div>
@@ -90,7 +90,6 @@
 			}
 		},
 		created() {
-			console.log(this.formData)
 			this.formData.bottom.forEach(item => {
 				if(item.type == 2) {
 					item.rowList = item.conList
@@ -121,7 +120,6 @@
 						}
 					}
 				}
-				console.log(fileList)
 			},
 			//移除上传数据
 			delUpload(index) {
@@ -190,12 +188,14 @@
 				//				})
 			},
 			//提交
-			async onSubmit() {
+			onSubmit() {
 				//form 和 table 校验
 				var state = true
-				await this.$refs.mainTableChild.onSubmit().then(data => {
-					state = data
-				})
+				if(this.showChild == 1 && this.dis == 3) {
+					if(!this.$refs.mainTableChild.onSubmit()) {
+						state = false
+					}
+				}
 				if(typeof(this.$refs.refCon) != "undefined") {
 					this.$refs.refCon.forEach(item => {
 						if(item.formData.type == 1) {
@@ -207,18 +207,31 @@
 				}
 				if(state) {
 					//整理主表返回数据
-					this.conData = this.$refs.mainTableChild.ruleForm
+					if(this.showChild == 1 && this.dis == 3) {
+						this.conData = this.$refs.mainTableChild.ruleForm
+					} else {
+						this.conData.id = this.formData.top.wholeData.id
+						//						this.conData.creator = localStorage.getItem("ms_userId")
+						this.conData.gestor = localStorage.getItem('ms_staffId')
+						this.conData.gestorDept = localStorage.getItem('ms_userDepartId')
+						this.conData.oprStatus = 2
+					}
 					//整理子表返回数据
 					if(typeof(this.$refs.refCon) != "undefined") {
 						this.$refs.refCon.forEach(item => {
 							//form表单样式的子表
 							if(item.formData.type == 1) {
+								if(this.dis == 3) {
+									item.ruleForm.oprStatus = 2
+								} else {
+									item.ruleForm.oprStatus = 1
+								}
 								//格式统一,用子表ID做为数组的名称,表单样式数组只有一条数据
 								this.$set(this.conData, item.formData.id, [])
 								this.conData[item.formData.id].push(item.ruleForm)
 								//table样式的子表
 							} else {
-								this.$set(this.conData, item.formData.id, item.backList)
+								this.$set(this.conData, item.formData.id, item.ruleForm.lines)
 							}
 						})
 					}

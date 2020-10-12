@@ -18,9 +18,9 @@
 		},
 		data() {
 			return {
-				a:"3",
-				b:"1",
-				showNow :false,
+				a: "3",
+				b: "1",
+				showNow: false,
 				context: {},
 				UserId: "",
 				companyID: {},
@@ -50,7 +50,6 @@
 			};
 		},
 		created() {
-			console.log(this.showSeeOrUpd)
 			this.context = this.contextOther
 			this.$api.collaborativeOffice.findList({}).then(data => {
 				this.selectList = data.data.data
@@ -77,34 +76,38 @@
 					 * */
 					//单据编号
 					backData.voucherId = "";
+					backData.fsrcOid = this.$parent.context.fsrcoId;
+					backData.fresult = '1';
+					backData.foponion = '提交人申请';
+					backData.mailId = this.$parent.context.foid;
+					backData.activityId = this.$parent.context.factivity;
 					//标题
-					backData.title = JSON.parse(JSON.stringify(backData.jsonStr.title))
+					backData.title = this.$parent.context.fsubject;
 					//经办人
-					backData.gestor = JSON.parse(JSON.stringify(backData.jsonStr.gestor))
+					backData.gestor = localStorage.getItem('ms_staffId')
 					//经办部门
-					backData.gestorDept = JSON.parse(JSON.stringify(backData.jsonStr.gestorDept))
+					backData.gestorDept = localStorage.getItem('ms_userDepartId')
 					//经办时间
 
-					backData.voucherTime = JSON.parse(JSON.stringify(backData.jsonStr.voucherTime))
+					backData.voucherTime = ""
 					//公司code
 
-					backData.companyCode = this.company.code
+					backData.companyCode = ""
 					//登陆人
-					backData.creator = localStorage.getItem('ms_userId')
+					backData.creator = localStorage.getItem("ms_userId")
 					//暂存1 提交2
-					backData.status = status
+					backData.status = 2
 					//主表名称
-					backData.tableName = this.tableName
-					//主表字段-业务活动ID
-					backData.activityId = this.activityId
+					backData.tableName = ""
 					//主表Id
-					backData.tempId = this.tempId
+					backData.tempId = ""
 					backData.srcId = JSON.parse(JSON.stringify(this.$refs.child.conData.id))
 					backData.oprStatus = 2
 
 					/*
 					 * 存入里层信息
 					 * */
+					backData.jsonStr.tableName = this.context.tableName;
 					//状态
 					backData.jsonStr.status = status
 					//公司ID
@@ -119,6 +122,11 @@
 						if(typeof(con[key]) == "object") {
 							//循环删除里层的显示数据
 							con[key].forEach(item => {
+								if(typeof(item.id) == "undefined") {
+									item.oprStatus = 1
+								} else {
+									item.oprStatus = 2
+								}
 								//后台要的子表ID
 								this.$set(item, "tempSubId", key)
 								for(var keyItem in item) {
@@ -138,10 +146,9 @@
 					}
 					//后台需要json格式的数据 
 					backData.jsonStr = JSON.stringify(con)
-					this.$api.collaborativeOffice.updateWorkItem(backData).then(data => {
-						if(this.dataBack(data, "修改成功")) {
+					this.$api.collaborativeOffice.dataToDataWorkItem(backData).then(data => {
+						if(this.dataBack(data, "提交成功")) {
 							this.$refs.child.toUpload(this.context.id)
-							this.$parent.toSelect()
 						}
 					})
 				} else {
@@ -333,7 +340,7 @@
 							}
 							item.browseBoxList = list
 							*/
-							let ComData=this.maketree(list,'公司');
+							let ComData = this.maketree(list, '公司');
 							item.browseBoxList = ComData;
 							//部门
 						} else if(item.toSelect.id == 2) {
@@ -347,7 +354,7 @@
 							})
 							item.browseBoxList = list
 							*/
-							let ZhiwuData=this.maketree(list,'职位');
+							let ZhiwuData = this.maketree(list, '职位');
 							item.browseBoxList = ZhiwuData[0].children
 							//职位（无需删除，保留原数据）
 						} else if(item.toSelect.id == 3) {

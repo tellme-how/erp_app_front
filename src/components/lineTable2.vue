@@ -26,6 +26,29 @@
 				}
 			},
 		},
+		watch: {
+			"linesList": {
+				handler(val, oldval) {
+					var con = 0
+					for(var i = 0; i < this.linesList.length; i++) {
+						if(this.linesList[i].list.length > con) {
+							con = this.linesList[i].list.length
+						} else {
+							continue
+						}
+					}
+					for(var k = 0; k < this.linesList.length; k++) {
+						if(this.linesList[k].list.length < con) {
+							var conOther = con - this.linesList[k].list.length
+							for(var i = 0; i < conOther; i++) {
+								this.linesList[k].list.push('')
+							}
+						}
+					}
+				},
+				deep: true
+			},
+		},
 		methods: {
 			toAdd() {
 				this.$parent.toAdd()
@@ -33,7 +56,7 @@
 			toDel(key) {
 				this.$parent.toDel(key)
 			}
-		}
+		},
 	}
 </script>
 
@@ -43,6 +66,7 @@
 		color: #2771ca;
 		width: 120px!important;
 	}
+	
 	.classOther {
 		width: 150px!important;
 	}

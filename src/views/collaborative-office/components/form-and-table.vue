@@ -116,7 +116,6 @@
 						}
 					}
 				}
-				console.log(fileList)
 			},
 			//移除上传数据
 			delUpload(index) {

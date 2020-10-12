@@ -1,6 +1,9 @@
 import httpReqest from '../../utils/https';
 
 const collaborativeOffice = {
+	dataToDataWorkItem(params) {
+		return httpReqest.post('/api/interfaces/workItem/dataToDataWorkItem', params);
+	},
 	// 获取树形结构数据
 	selectAllOrganizationInfo() {
 		return httpReqest.get('/api/interfaces/organization/selectAllOrganizationInfo');

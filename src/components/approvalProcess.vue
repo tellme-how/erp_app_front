@@ -46,7 +46,6 @@
 			};
 		},
 		created() {
-			console.log(this.contextOther)
 			this.getContext()
 		},
 		methods: {
@@ -89,7 +88,6 @@
 					loadUser: localStorage.getItem("ms_userId"),
 					module: '1'
 				}).then(res => {
-					console.log(res)
 					this.context = res.data.data
 					this.widthTable = 40 + 40 * this.context.length
 					this.linesList.forEach(item => {
@@ -103,7 +101,9 @@
 								}
 							})
 							if(item.name == "回复") {
-								item.list.push("展开")
+								this.context.forEach(a => {
+									item.list.push("展开")
+								})
 							}
 						}
 					})

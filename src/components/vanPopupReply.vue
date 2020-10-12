@@ -114,6 +114,7 @@
 				}
 				this.$api.myDesk.addAuditReply(backCon).then(data => {
 					this.$parent.getContext()
+					this.$parent.show = false
 				})
 
 			}

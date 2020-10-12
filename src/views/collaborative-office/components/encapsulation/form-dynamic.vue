@@ -225,7 +225,6 @@
 							this.$set(this.ruleForm, "title", this.formData.wholeData.title)
 							this.$set(this.ruleForm, "voucherTime", this.conversionTime(this.formData.wholeData.voucherTime))
 						}
-						console.log(this.ruleForm)
 					} else if(this.dis == 3) {
 						//整理主表数据
 						this.get_NameShow(1)
@@ -384,7 +383,6 @@
 					}
 				} else {
 					//子表需要循环找到正确的数据
-					console.log(this.formData)
 					for(var key in this.formData.wholeData) {
 						if(key == this.formData.id) {
 							valObject = this.formData.wholeData[key][0]
