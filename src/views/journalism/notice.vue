@@ -83,11 +83,11 @@
 		},
 		created() {
 			var moreList = this.$route.params.moreList
+			this.$store.commit("titleShow", '新闻资讯')
 			if(this.$route.params.id) {
 				this.showFig = false
 				this.optionValue = this.$route.params.id
 				this.rowNow = this.$route.params.rowNow
-				this.$store.commit("titleShow", '新闻资讯')
 			} else {
 				if(JSON.parse(sessionStorage.getItem("moreList"))) {
 					moreList = JSON.parse(sessionStorage.getItem("moreList"))
@@ -96,7 +96,6 @@
 				}
 				this.showFig = true
 				this.optionValue = moreList[0].value
-				this.$store.commit("titleShow", moreList[0].text)
 			}
 			this.option = moreList
 			this.$store.commit("tabbarShow", true)
