@@ -7,6 +7,10 @@ const InsideMail = [{
 	path: 'notice',
 	name: 'notice',
 	component: notice,
+	meta: {
+		keepAlive: true, 
+		isBack: false
+		}
 },{
 	path: 'noticeSee',
 	name: 'noticeSee',

@@ -74,6 +74,29 @@
 				rowNow: {}
 			};
 		},
+		//判断从详情页面跳转过来的数据
+		 beforeRouteEnter(to, from, next) {
+			if (from.path == "/erp/noticeSee") {
+			to.meta.isBack = true;
+			} else {
+				to.meta.isBack = false;
+			}
+			next();
+		},
+		 activated() {
+			if (!this.$route.meta.isBack) {
+				// aaa
+			// this.list = [];
+			// this.pageNum = 1;
+			this.searchValue = '';
+			this.list=[];
+			this.formListAll.page='1';
+			this.getAll();
+			} else {
+				console.log("0");
+			}
+			this.$route.meta.isBack = false;
+		},
 		beforeRouteLeave(to, from, next) {
 			if(typeof(this.$route.params.moreList) != "undefined" && this.$route.params.moreList.length != 0) {
 				sessionStorage.setItem("moreList", JSON.stringify(this.option));
