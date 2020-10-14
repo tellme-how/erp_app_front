@@ -413,7 +413,7 @@
 					switch(item.fieldType) {
 						case "2":
 							this.rules[item.field].push({
-								max: 1500,
+								pattern: /^.{0,1500}$/,
 								message: '请输入正确的' + item.fieldName,
 								trigger: 'change'
 							})
@@ -421,7 +421,7 @@
 							break;
 						case "3":
 							this.rules[item.field].push({
-								max: 1500,
+								pattern: /^.{0,1500}$/,
 								message: '请输入正确的' + item.fieldName,
 								trigger: 'change'
 							})
@@ -435,7 +435,7 @@
 								trigger: 'change'
 							})
 							this.rules[item.field].push({
-								max: 20,
+								pattern: /^.{0,20}$/,
 								message: '请输入正确的' + item.fieldName,
 								trigger: 'change'
 							})
@@ -449,7 +449,7 @@
 								trigger: 'change'
 							})
 							this.rules[item.field].push({
-								max: 20,
+								pattern: /^.{0,20}$/,
 								message: '请输入正确的' + item.fieldName,
 								trigger: 'change'
 							})

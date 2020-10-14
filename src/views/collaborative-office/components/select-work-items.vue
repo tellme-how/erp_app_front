@@ -36,7 +36,7 @@
 			}
 		},
 		created() {
-			this.$store.commit("tabbarShow", false)
+			this.$store.commit("tabbarShow", true)
 			this.$store.commit("titleShow", "选择模板")
 			this.$api.collaborativeOffice.getCompanyData().then(data => {
 				this.option = []

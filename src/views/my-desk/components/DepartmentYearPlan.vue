@@ -144,6 +144,7 @@
 			this.$api.myDesk.getDepYearPlanDetail(JSON.stringify({
 				id: this.context.fsrcoId
 			})).then(data => {
+				console.log(data)
 				this.formContext = data.data
 				var lines = data.data.line
 				this.linesList.forEach(item => {

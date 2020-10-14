@@ -4,7 +4,7 @@
 			<!--固定部分-->
 			<div v-if="show == 1">
 				<van-field input-align="center" readonly v-model="ruleForm.voucherId" label="单据编号" />
-				<van-field required input-align="center" :readonly="dis == 1" v-model="ruleForm.title" label="标题" placeholder="请填写标题" :rules="[{ required: true,message: '请填写标题',trigger: 'change'}]" />
+				<van-field required input-align="center" :readonly="dis == 1" v-model="ruleForm.title" label="标题" placeholder="请填写标题" :rules="[{ required: true,message: '请填写标题',trigger: 'change'},{pattern: /^.{0,50}$/,message: '标题长度不能超过50个汉字',trigger: 'change'}]" />
 				<van-field input-align="center" readonly v-model="gestorName" label="经办人" />
 				<van-field input-align="center" readonly v-model="gestorDeptName" label="经办部门" />
 				<van-field input-align="center" readonly v-model="ruleForm.voucherTime" label="经办时间" />
@@ -134,10 +134,10 @@
 				rules: {
 					title: [{
 						required: true,
-						message: '请输入标题',
+						message: '请输入标题1111',
 						trigger: 'change'
 					}, {
-						max: 50,
+						pattern: /^.{0,10}$/,
 						message: '标题长度不能超过50个汉字',
 						trigger: 'change'
 					}]
@@ -627,7 +627,7 @@
 					switch(item.fieldType) {
 						case "2":
 							this.rules[item.field].push({
-								max: 1500,
+								pattern: /^.{0,1500}$/,
 								message: '请输入正确的' + item.fieldName,
 								trigger: 'change'
 							})
@@ -635,9 +635,9 @@
 							break;
 						case "3":
 							this.rules[item.field].push({
-								max: 1500,
+								pattern: /^.{0,1500}$/,
 								message: '请输入正确的' + item.fieldName,
-								trigger: 'blur'
+								trigger: 'change'
 							})
 							return "integers"
 							break;
@@ -649,7 +649,7 @@
 								trigger: 'change'
 							})
 							this.rules[item.field].push({
-								max: 20,
+								pattern: /^.{0,20}$/,
 								message: '请输入正确的' + item.fieldName,
 								trigger: 'change'
 							})
@@ -663,7 +663,7 @@
 								trigger: 'change'
 							})
 							this.rules[item.field].push({
-								max: 20,
+								pattern: /^.{0,20}$/,
 								message: '请输入正确的' + item.fieldName,
 								trigger: 'change'
 							})
@@ -677,26 +677,28 @@
 				this.ruleForm[this.showCalendarValue.field] = this.conversionTime2(data)
 				var row = this.showCalendarValue
 				//change写在所有的时间控件中，首先判断当前点击控件是否需要计算差值，且双方必须都有值
-				if(row.parameterList.length != 0) {
-					//同上（太长了，不想写一起，屏幕太小显示不下）noNull是非空的公共方法，详见base.js
-					row.parameterList.forEach(item => {
-						if(!this.noNull(this.ruleForm[item.left]) && !this.noNull(this.ruleForm[item.right])) {
-							var state = false
-							this.formData.rowList.forEach((val, index) => {
-								//确认当前控件里面有绑定的child数据（就是要接收差值的字段）并且服务code为“计算差值”
-								if(val.field == item.child && val.serviceNow.fcode == "service05") {
-									state = true
-								}
-								//循环到最后，判断state状态，如果是true，代表满足条件，那么就需要改变child的值
-								if(index == this.formData.rowList.length - 1) {
-									if(state) {
-										//DateDiff 方法在下面，计算日期差值方法
-										this.$set(this.ruleForm, item.child, this.DateDiff(this.ruleForm[item.left], this.ruleForm[item.right]) + 1)
+				if(typeof(row.parameterList) != 'undefined') {
+					if(row.parameterList.length != 0) {
+						//同上（太长了，不想写一起，屏幕太小显示不下）noNull是非空的公共方法，详见base.js
+						row.parameterList.forEach(item => {
+							if(!this.noNull(this.ruleForm[item.left]) && !this.noNull(this.ruleForm[item.right])) {
+								var state = false
+								this.formData.rowList.forEach((val, index) => {
+									//确认当前控件里面有绑定的child数据（就是要接收差值的字段）并且服务code为“计算差值”
+									if(val.field == item.child && val.serviceNow.fcode == "service05") {
+										state = true
 									}
-								}
-							})
-						}
-					})
+									//循环到最后，判断state状态，如果是true，代表满足条件，那么就需要改变child的值
+									if(index == this.formData.rowList.length - 1) {
+										if(state) {
+											//DateDiff 方法在下面，计算日期差值方法
+											this.$set(this.ruleForm, item.child, this.DateDiff(this.ruleForm[item.left], this.ruleForm[item.right]) + 1)
+										}
+									}
+								})
+							}
+						})
+					}
 				}
 				this.showCalendar = false
 			},

@@ -1,3 +1,6 @@
+<!--
+	工作事项
+-->
 <template>
 	<div>
 		<WorkItemPage ref="childOtherChild"  v-for="(item,key) in contextOther" :key="key" style="display: block;" :showChild="key == 0 ? '1' : '2'" :contextOther="item" :showSeeOrUpd="showSeeOrUpd1(item)" ></WorkItemPage>
