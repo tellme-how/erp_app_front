@@ -2,14 +2,22 @@ import httpReqest from '../../utils/https';
 import QS from 'qs';
 
 const myDesk = {
+	  // 获取会议申请列表
+    getApplyList(params) {
+        return httpReqest.post('/api/interfaces/confApply/findApplyList', params);
+    },
+	//操作已阅
+	removeBizMail(params) {
+		return httpReqest.post('/api/wfInterfaces/workFlow/removeBizMail', params);
+	},
 	//待办事项-提交
-    addWfsubmit(params){
-        return httpReqest.post('/api/wfInterfaces/workFlow/wfsubmit', params);
-    },
-	 //根据 userid 获取到职位[包括兼职]
-    getStaffAllFirmpositionname(params){
-        return httpReqest.post('/api/interfaces/staffManage/getStaffAllFirmpositionname', params);
-    },
+	addWfsubmit(params) {
+		return httpReqest.post('/api/wfInterfaces/workFlow/wfsubmit', params);
+	},
+	//根据 userid 获取到职位[包括兼职]
+	getStaffAllFirmpositionname(params) {
+		return httpReqest.post('/api/interfaces/staffManage/getStaffAllFirmpositionname', params);
+	},
 	//待办事项- 查询当前节点的配置
 	getProcessorByMaile(params) {
 		var valueS = '?';

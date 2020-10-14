@@ -72,6 +72,8 @@
 	import TaskReport from '../../views/my-desk/components/TaskReport';
 	//一人一表  (自评)
 	import TaskSelfEvaluateApply from '../../views/my-desk/components/TaskSelfEvaluateApply';
+	//会议申请
+	import Meetingapplication from '../../views/my-desk/components/Meetingapplication';
 	import oaRouter from '../../views/my-desk/components/oaRouter';
 	import personnelSelection from './personnelSelection';
 	import { Dialog } from 'vant';
@@ -94,6 +96,7 @@
 			TemporaryMission,
 			oaRouter,
 			personnelSelection,
+			Meetingapplication,
 			DepartmentMonthPlan
 		},
 		data() {
@@ -157,13 +160,16 @@
 				this.$refs.childOher.$refs.childOtherChild.forEach(item => {
 					if((item.context.gestor == localStorage.getItem('ms_staffId') || typeof(item.context.gestor) == 'undefined') && this.showSeeOrUpd == 3) {
 						item.submitForm(2)
+						this.$router.push({
+							name: "toDoList"
+						})
 					}
 				})
 			},
 			getDataBack(dataBack, index, formData) {
-				let participator = '';
+				var participator = '';
 				for(let j = 0; j < dataBack.length; j++) {
-					participator += dataBack[j].toid + ',';
+					participator += dataBack[j].foid + ',';
 				}
 				participator = participator.slice(0, participator.length - 1);
 				//加签
@@ -423,6 +429,9 @@
 							//								this.delFile();
 							//							}
 							this.goOk('保存成功');
+							this.$router.push({
+								name: "toDoList"
+							})
 						} else {
 							this.goOut('提交失败')
 						}
@@ -457,6 +466,18 @@
 						this.remark = ''
 						this.showOther = true
 					}).catch(() => {});
+				} else if(option.name == "已阅") {
+					this.$api.myDesk.removeBizMail({
+						bizMailId: this.context.foid,
+						currUserId: localStorage.getItem("ms_userId")
+					}).then(response => {
+						if(response.code != 999) {
+							this.goOk('已阅成功!');
+						} else {
+							this.goOk('已阅失败!');
+						}
+						this.showShare = false
+					})
 				} else {
 					if(option.name == "加签") {
 						this.showChild = 1

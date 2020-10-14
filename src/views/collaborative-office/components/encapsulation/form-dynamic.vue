@@ -180,6 +180,7 @@
 			}
 		},
 		created() {
+			console.log(this.ruleForm)
 			if(this.show != 1) {
 				this.$set(this.formData, "rowList", this.formData.lines)
 			}
@@ -202,7 +203,7 @@
 						this.gestorName = localStorage.getItem('ms_username')
 						this.gestorDeptName = localStorage.getItem('ms_userDepartName')
 						//这面写的是固定值，后期需要改
-						this.$set(this.ruleForm, "gestor", localStorage.getItem('ms_userId'))
+						this.$set(this.ruleForm, "gestor", localStorage.getItem('ms_staffId'))
 						this.$set(this.ruleForm, "gestorDept", localStorage.getItem('ms_userDepartId'))
 						//this.$set(this.ruleForm, "gestor", "BFPID000000LSN01ZA")
 						//this.$set(this.ruleForm, "gestorDept", "BFPID000000LRS001C")
@@ -428,15 +429,22 @@
 										var nameList = ""
 										var idList = valObject[key].split(',')
 										idList.forEach((val, indexVal) => {
-											item.browseBoxList.forEach(itemChild => {
-												if(itemChild.foid == val) {
-													if(indexVal == idList.length - 1) {
-														nameList = nameList + itemChild.fname
+											function getNameList(data, dataList) {
+												dataList.forEach(itemOther => {
+													if(itemOther.foid == data) {
+														if(indexVal == idList.length - 1) {
+															nameList = nameList + itemOther.fname
+														} else {
+															nameList = nameList + itemOther.fname + ","
+														}
 													} else {
-														nameList = nameList + itemChild.fname + ","
+														if(itemOther.children.length > 0) {
+															getNameList(data, itemOther.children)
+														}
 													}
-												}
-											})
+												})
+											}
+											getNameList(val, item.browseBoxList)
 										})
 										this.$set(this.ruleForm, key + "_NameShow", nameList)
 										break;

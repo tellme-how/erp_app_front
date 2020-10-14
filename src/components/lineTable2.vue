@@ -1,8 +1,8 @@
 <template>
 	<div style="width:100%; overflow:scroll;">
-		<table :style="{ width : 60 * (linesList[0].list.length - 1) + '%' }" cellspacing="0" cellpadding="0">
+		<table :style="{ width : 40 * (linesList[0].list.length - 1) + '%' }" cellspacing="0" cellpadding="0">
 			<tr v-for="(item,index) in linesList">
-				<td id="classTd" :class="[key == 0 ?'classZero':'']" v-for="(val,key) in item.list">
+				<td id="classTd" :class="[key == 0 ?'classZero':'']" v-for="(val,key) in item.list" >
 					<van-button style="width: 100%;" size="mini" type="primary" v-if="val == 'poiul1'" @click="toAdd()">新增</van-button>
 					<van-button style="width: 100%;" size="mini" type="danger" v-else-if="val == 'poiul2'" @click="toDel(key)">删除</van-button>
 					<span v-else>{{val | valShow(key)}}</span>
@@ -64,7 +64,7 @@
 	.classZero {
 		background-color: #d3e8fd;
 		color: #2771ca;
-		width: 120px!important;
+		width: 80px!important;
 	}
 	
 	.classOther {

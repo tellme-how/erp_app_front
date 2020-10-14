@@ -101,7 +101,6 @@
 			if(typeof(this.$route.params.moreList) != "undefined" && this.$route.params.moreList.length != 0) {
 				sessionStorage.setItem("moreList", JSON.stringify(this.option));
 			}
-			console.log(JSON.parse(sessionStorage.getItem("moreList")))
 			next()
 		},
 		created() {

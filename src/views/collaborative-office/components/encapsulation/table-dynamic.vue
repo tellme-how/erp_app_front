@@ -79,13 +79,6 @@
 				this.linesList = [{
 					list: ["poiul1"]
 				}]
-				if(this.dis == 3) {
-					if(list.length != 0) {
-						list.forEach(item => {
-							this.linesList[0].list.push('poiul2')
-						})
-					}
-				}
 			}
 			list.forEach(item => {
 				this.linesList.push({
@@ -102,6 +95,11 @@
 					creator: localStorage.getItem('ms_userId')
 				}).then(data => {
 					this.get_NameShow(data.data.data.rows)
+					if(this.dis == 3) {
+						this.ruleForm.lines.forEach(item => {
+							this.linesList[0].list.push('poiul2')
+						})
+					}
 					this.ruleForm.lines.forEach((val, index) => {
 						this.linesList.forEach((item, index2) => {
 							for(var key in val) {

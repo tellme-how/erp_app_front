@@ -38,8 +38,7 @@
 				<div class="sa"></div>
 			</div>
 			<div style="margin-top: 5vh;" v-else-if="showDiv && showName == '组织架构'">
-				<el-tree @check="getTreeData" :data="dataTree" :default-checked-keys="result" show-checkbox node-key="foid" :props="defaultProps">
-				</el-tree>
+				<el-tree @check="getTreeData" :data="dataTree" :default-checked-keys="result" show-checkbox node-key="foid" :props="defaultProps"></el-tree>
 				<div class="sa"></div>
 			</div>
 			<div style="margin-top: 5vh;" v-if="!showDiv">

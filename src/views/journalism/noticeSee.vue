@@ -1,26 +1,21 @@
 <template>
 	<div>
 		<van-cell-group>
-			<van-row>
-				<van-col span="6">
-					<van-icon name="manager-o" size="80" />
+			<van-row style="color: #C0C0C0;">
+				<van-col span="8">
+					创建人 : {{context.fcreatorname}}
 				</van-col>
-				<van-col span="18" class="noticeCol">
-					<van-row style="font-size: 20px;font-weight:800;margin-bottom: 5px;">
-						{{context.fcreatorname}}
-					</van-row>
-					<van-row style="margin-bottom: 5px;">
-						最后修改 : {{conversionTime(context.flastupdtime)}} {{context.fcreatorname}}
-					</van-row>
-					<van-row>
-						阅读量:{{context.freadcount}}
-					</van-row>
+				<van-col span="10">
+					创建部门 : {{context.fcDepartmentName}}
+				</van-col>
+				<van-col span="6">
+					<van-icon name="eye" /> : ({{context.freadcount}})
 				</van-col>
 			</van-row>
 		</van-cell-group>
 		<van-cell-group>
-			<!--<quill-editor style="width: 100%;" disabled v-model="context.fcontent" ref="myQuillEditor" :options="editorOption"></quill-editor>-->
-			<div v-html="context.fcontent"></div>
+			<quill-editor style="width: 100%;" disabled v-model="context.fcontent" ref="myQuillEditor" :options="editorOption"></quill-editor>
+			<!--<div style="width: 100%;" v-html="context.fcontent"></div>-->
 		</van-cell-group>
 		<van-cell-group v-for="(item,index) in fileList" :key="index">
 			<van-row style="height: auto;line-height: auto;text-align:center;padding: 10px;" @click="aaa(item)">
@@ -61,6 +56,7 @@
 				size: 10
 			}).then(data => {
 				this.context = data.data.data
+				this.$store.commit("titleShow", this.context.fname)
 			})
 			let creator = localStorage.getItem('ms_userId');
 			if(creator) {
