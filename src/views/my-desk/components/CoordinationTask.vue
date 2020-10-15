@@ -79,7 +79,7 @@
 					list: []
 				}, {
 					name: "秘书",
-					value: "secretary",
+					value: "secretaryName",
 					list: []
 				}, {
 					name: "重点级别",
