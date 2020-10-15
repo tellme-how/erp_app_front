@@ -153,6 +153,16 @@
 		},
 		methods: {
 			showName(row) {
+				switch(row.timechange) {
+					case true:
+						row.timechange = '是';
+						break;
+					case false:
+						row.timechange = '否';
+						break;
+					default:
+						break;	
+				}
 				switch(row.taskState) {
 					case "1":
 						row.taskState = '可执行';
