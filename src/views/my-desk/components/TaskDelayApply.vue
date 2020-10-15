@@ -182,6 +182,16 @@
 		},
 		methods: {
 			showName(row) {
+				switch(row.metting) {
+					case true:
+						row.metting = '是';
+						break;
+					case false:
+						row.metting = '否';
+						break;
+					default:
+						break;	
+				}
 				switch(row.periodicityTask) {
 					case true:
 						row.periodicityTask = '是';
