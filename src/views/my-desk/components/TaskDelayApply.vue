@@ -90,7 +90,7 @@
 					list: []
 				}, {
 					name: "秘书",
-					value: "secretaryPage",
+					value: "secretaryName",
 					list: []
 				}, {
 					name: "完成情况(%)",
