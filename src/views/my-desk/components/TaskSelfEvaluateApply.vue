@@ -39,7 +39,7 @@
 					list: []
 				}, {
 					name: "任务状态",
-					value: "taskStatusName",
+					value: "taskStatus",
 					list: []
 				}, {
 					name: "任务类型",
@@ -139,7 +139,7 @@
 			}).then(data => {
 				console.log(data)
 				this.formContext = data.data.data
-//				this.showName(this.formContext)
+				this.showName(this.formContext)
 				var lines = [{
 					key1: '计划值',
 					key2: 'Q 累计预计计划完成指标',
@@ -157,27 +157,47 @@
 		},
 		methods: {
 			showName(row) {
-				switch(row.taskState) {
-					case "1":
-						row.taskState = '可执行';
+				switch(row.periodicityTask) {
+					case true:
+						row.periodicityTask = '是';
 						break;
-					case "2":
-						row.taskState = '已完成';
+					case false:
+						row.periodicityTask = '否';
 						break;
-					case "3":
-						row.taskState = '未完成';
+					default:
+						break;	
+				}
+				switch(row.yearPlan) {
+					case true:
+						row.yearPlan = '是';
 						break;
-					case "4":
-						row.taskState = '延期';
+					case false:
+						row.yearPlan = '否';
 						break;
-					case '5':
-						row.taskState = '作废';
+					default:
+						break;	
+				}
+				switch(row.taskStatus) {
+					case 1:
+						row.taskStatus = '可执行';
 						break;
-					case '0':
-						row.taskState = '未发生';
+					case 2:
+						row.taskStatus = '已完成';
 						break;
-					case '10':
-						row.taskState = '已报待批';
+					case 3:
+						row.taskStatus = '未完成';
+						break;
+					case 4:
+						row.taskStatus = '延期';
+						break;
+					case 5:
+						row.taskStatus = '作废';
+						break;
+					case 0:
+						row.taskStatus = '未发生';
+						break;
+					case 10:
+						row.taskStatus = '已报待批';
 						break;
 					default:
 						break;
