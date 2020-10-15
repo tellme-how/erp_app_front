@@ -75,6 +75,7 @@
 		},
 		methods: {
 			getNotice() {
+				this.moreList = []
 				this.$api.myDesk.getDocumentCategoryOrgArchForPhone({
 					fdocstatus: 3,
 					from: 1,
@@ -179,9 +180,6 @@
 			},
 			toName(row) {
 				if(this.show) {
-					if(row.url == 'notice') {
-						this.getNotice()
-					}
 					this.$router.push({
 						name: row.url,
 						params: {
@@ -194,7 +192,6 @@
 				this.$router.push({
 					name: "notice",
 					params: {
-						moreList: this.moreList,
 						id: item.value,
 						rowNow: item
 					}

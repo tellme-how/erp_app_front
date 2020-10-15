@@ -356,7 +356,7 @@
 							this.submitMethod('', '');
 						}
 					} else {
-						this.goOut('提交失败')
+						this.goOut('提交失败!请联系管理员')
 					}
 				});
 			},

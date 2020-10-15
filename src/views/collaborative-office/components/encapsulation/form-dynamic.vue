@@ -269,7 +269,6 @@
 					tableName: this.formData.tableName
 				}
 			}
-
 		},
 		methods: {
 			aaa(item) {
@@ -391,6 +390,7 @@
 						}
 					}
 				}
+				console.log(valObject)
 				this.get_NameShowChlid(valObject)
 			},
 			//整理数据 valObject 是当前form显示数据

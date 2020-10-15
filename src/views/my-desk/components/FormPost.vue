@@ -5,11 +5,11 @@
 	<div>
 		<erpVanCell v-for="(item,key) in list" :key="key" :formContext="formContext" :rowCell="item"></erpVanCell>
 		<erpVanCellTitle title="一岗一表行">
-			<van-button @click="showOne = !showOne" size="mini" plain type="primary">展开明细</van-button>
+			<van-button @click="showOne = !showOne;showOne ? showName1 ='收起明细' : showName1 = '展开明细'" size="mini" plain type="primary">{{showName1}}</van-button>
 		</erpVanCellTitle>
 		<lineTable v-if="showOne" :linesList="linesList" :widthTable="widthTable"></lineTable>
 		<erpVanCellTitle title="公司指标">
-			<van-button @click="showTow = !showTow" size="mini" plain type="primary">展开明细</van-button>
+			<van-button @click="showTow = !showTow;showTow ? showName2 ='收起明细' : showName2 = '展开明细'" size="mini" plain type="primary">{{showName2}}</van-button>
 		</erpVanCellTitle>
 		<lineTable v-if="showTow" :linesList="linesList2" :widthTable="widthTable2"></lineTable>
 		<!--<erpVanCellTitle title="附件">
@@ -25,6 +25,8 @@
 		},
 		data() {
 			return {
+				showName1 :'展开明细',
+				showName2 :'展开明细',
 				showOne: false,
 				showTow: false,
 				widthTable: 100,

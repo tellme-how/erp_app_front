@@ -5,7 +5,7 @@
 	<div>
 		<erpVanCell v-for="(item,key) in list" :key="key" :formContext="formContext" :rowCell="item"></erpVanCell>
 		<erpVanCellTitle title="参数">
-			<van-button @click="showOne = !showOne" size="mini" plain type="primary">展开明细</van-button>
+			<van-button @click="showOne = !showOne;showOne ? showName1 ='收起明细' : showName1 = '展开明细'" size="mini" plain type="primary">{{showName1}}</van-button>
 		</erpVanCellTitle>
 		<lineTable v-if="showOne" :linesList="linesList" :widthTable="widthTable"></lineTable>
 		<!--<erpVanCellTitle title="附件">
@@ -21,6 +21,7 @@
 		},
 		data() {
 			return {
+				showName1: '展开明细',
 				showOne: false,
 				widthTable: 100,
 				formContext: {},
@@ -216,16 +217,18 @@
 				var list = []
 				if(row.groupPoint) {
 					list.push('集团重点')
-				} else if(row.companyPoint) {
+				}
+				if(row.companyPoint) {
 					list.push('公司重点');
-				} else if(row.departmentPoint) {
+				}
+				if(row.departmentPoint) {
 					list.push('部门重点')
 				}
 				if(list.length == 0) {
 					row.focusLevelCheckList = ""
 				} else {
 					list.forEach((item, key) => {
-						row.focusLevelCheckList = row.focusLevelCheckList + " item"
+						row.focusLevelCheckList = item + " "
 					})
 				}
 			}

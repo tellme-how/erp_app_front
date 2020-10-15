@@ -133,6 +133,10 @@
 				return row.fstatus + " " + row.fsrcCompany + " " + row.factivityName
 			},
 			toUrl(row) {
+				if(row.classId == 'StaffAppraisals') {
+					this.goOut('页面不存在,请联系系统管理人员!')
+					return
+				}
 				if(row.fsubject.indexOf('退回') != -1 && row.classId.indexOf('OA') == -1) {
 					this.goOut("此类单据请至系统中进行编辑")
 					return

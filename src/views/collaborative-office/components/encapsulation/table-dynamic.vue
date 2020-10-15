@@ -94,6 +94,7 @@
 					page: 1,
 					creator: localStorage.getItem('ms_userId')
 				}).then(data => {
+					console.log(data)
 					this.get_NameShow(data.data.data.rows)
 					if(this.dis == 3) {
 						this.ruleForm.lines.forEach(item => {
@@ -121,6 +122,8 @@
 				this.$set(this.rowNow, "tableName", this.formData.tableName)
 				this.$set(this.rowNow, "oprStatus", 1)
 				this.getrulesList()
+				console.log(this.linesList)
+				console.log(this.ruleForm.lines)
 			}
 		},
 		//注释同form-dynamic 
@@ -341,8 +344,10 @@
 												this.$set(val, keyVal + "_NameShow", nameList)
 												break;
 											case "7":
+												console.log(dataList)
 												dataList.forEach(itemChild => {
 													if(itemChild.srcId == val[keyVal]) {
+														console.log(11111111111111111111)
 														this.$set(val, keyVal + "_NameShow", itemChild.title)
 													}
 												})

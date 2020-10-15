@@ -21,7 +21,12 @@
 				<div style="margin: 10px;" v-for="(item,key) in list" @click="toDo(item)">
 					<van-row>
 						<van-row class="noticetitle">
-							{{item.fname}}
+							<van-col span="22" style="overflow: auto;">
+								<van-image v-if="item.fisread == 0" width="0.5rem" height="0.5rem" fit="contain" :src="$GLOBAL.htmlUrl + '未读.png'" /> {{item.fname}}
+							</van-col>
+							<van-col span="2" style="text-align: center;" v-if="item.fistop == 1">
+								<van-image width="1rem" height="1rem" fit="contain" :src="$GLOBAL.htmlUrl + '置顶.png'" />
+							</van-col>
 						</van-row>
 						<van-row style="margin-top: 5px;text-align: left;margin-left: 20px;font-size: 12px;color: DarkGray;">
 							创建人 : {{item.fcreatorname}}
@@ -41,7 +46,7 @@
 	export default {
 		data() {
 			return {
-				overList:"",
+				overList: "",
 				isLoading: false,
 				optionValue: "",
 				option: [],
@@ -74,54 +79,40 @@
 				rowNow: {}
 			};
 		},
-		//判断从详情页面跳转过来的数据
-		 beforeRouteEnter(to, from, next) {
-			if (from.path == "/erp/noticeSee") {
-			to.meta.isBack = true;
-			} else {
-				to.meta.isBack = false;
-			}
-			next();
-		},
-		 activated() {
-			if (!this.$route.meta.isBack) {
-				// aaa
-			// this.list = [];
-			// this.pageNum = 1;
-			this.searchValue = '';
-			this.list=[];
-			this.formListAll.page='1';
-			this.getAll();
-			} else {
-				console.log("0");
-			}
-			this.$route.meta.isBack = false;
-		},
-		beforeRouteLeave(to, from, next) {
-			if(typeof(this.$route.params.moreList) != "undefined" && this.$route.params.moreList.length != 0) {
-				sessionStorage.setItem("moreList", JSON.stringify(this.option));
-			}
-			next()
-		},
-		created() {
-			var moreList = this.$route.params.moreList
+		activated() {
+			this.option = []
+			this.list = []
+			this.$api.myDesk.getDocumentCategoryOrgArchForPhone({
+				fdocstatus: 3,
+				from: 1,
+				fuserid: localStorage.getItem('ms_userId'),
+				page: 1,
+				roleIdSet: localStorage.getItem('ms_roles').split(','),
+				size: 5,
+			}).then(data => {
+				data.data.data.forEach((item, index) => {
+					var a = {
+						text: item.fname,
+						value: item.foid,
+						children: item.manageResVos,
+						listChildren: item.categoryResVos
+					}
+					this.option.push(a)
+					if(index == data.data.data.length - 1) {
+						if(this.$route.params.id) {
+							this.showFig = false
+							this.optionValue = this.$route.params.id
+							this.rowNow = this.$route.params.rowNow
+						} else {
+							this.showFig = true
+							this.optionValue = this.option[0].value
+						}
+						this.$store.commit("tabbarShow", true)
+						this.onLoad()
+					}
+				})
+			})
 			this.$store.commit("titleShow", '新闻资讯')
-			if(this.$route.params.id) {
-				this.showFig = false
-				this.optionValue = this.$route.params.id
-				this.rowNow = this.$route.params.rowNow
-			} else {
-				if(JSON.parse(sessionStorage.getItem("moreList"))) {
-					moreList = JSON.parse(sessionStorage.getItem("moreList"))
-				} else {
-					moreList = this.$route.params.moreList
-				}
-				this.showFig = true
-				this.optionValue = moreList[0].value
-			}
-			this.option = moreList
-			this.$store.commit("tabbarShow", true)
-			this.onLoad()
 		},
 		methods: {
 			toDo(row) {
@@ -208,7 +199,7 @@
 						this.loading = false
 						if(data.data.data.rows.length < 20) {
 							this.finished = true
-							this.overList = "总共"+ data.data.data.total +"条"
+							this.overList = "总共" + data.data.data.total + "条"
 						}
 						this.showState = false
 						this.isLoading = false
@@ -267,7 +258,7 @@
 						this.loading = false
 						if(data.data.data.rows.length < 20) {
 							this.finished = true
-							this.overList = "总共"+ data.data.data.total +"条"
+							this.overList = "总共" + data.data.data.total + "条"
 						}
 						this.showState = false
 					})
@@ -300,6 +291,12 @@
 </script>
 
 <style scoped="scoped">
+	::-webkit-scrollbar {
+		width: 0;
+		height: 0;
+		background-color: transparent;
+	}
+	
 	.noticetitle {
 		text-align: left;
 		margin-left: 20px;

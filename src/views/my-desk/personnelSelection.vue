@@ -91,10 +91,10 @@
 			<van-button @click="toSave" style="margin-right :10px;width: 20vw;" size="small" icon="edit" plain hairline type="info">确定</van-button>
 			<van-image width="5rem" height="5rem" @click="showFig = !showFig" id="circle" :src="showImg" />
 			<div v-if="showFig">
-				<van-image id="circle1" @click="byDeptmentName()" round width="3rem" height="3rem" :src="$GLOBAL.htmlUrl + '部门.png'" />
-				<van-image id="circle2" @click="allName()" round width="3rem" height="3rem" :src="$GLOBAL.htmlUrl + '所有人.png'" />
-				<van-image id="circle3" @click="getresultId()" round width="3rem" height="3rem" :src="$GLOBAL.htmlUrl + '常用人.png'" />
-				<van-image id="circle4" @click="toTreeData()" round width="3rem" height="3rem" :src="$GLOBAL.htmlUrl + '组织架构.png'" />
+				<van-image id="circle1" @click="byDeptmentName();value = ''" round width="3rem" height="3rem" :src="$GLOBAL.htmlUrl + '部门.png'" />
+				<van-image id="circle2" @click="allName();value = ''" round width="3rem" height="3rem" :src="$GLOBAL.htmlUrl + '所有人.png'" />
+				<van-image id="circle3" @click="getresultId();value = ''" round width="3rem" height="3rem" :src="$GLOBAL.htmlUrl + '常用人.png'" />
+				<van-image id="circle4" @click="toTreeData();value = ''" round width="3rem" height="3rem" :src="$GLOBAL.htmlUrl + '组织架构.png'" />
 			</div>
 		</div>
 		<van-popup v-model="show1" :style="{ height: '30%',width:'100%' }">
