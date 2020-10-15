@@ -91,7 +91,7 @@
 					list: []
 				}, {
 					name: "秘书",
-					value: "secretaryPage",
+					value: "secretaryName",
 					list: []
 				}, {
 					name: "完成情况(%)",
@@ -114,30 +114,22 @@
 					value: "remark",
 					list: []
 				}, 
-				//延期
+				//调整
 				{
-					name: "原完成时间",
-					value: "yendDate",
+					name: "新工作名称",
+					value: "completion",
 					list: []
 				}, {
-					name: "延期完成时间",
-					value: "delayEndDate",
+					name: "新工作标准",
+					value: "newWorkName",
 					list: []
 				}, {
-					name: "考核指标(%)",
-					value: "target",
+					name: "新开始时间",
+					value: "newBeginDate",
 					list: []
 				}, {
-					name: "是否开会",
-					value: "metting",
-					list: []
-				}, {
-					name: "拟定开会时间",
-					value: "meetDate",
-					list: []
-				}, {
-					name: "解决方案",
-					value: "solution",
+					name: "新完成时间",
+					value: "newEndDate",
 					list: []
 				}],
 				linesList: [{
