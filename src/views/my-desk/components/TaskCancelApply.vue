@@ -91,7 +91,7 @@
 					list: []
 				}, {
 					name: "秘书",
-					value: "secretaryPage",
+					value: "secretaryName",
 					list: []
 				}, {
 					name: "完成情况(%)",
@@ -114,24 +114,7 @@
 					value: "remark",
 					list: []
 				},
-				//任务调整
-				{
-					name: "新工作名称",
-					value: "newWorkName",
-					list: []
-				},{
-					name: "新工作标准",
-					value: "newWorkStandard",
-					list: []
-				},{
-					name: "新开始时间",
-					value: "newBeginDate",
-					list: []
-				},{
-					name: "新完成时间",
-					value: "newEndDate",
-					list: []
-				}],
+				],
 				linesList: [{
 					name: "序号",
 					value: "key1",
