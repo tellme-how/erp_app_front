@@ -112,11 +112,11 @@
 					list: []
 				}, {
 					name: "责任人",
-					value: "glResponsibleName",
+					value: "responsibleName",
 					list: []
 				}, {
 					name: "协办人",
-					value: "responsibleName",
+					value: "glResponsibleName",
 					list: []
 				}, {
 					name: "秘书",
