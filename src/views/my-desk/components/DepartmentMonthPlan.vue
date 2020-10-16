@@ -59,7 +59,7 @@
 					list: []
 				}, {
 					name: "经办日期",
-					value: "handleDate",
+					value: "voucherDate",
 					list: []
 				}],
 				linesList: [{
