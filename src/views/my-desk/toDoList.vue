@@ -71,7 +71,7 @@
 		created() {
 			this.$store.commit("titleShow", "待办事项")
 			this.$store.commit("tabbarShow", true)
-			this.onLoad()
+			this.onLoad()		
 		},
 		methods: {
 			//根据状态改背景色
@@ -87,9 +87,10 @@
 			},
 			toChange(val) {
 				this.searchValue = ""
+				localStorage.setItem('selectValue', val)
 				switch(val) {
 					case 1:
-						this.$store.commit("titleShow", "待办事项")
+						this.$store.commit("titleShow", "待办事项");
 						break;
 					case 2:
 						this.$store.commit("titleShow", "关注事项")
@@ -163,11 +164,18 @@
 				this.onLoad()
 			},
 			onLoad() {
+				// debugger
+				
 				//防止多次调用
 				if(!this.showState) {
 					this.finished = false
 					this.showState = true
 					var urlCon = ""
+					if(localStorage.getItem('selectValue') == null || localStorage.getItem('selectValue') == undefined) {
+						this.value = 1;
+					} else {
+						this.value = Number(localStorage.getItem('selectValue'))
+					}
 					switch(this.value) {
 						case 1:
 							urlCon = "workFlow/unhandledTask"
