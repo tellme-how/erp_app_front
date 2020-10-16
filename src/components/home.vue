@@ -4,6 +4,7 @@
 			<van-icon v-if="$route.name != 'index' && $route.name != 'toDoList' && $route.name != 'personal'" @click="toBack()" style="margin-top: 10px;position: fixed;left: 0px;top: 0px;" name="arrow-left" /> {{$store.state.title}}
 		</div>
 		<div class="s"></div>
+		<loading v-show="$store.state.LOADING"></loading>
 		<router-view :class="{homeBottom :$store.state.tabbar}" style="margin-bottom: 10vh;">
 		</router-view>
 		<van-tabbar v-if="$store.state.tabbar" v-model="active" @change="toName">
@@ -20,7 +21,11 @@
 
 <script>
 	import { Toast } from 'vant';
+	import loading from './loading.vue'
 	export default {
+		components: {
+			loading
+		},
 		data() {
 			return {
 				show: {
@@ -124,9 +129,6 @@
 								localStorage.setItem('ms_ffirmpositionName', data.data.principal.ffirmpositionName);
 								this.$router.push({
 									name: 'personal',
-								})
-								this.$api.publicUrl.getCompanyData().then(data => {
-									localStorage.setItem('CompanyData', JSON.stringify(data.data.data.rows));
 								})
 							})
 						}

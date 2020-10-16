@@ -74,6 +74,7 @@
 			async submitForm(status) {
 				//校验所有必填字段
 				if(await this.$refs.child.onSubmit()) {
+					this.$store.commit('showLoading')
 					//获取返回字段的合集
 					var backData = {
 						jsonStr: this.$refs.child.conData
@@ -145,6 +146,7 @@
 							this.$refs.child.toUpload(data.data.data)
 							this.$parent.toSelect()
 						}
+						this.$store.commit('hideLoading')
 					})
 				} else {
 					this.goOut("请填写必填的数据")

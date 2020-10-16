@@ -445,7 +445,7 @@
 					if(option.icon == this.$GLOBAL.htmlUrl + '已关注.png') {
 						this.$api.myDesk.deleteAttention({
 							fvoucherOid: this.context.fsrcoId,
-							fattentionOid: localStorage.getItem("ms_staffId")
+							fattentionOid: localStorage.getItem("ms_userId")
 						}).then(data => {
 							option.name = "关注"
 							option.icon = this.$GLOBAL.htmlUrl + '关注.png'
@@ -453,7 +453,8 @@
 					} else {
 						this.$api.myDesk.addAttention({
 							fvoucherOid: this.context.fsrcoId,
-							fattentionOid: localStorage.getItem("ms_userId")
+							fattentionOid: localStorage.getItem("ms_userId"),
+							fwfBizMailOid : this.context.foid
 						}).then(data => {
 							option.name = "取消关注"
 							option.icon = this.$GLOBAL.htmlUrl + '已关注.png'

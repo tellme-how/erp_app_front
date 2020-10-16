@@ -70,9 +70,6 @@
 					//职位
 					localStorage.setItem('ms_ffirmpositionName', data.data.principal.ffirmpositionName);
 					this.$router.push("/erp")
-					this.$api.publicUrl.getCompanyData().then(data => {
-						localStorage.setItem('CompanyData', JSON.stringify(data.data.data.rows));
-					})
 				})
 			}
 		}

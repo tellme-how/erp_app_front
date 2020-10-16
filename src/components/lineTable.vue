@@ -14,6 +14,9 @@
 			linesList: Array,
 			widthTable: Number
 		},
+		created(){
+			console.log(this.widthTable)
+		},
 		filters: {
 			valShow(status, key) {
 				if(typeof(status) == 'boolean') {

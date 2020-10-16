@@ -95,6 +95,7 @@
 					creator: localStorage.getItem('ms_userId')
 				}).then(data => {
 					console.log(data)
+					console.log(this.dis)
 					this.get_NameShow(data.data.data.rows)
 					if(this.dis == 3) {
 						this.ruleForm.lines.forEach(item => {
@@ -123,7 +124,6 @@
 				this.$set(this.rowNow, "oprStatus", 1)
 				this.getrulesList()
 				console.log(this.linesList)
-				console.log(this.ruleForm.lines)
 			}
 		},
 		//注释同form-dynamic 
@@ -196,10 +196,18 @@
 								}
 								for(var keyVal in val) {
 									if(item.fieldType == 4 && item.field == keyVal) {
-										val[keyVal] = parseInt(val[keyVal])
+										if(this.noNull(val[keyVal]) || isNaN(val[keyVal])) {
+											val[keyVal] = ""
+										} else {
+											val[keyVal] = parseInt(val[keyVal])
+										}
 									}
 									if(item.fieldType == 5 && item.field == keyVal) {
-										val[keyVal] = parseFloat(val[keyVal])
+										if(this.noNull(val[keyVal]) || isNaN(val[keyVal])) {
+											val[keyVal] = ""
+										} else {
+											val[keyVal] = parseFloat(val[keyVal])
+										}
 									}
 									if(item.fieldType == 1 && item.field == keyVal) {
 										switch(item.toSelect.id) {
@@ -344,7 +352,6 @@
 												this.$set(val, keyVal + "_NameShow", nameList)
 												break;
 											case "7":
-												console.log(dataList)
 												dataList.forEach(itemChild => {
 													if(itemChild.srcId == val[keyVal]) {
 														console.log(11111111111111111111)

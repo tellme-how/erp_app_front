@@ -19,7 +19,7 @@
 	export default {
 		data() {
 			return {
-				overList:"",
+				overList: "",
 				mainName: "",
 				mainTable: [],
 				value: "",
@@ -38,7 +38,9 @@
 		created() {
 			this.$store.commit("tabbarShow", true)
 			this.$store.commit("titleShow", "选择模板")
-			this.$api.collaborativeOffice.getCompanyData().then(data => {
+			this.$api.collaborativeOffice.getCompanyData({
+				fmactivity: 'OAERP000000OID0016'
+			}).then(data => {
 				this.option = []
 				data.data.forEach(item => {
 					this.option.push({
@@ -68,12 +70,12 @@
 							})
 							if(data.data.data.rows.length < 20) {
 								this.finished = true
-								this.overList = "总共"+ data.data.data.total +"条"
+								this.overList = "总共" + data.data.data.total + "条"
 							}
 							this.formData.page++;
 						} else {
 							this.finished = true
-							this.overList = "总共"+ data.data.data.total +"条"
+							this.overList = "总共" + data.data.data.total + "条"
 						}
 						this.status = true
 					})

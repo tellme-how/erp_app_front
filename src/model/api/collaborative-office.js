@@ -75,8 +75,15 @@ const collaborativeOffice = {
 		return httpReqest.post('/api/interfaces/workItemType/insertWorkItemTypeModel', params);
 	},
 	// 查询公司
-	getCompanyData() {
-		return httpReqest.get('/api/uaa/findRoleCompanyDataVoByMactivity?fmactivity=111712011447700301');
+	getCompanyData(params) {
+		var valueS = '?';
+		for(var item in params) {
+			valueS += item + "=" + params[item] + "&";
+		}
+		if(valueS.slice(valueS.length - 1, valueS.length) === "&") {
+			valueS = valueS.slice(0, valueS.length - 1);
+		}
+		return httpReqest.get('/api/uaa/findRoleCompanyDataVoByMactivity' + valueS);
 	},
 	// 修改工作事项模版主表分类
 	updateWorkItemTypeModel(params) {

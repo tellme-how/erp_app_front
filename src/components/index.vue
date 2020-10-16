@@ -128,9 +128,6 @@
 					localStorage.setItem('ms_companyId', data.data.principal.companyId);
 					//职位
 					localStorage.setItem('ms_ffirmpositionName', data.data.principal.ffirmpositionName);
-					this.$api.publicUrl.getCompanyData().then(data => {
-						localStorage.setItem('CompanyData', JSON.stringify(data.data.data.rows));
-					})
 				})
 			},
 			/*

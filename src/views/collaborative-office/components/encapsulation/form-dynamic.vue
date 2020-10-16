@@ -295,9 +295,9 @@
 			},
 			checkboxShow(row) {
 				if(this.checkboxValue[row.field]) {
-					this.ruleForm[row.field] = 0
-				} else {
 					this.ruleForm[row.field] = 1
+				} else {
+					this.ruleForm[row.field] = 0
 				}
 			},
 			optionsShow(row) {
@@ -409,7 +409,7 @@
 								this.$set(this.ruleForm, key, parseFloat(valObject[key]))
 							} else if(item.fieldType == 10) {
 								this.$set(this.ruleForm, key, valObject[key])
-								if(valObject[key] == 0) {
+								if(valObject[key] == 1) {
 									this.checkboxValue[key] = true
 								} else {
 									this.checkboxValue[key] = false

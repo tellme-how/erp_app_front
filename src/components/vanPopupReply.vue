@@ -1,6 +1,6 @@
 <template>
-	<van-popup :close-on-click-overlay="showClose" @click-overlay="closeVan" v-model:show="show" position="bottom" :style="{ height: '60%' }">
-		<div style="min-height: 90%;">
+	<van-popup :close-on-click-overlay="showClose" @click-overlay="closeVan" v-model:show="show" position="bottom" :style="{ height: '30%' }">
+		<div style="min-height: 80%;">
 			<van-cell v-for="(item,key) in replyList" :key="key" value-class="valueClass">
 				<template #default>
 					<span @click="toReply(item,1)" class="spanClss">{{item.staffName}}</span>
@@ -11,7 +11,7 @@
 			</van-cell>
 		</div>
 
-		<van-row align="bottom" style="height: 10%;">
+		<van-row align="bottom" style="min-height: 20%;">
 			<van-col span="7">
 				<van-cell>
 					<template #default>
