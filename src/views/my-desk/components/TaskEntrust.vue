@@ -171,6 +171,16 @@
 		},
 		methods: {
 			showName(row) {
+				switch(row.taskCancel) {
+					case true:
+						row.taskCancel = '是';
+						break;
+					case false:
+						row.taskCancel = '否';
+						break;
+					default:
+						break;	
+				}
 				switch(row.periodicityTask) {
 					case true:
 						row.periodicityTask = '是';
