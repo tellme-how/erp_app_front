@@ -238,8 +238,8 @@
 	.ccc {
 		height: auto;
 		padding: 1vh;
-		background: #fffa7f;
-		border-left: 20px solid #fffeed;
+		background: #fffeed;
+		border-left: 20px solid #fffa7f;
 	}
 	
 	.ddd {

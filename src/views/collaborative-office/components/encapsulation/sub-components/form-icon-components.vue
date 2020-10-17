@@ -299,6 +299,7 @@
 					case "workItems":
 						url = "workItem/findPage"
 						this.pageSize.creator = localStorage.getItem('ms_userId')
+						this.pageSize.status = "3"
 						this.$api.collaborativeOffice.findConList(url, this.pageSize).then(data => {
 							console.log(data)
 							data.data.data.rows.forEach(item => {

@@ -231,6 +231,7 @@
 					this.list = this.list.filter(item => {
 						return item.fname.indexOf(val) != -1
 					})
+					this.overList = "总共" + this.list.length + "条"
 				}
 			},
 			toChange(val) {

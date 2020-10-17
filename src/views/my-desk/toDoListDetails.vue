@@ -36,6 +36,7 @@
 			<van-field v-model="remark" autosize label="加批意见" type="input" />
 			<van-button type="primary" size='small' @click="toDoOher">提交</van-button>
 		</van-popup>
+		<van-action-sheet description="请选择岗位" v-model="showActions" :actions="actions" @select="onSelectActions" />
 	</div>
 </template>
 
@@ -101,6 +102,8 @@
 		},
 		data() {
 			return {
+				actions: [],
+				showActions: false,
 				valueStateShow: false,
 				remark: "",
 				valueState: "",
@@ -138,9 +141,13 @@
 			this.valueState = JSON.parse(sessionStorage.getItem("valueState"))
 			this.$store.commit("titleShow", this.context.fsubject)
 			this.columns = []
+			console.log(this.context.fsubject.substring(0, 3) == '退回：')
+			console.log(this.context.fcreator == localStorage.getItem("ms_userId"))
+			console.log(this.context.fcode == 'manpower')
 			if((this.context.fsubject.substring(0, 3) == '退回：' && this.context.fcreator == localStorage.getItem("ms_userId")) || this.context.fcode == 'manpower') {
 				this.showSeeOrUpd = "3";
 			} else {
+				console.log(1)
 				this.showSeeOrUpd = "1";
 			}
 			this.$api.myDesk.getWfDecisionTypeConByCurNode({
@@ -156,6 +163,9 @@
 			this.optionsShow()
 		},
 		methods: {
+			onSelectActions(val) {
+				this.submitData(val.id)
+			},
 			toSave() {
 				this.$refs.childOher.$refs.childOtherChild.forEach(item => {
 					if((item.context.gestor == localStorage.getItem('ms_staffId') || typeof(item.context.gestor) == 'undefined') && this.showSeeOrUpd == 3) {
@@ -219,10 +229,18 @@
 						}, {
 							name: '已阅',
 							icon: this.$GLOBAL.htmlUrl + '已阅.png'
-						}, {
-							name: '关注',
-							icon: this.$GLOBAL.htmlUrl + '关注.png'
 						}]
+						if(this.context.fisAttention == 0) {
+							this.options.push({
+								name: '关注',
+								icon: this.$GLOBAL.htmlUrl + '关注.png'
+							})
+						} else {
+							this.options.push({
+								name: '取消关注',
+								icon: this.$GLOBAL.htmlUrl + '已关注.png'
+							})
+						}
 					} else if(this.context.fsubject.slice(0, 4).indexOf('委托') != -1) {
 						this.valueStateShow = true
 						this.options = [{
@@ -232,12 +250,20 @@
 							name: '委托',
 							icon: this.$GLOBAL.htmlUrl + '委托.png'
 						}, {
-							name: '关注',
-							icon: this.$GLOBAL.htmlUrl + '关注.png'
-						}, {
 							name: '加签',
 							icon: this.$GLOBAL.htmlUrl + '加签.png'
 						}]
+						if(this.context.fisAttention == 0) {
+							this.options.push({
+								name: '关注',
+								icon: this.$GLOBAL.htmlUrl + '关注.png'
+							})
+						} else {
+							this.options.push({
+								name: '取消关注',
+								icon: this.$GLOBAL.htmlUrl + '已关注.png'
+							})
+						}
 					} else if(this.context.fsubject.slice(0, 4).indexOf('正在加签') != -1) {
 						this.valueStateShow = false
 						this.options = [{
@@ -252,10 +278,18 @@
 						this.options = [{
 							name: '转发',
 							icon: this.$GLOBAL.htmlUrl + '转发.png'
-						}, {
-							name: '关注',
-							icon: this.$GLOBAL.htmlUrl + '关注.png'
 						}]
+						if(this.context.fisAttention == 0) {
+							this.options.push({
+								name: '关注',
+								icon: this.$GLOBAL.htmlUrl + '关注.png'
+							})
+						} else {
+							this.options.push({
+								name: '取消关注',
+								icon: this.$GLOBAL.htmlUrl + '已关注.png'
+							})
+						}
 					} else {
 						this.valueStateShow = true
 						this.options = [{
@@ -265,58 +299,97 @@
 							name: '委托',
 							icon: this.$GLOBAL.htmlUrl + '委托.png'
 						}, {
-							name: '关注',
-							icon: this.$GLOBAL.htmlUrl + '关注.png'
-						}, {
 							name: '加签',
 							icon: this.$GLOBAL.htmlUrl + '加签.png'
 						}]
+						if(this.context.fisAttention == 0) {
+							this.options.push({
+								name: '关注',
+								icon: this.$GLOBAL.htmlUrl + '关注.png'
+							})
+						} else {
+							this.options.push({
+								name: '取消关注',
+								icon: this.$GLOBAL.htmlUrl + '已关注.png'
+							})
+						}
 					}
 				} else if(this.valueState == 2) {
 					this.valueStateShow = false
 					this.options = [{
-							name: '转发',
-							icon: this.$GLOBAL.htmlUrl + '转发.png'
-						},
-						{
+						name: '转发',
+						icon: this.$GLOBAL.htmlUrl + '转发.png'
+					}]
+					if(this.context.fisAttention == 0) {
+						this.options.push({
 							name: '关注',
 							icon: this.$GLOBAL.htmlUrl + '关注.png'
-						}
-					]
+						})
+					} else {
+						this.options.push({
+							name: '取消关注',
+							icon: this.$GLOBAL.htmlUrl + '已关注.png'
+						})
+					}
 				} else if(this.valueState == 3) {
 					this.valueStateShow = false
 					this.options = [{
-							name: '转发',
-							icon: this.$GLOBAL.htmlUrl + '转发.png'
-						},
-						{
+						name: '转发',
+						icon: this.$GLOBAL.htmlUrl + '转发.png'
+					}, {
+						name: '加批',
+						icon: this.$GLOBAL.htmlUrl + '加批.png'
+					}]
+					if(this.context.fisAttention == 0) {
+						this.options.push({
 							name: '关注',
 							icon: this.$GLOBAL.htmlUrl + '关注.png'
-						},
-						{
-							name: '加批',
-							icon: this.$GLOBAL.htmlUrl + '加批.png'
-						}
-					]
+						})
+					} else {
+						this.options.push({
+							name: '取消关注',
+							icon: this.$GLOBAL.htmlUrl + '已关注.png'
+						})
+					}
 				} else if(this.valueState == 4) {
 					this.valueStateShow = false
 					this.options = [{
-							name: '转发',
-							icon: this.$GLOBAL.htmlUrl + '转发.png'
-						},
-						{
+						name: '转发',
+						icon: this.$GLOBAL.htmlUrl + '转发.png'
+					}]
+					if(this.context.fisAttention == 0) {
+						this.options.push({
 							name: '关注',
 							icon: this.$GLOBAL.htmlUrl + '关注.png'
-						}
-					]
+						})
+					} else {
+						this.options.push({
+							name: '取消关注',
+							icon: this.$GLOBAL.htmlUrl + '已关注.png'
+						})
+					}
 				}
 			},
 			toDo() {
 				if(this.noNull(this.value)) {
 					this.goOut("请选择决策类型")
 				} else {
-					if(this.noNull(this.value2)) {
-						this.goOut('请填写审批意见')
+					if(this.value == 2) {
+						if(this.noNull(this.value2)) {
+							this.goOut('请填写审批意见')
+						} else {
+							if(this.context.fsubject.indexOf("正在加签") > -1) {
+								this.goOut('加签未结束，请结束加签再提交!')
+							} else {
+								Dialog.confirm({
+									message: '单据提交后将流转到下一个节点，确实要提交当前数据吗？'
+								}).then(() => {
+									this.doSome()
+								}).catch(() => {
+									this.goOut("已取消")
+								});
+							}
+						}
 					} else {
 						if(this.context.fsubject.indexOf("正在加签") > -1) {
 							this.goOut('加签未结束，请结束加签再提交!')
@@ -356,7 +429,7 @@
 							this.submitMethod('', '');
 						}
 					} else {
-						this.goOut('提交失败!请联系管理员')
+						this.goOut('当前业务活动所在工作流流程已经禁用，请启用后再处理！')
 					}
 				});
 			},
@@ -373,11 +446,15 @@
 						if(res.data.code == 0) {
 							if(res.data.data.length >= 2) {
 								//当存在兼职的时候，弹出pop框
-								//								this.jobVisible = true;
-								//								for(var i = 0; i < res.data.data.length; i++) {
-								//									res.data.data[i]['index'] = i + 1;
-								//								}
-								//								this.tableData = res.data.data;
+								this.actions = []
+								this.showActions = true;
+								res.data.data.forEach(item => {
+									this.actions.push({
+										name: item.firmpositioName,
+										id: item.foid
+									})
+								})
+
 							} else {
 								this.submitData();
 							}
@@ -454,7 +531,7 @@
 						this.$api.myDesk.addAttention({
 							fvoucherOid: this.context.fsrcoId,
 							fattentionOid: localStorage.getItem("ms_userId"),
-							fwfBizMailOid : this.context.foid
+							fwfBizMailOid: this.context.foid
 						}).then(data => {
 							option.name = "取消关注"
 							option.icon = this.$GLOBAL.htmlUrl + '已关注.png'

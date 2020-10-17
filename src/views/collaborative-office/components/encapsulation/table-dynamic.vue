@@ -87,16 +87,14 @@
 					type: item.fieldType
 				})
 			})
+			console.log(this.formData)
 			if(typeof(this.formData.conList) != "undefined" && this.formData.conList.length != 0) {
 				//查看1  新增2  修改3
-				this.$api.collaborativeOffice.findPage({
-					size: 1000000,
-					page: 1,
-					creator: localStorage.getItem('ms_userId')
+				this.$api.collaborativeOffice.findWorkItemList({
+					gestorOid: this.formData.wholeData.gestor
 				}).then(data => {
 					console.log(data)
-					console.log(this.dis)
-					this.get_NameShow(data.data.data.rows)
+					this.get_NameShow(data.data.data)
 					if(this.dis == 3) {
 						this.ruleForm.lines.forEach(item => {
 							this.linesList[0].list.push('poiul2')
@@ -123,7 +121,6 @@
 				this.$set(this.rowNow, "tableName", this.formData.tableName)
 				this.$set(this.rowNow, "oprStatus", 1)
 				this.getrulesList()
-				console.log(this.linesList)
 			}
 		},
 		//注释同form-dynamic 
@@ -208,6 +205,23 @@
 										} else {
 											val[keyVal] = parseFloat(val[keyVal])
 										}
+									}
+									if(item.fieldType == 9 && item.field == keyVal) {
+										item.resList.forEach(aaa => {
+											if(aaa.id == val[keyVal]) {
+												this.$set(val, keyVal + "_NameShow", aaa.name)
+											}
+										})
+									}
+									if(item.fieldType == 10 && item.field == keyVal) {
+										if(val[keyVal] == 1) {
+											this.$set(val, keyVal + "_NameShow", '是')
+										} else {
+											this.$set(val, keyVal + "_NameShow", '否')
+										}
+									}
+									if(item.fieldType == 6 && item.field == keyVal) {
+										this.$set(val, keyVal + "_NameShow", '请至PC端进行查看!')
 									}
 									if(item.fieldType == 1 && item.field == keyVal) {
 										switch(item.toSelect.id) {
@@ -354,7 +368,6 @@
 											case "7":
 												dataList.forEach(itemChild => {
 													if(itemChild.srcId == val[keyVal]) {
-														console.log(11111111111111111111)
 														this.$set(val, keyVal + "_NameShow", itemChild.title)
 													}
 												})
@@ -421,52 +434,52 @@
 								trigger: 'change'
 							})
 						}
-					}
-					switch(item.fieldType) {
-						case "2":
-							this.rules[item.field].push({
-								pattern: /^.{0,1500}$/,
-								message: '请输入正确的' + item.fieldName,
-								trigger: 'change'
-							})
-							return "integers"
-							break;
-						case "3":
-							this.rules[item.field].push({
-								pattern: /^.{0,1500}$/,
-								message: '请输入正确的' + item.fieldName,
-								trigger: 'change'
-							})
-							return "integers"
-							break;
-						case "4":
-							//添加整型校验
-							this.rules[item.field].push({
-								pattern: /^-?[1-9]\d*$/,
-								message: '请输入正确的' + item.fieldName,
-								trigger: 'change'
-							})
-							this.rules[item.field].push({
-								pattern: /^.{0,20}$/,
-								message: '请输入正确的' + item.fieldName,
-								trigger: 'change'
-							})
-							return "integers"
-							break;
-						case "5":
-							//添加浮点型校验
-							this.rules[item.field].push({
-								pattern: /^([1-9]\d{0,15}|0)(\.\d{1,4})?$/,
-								message: '请输入最多4位小数',
-								trigger: 'change'
-							})
-							this.rules[item.field].push({
-								pattern: /^.{0,20}$/,
-								message: '请输入正确的' + item.fieldName,
-								trigger: 'change'
-							})
-							return "floatingPoint"
-							break;
+						switch(item.fieldType) {
+							case "2":
+								this.rules[item.field].push({
+									pattern: /^.{0,1500}$/,
+									message: '请输入正确的' + item.fieldName,
+									trigger: 'change'
+								})
+								return "integers"
+								break;
+							case "3":
+								this.rules[item.field].push({
+									pattern: /^.{0,1500}$/,
+									message: '请输入正确的' + item.fieldName,
+									trigger: 'change'
+								})
+								return "integers"
+								break;
+							case "4":
+								//添加整型校验
+								this.rules[item.field].push({
+									pattern: /^-?[1-9]\d*$/,
+									message: '请输入正确的' + item.fieldName,
+									trigger: 'change'
+								})
+								this.rules[item.field].push({
+									pattern: /^.{0,20}$/,
+									message: '请输入正确的' + item.fieldName,
+									trigger: 'change'
+								})
+								return "integers"
+								break;
+							case "5":
+								//添加浮点型校验
+								this.rules[item.field].push({
+									pattern: /^([1-9]\d{0,15}|0)(\.\d{1,4})?$/,
+									message: '请输入最多4位小数',
+									trigger: 'change'
+								})
+								this.rules[item.field].push({
+									pattern: /^.{0,20}$/,
+									message: '请输入正确的' + item.fieldName,
+									trigger: 'change'
+								})
+								return "floatingPoint"
+								break;
+						}
 					}
 				})
 			},

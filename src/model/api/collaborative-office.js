@@ -1,6 +1,19 @@
 import httpReqest from '../../utils/https';
 
 const collaborativeOffice = {
+	findIds(params) {
+		var valueS = '?';
+		for(var item in params) {
+			valueS += item + "=" + params[item] + "&";
+		}
+		if(valueS.slice(valueS.length - 1, valueS.length) === "&") {
+			valueS = valueS.slice(0, valueS.length - 1);
+		}
+		return httpReqest.get('/api/interfaces/workItem/findIds' + valueS);
+	},
+	findWorkItemList(params) {
+		return httpReqest.post('/api/interfaces/workItem/findWorkItemList', params);
+	},
 	dataToDataWorkItem(params) {
 		return httpReqest.post('/api/interfaces/workItem/dataToDataWorkItem', params);
 	},

@@ -251,6 +251,8 @@
 					//不显示固定栏（子表）
 				} else {
 					//整理子表数据
+					console.log(this.formData.wholeData)
+					console.log(this.dis)
 					this.formData.rowList.forEach(item => {
 						if(item.fieldTypeName == 'checkBox' && this.showAdd == 1) {
 							this.ruleForm[item.field] = 1
@@ -261,6 +263,7 @@
 					}
 					if(this.dis == 3) {
 						this.$set(this.ruleForm, "oprStatus", 2)
+						this.$set(this.ruleForm, "id", this.formData.wholeData.id)
 					}
 				}
 			}
@@ -404,14 +407,19 @@
 						if(item.field == key) {
 							//存入需要返回的值,如果是整形或者浮点 转化为相应类型
 							if(item.fieldType == 4) {
-								this.$set(this.ruleForm, key, parseInt(valObject[key]))
+								if(!this.noNull(valObject[key])) {
+									this.$set(this.ruleForm, key, parseInt(valObject[key]))
+								}
 							} else if(item.fieldType == 5) {
-								this.$set(this.ruleForm, key, parseFloat(valObject[key]))
+								if(!this.noNull(valObject[key])) {
+									this.$set(this.ruleForm, key, parseFloat(valObject[key]))
+								}
 							} else if(item.fieldType == 10) {
+								this.$set(this.checkboxValue, key, false)
 								this.$set(this.ruleForm, key, valObject[key])
 								if(valObject[key] == 1) {
 									this.checkboxValue[key] = true
-								} else {
+								} else if(valObject[key] == 0) {
 									this.checkboxValue[key] = false
 								}
 							} else {
@@ -622,53 +630,53 @@
 								trigger: 'change'
 							})
 						}
-					}
-					//浮点和整型校验 特殊对待一下
-					switch(item.fieldType) {
-						case "2":
-							this.rules[item.field].push({
-								pattern: /^.{0,1500}$/,
-								message: '请输入正确的' + item.fieldName,
-								trigger: 'change'
-							})
-							return "integers"
-							break;
-						case "3":
-							this.rules[item.field].push({
-								pattern: /^.{0,1500}$/,
-								message: '请输入正确的' + item.fieldName,
-								trigger: 'change'
-							})
-							return "integers"
-							break;
-						case "4":
-							//添加整型校验
-							this.rules[item.field].push({
-								pattern: /^-?[0-9]\d*$/,
-								message: '请输入正确的' + item.fieldName,
-								trigger: 'change'
-							})
-							this.rules[item.field].push({
-								pattern: /^.{0,20}$/,
-								message: '请输入正确的' + item.fieldName,
-								trigger: 'change'
-							})
-							return "integers"
-							break;
-						case "5":
-							//添加浮点型校验
-							this.rules[item.field].push({
-								pattern: /^([1-9]\d{0,15}|0)(\.\d{1,4})?$/,
-								message: '请输入最多4位小数',
-								trigger: 'change'
-							})
-							this.rules[item.field].push({
-								pattern: /^.{0,20}$/,
-								message: '请输入正确的' + item.fieldName,
-								trigger: 'change'
-							})
-							return "floatingPoint"
-							break;
+						//浮点和整型校验 特殊对待一下
+						switch(item.fieldType) {
+							case "2":
+								this.rules[item.field].push({
+									pattern: /^.{0,1500}$/,
+									message: '请输入正确的' + item.fieldName,
+									trigger: 'change'
+								})
+								return "integers"
+								break;
+							case "3":
+								this.rules[item.field].push({
+									pattern: /^.{0,1500}$/,
+									message: '请输入正确的' + item.fieldName,
+									trigger: 'change'
+								})
+								return "integers"
+								break;
+							case "4":
+								//添加整型校验
+								this.rules[item.field].push({
+									pattern: /^-?[0-9]\d*$/,
+									message: '请输入正确的' + item.fieldName,
+									trigger: 'change'
+								})
+								this.rules[item.field].push({
+									pattern: /^.{0,20}$/,
+									message: '请输入正确的' + item.fieldName,
+									trigger: 'change'
+								})
+								return "integers"
+								break;
+							case "5":
+								//添加浮点型校验
+								this.rules[item.field].push({
+									pattern: /^([1-9]\d{0,15}|0)(\.\d{1,4})?$/,
+									message: '请输入最多4位小数',
+									trigger: 'change'
+								})
+								this.rules[item.field].push({
+									pattern: /^.{0,20}$/,
+									message: '请输入正确的' + item.fieldName,
+									trigger: 'change'
+								})
+								return "floatingPoint"
+								break;
+						}
 					}
 				})
 			},
@@ -851,6 +859,7 @@
 					case "1":
 						this.showCon = "organization"
 						this.titleShow = "公司"
+						row.browseBoxList[0].children = row.browseBoxList[0].children.reverse()
 						this.$set(this.dataCon, "context", row.browseBoxList)
 						//数据回显(保证选中后再次打开数据依旧被选中)下面两条一样
 						typeof(this.ruleForm[row.field]) != "undefined" ? this.$set(this.dataCon, "echo", this.ruleForm[row.field].split(',')): this.$set(this.dataCon, "echo", [])
@@ -871,7 +880,10 @@
 						this.showCon = "personnel"
 						this.titleShow = "人员"
 						//数据回显(保证选中后再次打开数据依旧被选中)下面两条一样
-						if(typeof(this.ruleForm[row.field]) != "undefined") {
+
+						console.log(this.ruleForm)
+						console.log(row.field)
+						if(typeof(this.ruleForm[row.field]) != "undefined" && !this.noNull(this.ruleForm[row.field])) {
 							var a = []
 							var b = this.ruleForm[row.field].split(',')
 							var c = this.ruleForm[row.field + "_NameShow"].split(',')
@@ -890,7 +902,7 @@
 						this.showCon = "user"
 						this.titleShow = "用户"
 						//数据回显(保证选中后再次打开数据依旧被选中)下面两条一样
-						if(typeof(this.ruleForm[row.field]) != "undefined") {
+						if(typeof(this.ruleForm[row.field]) != "undefined" && !this.noNull(this.ruleForm[row.field])) {
 							var a = []
 							var b = this.ruleForm[row.field].split(',')
 							var c = this.ruleForm[row.field + "_NameShow"].split(',')
@@ -909,7 +921,7 @@
 						this.showCon = "jobSet"
 						this.titleShow = "职务"
 						//数据回显(保证选中后再次打开数据依旧被选中)下面两条一样
-						if(typeof(this.ruleForm[row.field]) != "undefined") {
+						if(typeof(this.ruleForm[row.field]) != "undefined" && !this.noNull(this.ruleForm[row.field])) {
 							var a = []
 							var b = this.ruleForm[row.field].split(',')
 							var c = this.ruleForm[row.field + "_NameShow"].split(',')
@@ -929,7 +941,7 @@
 						this.titleShow = "工作流"
 						this.$set(this.dataCon, "echo", [])
 						//数据回显(保证选中后再次打开数据依旧被选中) 下面两条一样
-						if(typeof(this.ruleForm[row.field]) != "undefined") {
+						if(typeof(this.ruleForm[row.field]) != "undefined" && !this.noNull(this.ruleForm[row.field])) {
 							var a = []
 							var b = this.ruleForm[row.field].split(',')
 							var c = this.ruleForm[row.field + "_NameShow"].split(',')
