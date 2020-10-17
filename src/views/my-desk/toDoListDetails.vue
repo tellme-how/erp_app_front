@@ -513,7 +513,7 @@
 								name: "toDoList"
 							})
 						} else {
-							this.goOut('提交失败')
+							this.$message.error(res.data.msg);
 						}
 					} else {
 						this.goOut('提交失败')
