@@ -33,9 +33,11 @@
 		},
 		methods: {
 			showSeeOrUpd1(row){
-				if((row.gestor == localStorage.getItem('ms_staffId') || typeof(row.gestor) == 'undefined') && this.showSeeOrUpd == 3){
+				if(row.gestor == localStorage.getItem('ms_staffId') && this.context.fsubject.substring(0, 3) == '退回：' && this.showSeeOrUpd == 3){
 					return '3'
-				}else{
+				}else if(typeof(row.gestor) == 'undefined' && this.showSeeOrUpd == 3){
+					return '2'
+				} else{
 					return '1'
 				}
 			},

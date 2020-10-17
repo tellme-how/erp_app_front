@@ -4,7 +4,7 @@
 			<tr v-for="(item,index) in linesList">
 				<td id="classTd" :class="[key == 0 ?'classZero':'classZero1']" v-for="(val,key) in item.list" >
 					<van-button style="width: 100%;" size="mini" type="primary" v-if="val == 'poiul1'" @click="toAdd()">新增</van-button>
-					<van-button style="width: 100%;" size="mini" type="danger" v-else-if="val == 'poiul2'" @click="toDel(key)">删除</van-button>
+					<van-button style="width: 100%;" size="mini" type="danger" v-else-if="indexShow(val)" @click="toDel(key,val)">删除</van-button>
 					<span v-else>{{val | valShow(key)}}</span>
 				</td>
 			</tr>
@@ -25,6 +25,8 @@
 					return status
 				}
 			},
+		},
+		created(){
 		},
 		watch: {
 			"linesList": {
@@ -50,11 +52,23 @@
 			},
 		},
 		methods: {
+			indexShow(aaa){
+				if(typeof(aaa) == "undefined"){
+					return false
+				}else{
+					var val = aaa.toString()
+					if(val.indexOf('poiul2') != -1){
+						return true
+					}else{
+						return false
+					}
+				}
+			},
 			toAdd() {
 				this.$parent.toAdd()
 			},
-			toDel(key) {
-				this.$parent.toDel(key)
+			toDel(key,val) {
+				this.$parent.toDel(key,val)
 			}
 		},
 	}

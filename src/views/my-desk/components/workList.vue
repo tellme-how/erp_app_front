@@ -122,10 +122,10 @@
 						if(typeof(con[key]) == "object") {
 							//循环删除里层的显示数据
 							con[key].forEach(item => {
-								if(typeof(item.id) == "undefined") {
-									item.oprStatus = 1
-								} else {
-									item.oprStatus = 2
+								if(item.oprStatus != 3) {
+									if(typeof(item.id) == "undefined") {
+										item.oprStatus = 1
+									}
 								}
 								//后台要的子表ID
 								this.$set(item, "tempSubId", key)
@@ -146,6 +146,7 @@
 					}
 					//后台需要json格式的数据 
 					backData.jsonStr = JSON.stringify(con)
+					console.log(backData)
 					this.$api.collaborativeOffice.dataToDataWorkItem(backData).then(data => {
 						if(this.dataBack(data, "提交成功")) {
 							this.$refs.child.toUpload(this.context.id)

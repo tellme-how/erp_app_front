@@ -93,7 +93,7 @@
 					//经办时间
 					backData.voucherTime = JSON.parse(JSON.stringify(backData.jsonStr.voucherTime))
 					//公司code
-					backData.companyCode = this.company.code
+					backData.companyCode = this.context.comp.code
 					//主表字段
 					backData.activityId = this.activityId
 					//登陆人
@@ -110,7 +110,7 @@
 					//状态
 					backData.jsonStr.status = status
 					//公司ID
-					backData.jsonStr.company = this.company.id
+					backData.jsonStr.company = this.context.comp.value
 					//新增状态
 					backData.jsonStr.oprStatus = 1
 					/*
@@ -144,7 +144,7 @@
 					this.$api.collaborativeOffice.apiUrl("workItem/insertWorkItem", backData).then(data => {
 						if(this.dataBack(data, "新增成功")) {
 							this.$refs.child.toUpload(data.data.data)
-							this.$parent.toSelect()
+							this.$parent.toSelect(this.context.comp)
 						}
 						this.$store.commit('hideLoading')
 					})

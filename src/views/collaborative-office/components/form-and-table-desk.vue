@@ -11,14 +11,14 @@
 		</van-collapse>
 		<van-cell title="附件">
 			<template #default>
-				<el-upload v-if="dis == 3" :disabled="dis == 1" :on-preview="downFiles" :auto-upload="false" :on-change="getFile" multiple :data="uploadData" ref="upload" class="upload-demo" action="" :file-list="fileList">
+				<el-upload v-if="dis == 3 || dis == 2" :disabled="dis == 1" :on-preview="downFiles" :auto-upload="false" :on-change="getFile" multiple :data="uploadData" ref="upload" class="upload-demo" action="" :file-list="fileList">
 					<el-button size="small" type="primary">点击上传</el-button>
 				</el-upload>
 			</template>
 		</van-cell>
 		<van-cell title-class='titleClassBlue' v-for="(item,index) in fileList" :key="index" :title="item.name">
 			<template #default>
-				<van-icon v-if="dis == 3" @click="delUpload(index)" name="cross" />
+				<van-icon v-if="dis == 3 || dis == 2" @click="delUpload(index)" name="cross" />
 			</template>
 		</van-cell>
 	</div>
@@ -191,7 +191,7 @@
 			onSubmit() {
 				//form 和 table 校验
 				var state = true
-				if(this.showChild == 1 && this.dis == 3) {
+				if(this.showChild == 1 && (this.dis == 3 || this.dis == 2)) {
 					if(!this.$refs.mainTableChild.onSubmit()) {
 						state = false
 					}
@@ -207,7 +207,7 @@
 				}
 				if(state) {
 					//整理主表返回数据
-					if(this.showChild == 1 && this.dis == 3) {
+					if(this.showChild == 1 && (this.dis == 3 || this.dis == 2)) {
 						this.conData = this.$refs.mainTableChild.ruleForm
 					} else {
 						this.conData.id = this.formData.top.wholeData.id
@@ -229,8 +229,10 @@
 								//格式统一,用子表ID做为数组的名称,表单样式数组只有一条数据
 								this.$set(this.conData, item.formData.id, [])
 								this.conData[item.formData.id].push(item.ruleForm)
+								console.log(item.ruleForm)
 								//table样式的子表
 							} else {
+								console.log(item.ruleForm.lines)
 								this.$set(this.conData, item.formData.id, item.ruleForm.lines)
 							}
 						})

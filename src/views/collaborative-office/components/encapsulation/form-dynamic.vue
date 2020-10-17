@@ -251,8 +251,6 @@
 					//不显示固定栏（子表）
 				} else {
 					//整理子表数据
-					console.log(this.formData.wholeData)
-					console.log(this.dis)
 					this.formData.rowList.forEach(item => {
 						if(item.fieldTypeName == 'checkBox' && this.showAdd == 1) {
 							this.ruleForm[item.field] = 1
@@ -263,7 +261,6 @@
 					}
 					if(this.dis == 3) {
 						this.$set(this.ruleForm, "oprStatus", 2)
-						this.$set(this.ruleForm, "id", this.formData.wholeData.id)
 					}
 				}
 			}
@@ -389,11 +386,11 @@
 					for(var key in this.formData.wholeData) {
 						if(key == this.formData.id) {
 							valObject = this.formData.wholeData[key][0]
+							console.log(valObject)
 							this.$set(this.ruleForm, "id", valObject.id)
 						}
 					}
 				}
-				console.log(valObject)
 				this.get_NameShowChlid(valObject)
 			},
 			//整理数据 valObject 是当前form显示数据
@@ -562,12 +559,10 @@
 										break;
 										//工作流
 									case "7":
-										await this.$api.collaborativeOffice.findPage({
-											size: 1000000,
-											page: 1,
-											creator: localStorage.getItem('ms_userId')
+										await this.$api.collaborativeOffice.findWorkItemList({
+											gestorOid: this.formData.wholeData.gestor
 										}).then(data => {
-											data.data.data.rows.forEach(itemChild => {
+											data.data.data.forEach(itemChild => {
 												if(itemChild.srcId == valObject[key]) {
 													this.itemChildOther = itemChild
 													return new Promise(resolve => {

@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<!--<tabViews :showSeeOrUpd="dis" :context="context" :is="tabViews" :todoFlag="todoFlag"></tabViews>-->
-		<tabViews :context="context" :is="tabViews"></tabViews>
+		<tabViews :context="context" :is="tabViews" :comp="comp"></tabViews>
 	</div>
 </template>
 <script>
@@ -19,17 +19,20 @@
 				//查看1  新增2   修改3
 				dis:"1",
 				//传值
-				context :{}
+				context :{},
+				comp:{}
 			}
 		},
 		methods: {
 			//新增
-			toAdd(row) {
+			toAdd(row,value) {
 				this.tabViews = "addWorkItem"
+				row.comp = value
 				this.context = row
 			},
 			//查询
-			toSelect() {
+			toSelect(comp) {
+				this.comp = comp
 				this.tabViews = "selectWorkItems"
 			},
 			//查看/修改

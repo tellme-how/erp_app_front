@@ -70,7 +70,8 @@
 				//职务
 				positionList: JSON.parse(localStorage.getItem('positionList')),
 				stateType: 0,
-				backList: []
+				backList: [],
+				listOther: []
 			}
 		},
 		created() {
@@ -84,35 +85,36 @@
 				this.linesList.push({
 					value: item.field,
 					list: [item.fieldName],
-					type: item.fieldType
+					type: item.fieldType,
 				})
 			})
-			console.log(this.formData)
 			if(typeof(this.formData.conList) != "undefined" && this.formData.conList.length != 0) {
 				//查看1  新增2  修改3
 				this.$api.collaborativeOffice.findWorkItemList({
 					gestorOid: this.formData.wholeData.gestor
 				}).then(data => {
-					console.log(data)
-					this.get_NameShow(data.data.data)
-					if(this.dis == 3) {
-						this.ruleForm.lines.forEach(item => {
-							this.linesList[0].list.push('poiul2')
-						})
-					}
-					this.ruleForm.lines.forEach((val, index) => {
-						this.linesList.forEach((item, index2) => {
-							for(var key in val) {
-								if(key == item.value) {
-									if(typeof(val[key + '_NameShow']) != 'undefined') {
-										item.list.push(val[key + '_NameShow'])
-									} else {
-										item.list.push(val[key])
+					console.log(this.dis)
+					if(this.dis == 3 || this.dis == 1) {
+						this.get_NameShow(data.data.data)
+						if(this.dis == 3) {
+							this.ruleForm.lines.forEach(item => {
+								this.linesList[0].list.push('poiul2' + "-" + item.id)
+							})
+						}
+						this.ruleForm.lines.forEach((val, index) => {
+							this.linesList.forEach((item, index2) => {
+								for(var key in val) {
+									if(key == item.value) {
+										if(typeof(val[key + '_NameShow']) != 'undefined') {
+											this.$set(item.list, index + 1, val[key + '_NameShow'])
+										} else {
+											this.$set(item.list, index + 1, val[key])
+										}
 									}
 								}
-							}
+							})
 						})
-					})
+					}
 					this.backList = this.ruleForm.lines
 				})
 				this.formData.conList.forEach(item => {
@@ -121,6 +123,7 @@
 				this.$set(this.rowNow, "tableName", this.formData.tableName)
 				this.$set(this.rowNow, "oprStatus", 1)
 				this.getrulesList()
+
 			}
 		},
 		//注释同form-dynamic 
@@ -128,11 +131,15 @@
 			toAdd() {
 				this.showUp = true
 			},
-			toDel(key) {
+			toDel(key, val) {
+				this.backList.forEach(item => {
+					if(val.substring(val.indexOf('-') + 1) == item.id) {
+						item.oprStatus = 3
+					}
+				})
 				this.linesList.forEach(item => {
 					item.list.splice(key, 1)
 				})
-				this.backList.splice(key - 1, 1)
 			},
 			toSave() {
 				this.$refs.formDataChildren.onSubmit().then(data => {
@@ -148,7 +155,7 @@
 										state = false
 										if(typeof(list[key + '_NameShow']) == "undefined") {
 											if(item.type == 10) {
-												if(list[key] == 0) {
+												if(list[key] == 1) {
 													item.list.push('已选中')
 												} else {
 													item.list.push('未选中')
@@ -214,10 +221,12 @@
 										})
 									}
 									if(item.fieldType == 10 && item.field == keyVal) {
-										if(val[keyVal] == 1) {
-											this.$set(val, keyVal + "_NameShow", '是')
-										} else {
-											this.$set(val, keyVal + "_NameShow", '否')
+										if(!this.noNull(val[keyVal])) {
+											if(val[keyVal] == 1) {
+												this.$set(val, keyVal + "_NameShow", '是')
+											} else {
+												this.$set(val, keyVal + "_NameShow", '否')
+											}
 										}
 									}
 									if(item.fieldType == 6 && item.field == keyVal) {

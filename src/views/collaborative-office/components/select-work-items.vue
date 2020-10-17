@@ -17,6 +17,13 @@
 </template>
 <script>
 	export default {
+		props: {
+			//传入的data值
+			comp: {
+				type: Object,
+				required: true
+			},
+		},
 		data() {
 			return {
 				overList: "",
@@ -33,6 +40,7 @@
 					userId: localStorage.getItem('ms_userId'),
 				},
 				status: true,
+				code:"",
 			}
 		},
 		created() {
@@ -45,10 +53,15 @@
 				data.data.forEach(item => {
 					this.option.push({
 						text: item.name,
-						value: item.id
+						value: item.id,
+						code: item.code
 					})
 				})
-				this.value = this.option[0].value
+				if(typeof(this.comp.value) == 'undefined'){
+					this.value = this.option[0].value
+				}else{
+					this.value = this.comp.value
+				}
 				this.getList()
 			})
 		},
@@ -87,8 +100,13 @@
 				this.mainName = ''
 				this.getList()
 			},
-			getMain(item) {
-				this.$parent.toAdd(item)
+			getMain(val) {
+				this.option.forEach(item =>{
+					if(item.value == this.value){
+						this.$parent.toAdd(val,item)
+					}
+				})
+				
 			},
 		}
 	}
