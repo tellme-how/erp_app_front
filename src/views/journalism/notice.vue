@@ -16,7 +16,7 @@
 				</van-dropdown-menu>
 			</van-col>
 		</van-row>
-		<van-pull-refresh v-model="isLoading" @refresh="list=[];formListAll.page='1';getAll();">
+		<van-pull-refresh v-model="isLoading" @refresh="onSearch(searchValue)">
 			<van-list v-model="loading" :finished="finished" :finished-text="overList" @load="toMore">
 				<div style="margin: 10px;" v-for="(item,key) in list" @click="toDo(item)">
 					<van-row>
@@ -232,6 +232,8 @@
 						return item.fname.indexOf(val) != -1
 					})
 					this.overList = "总共" + this.list.length + "条"
+					this.showState = false
+					this.isLoading = false
 				}
 			},
 			toChange(val) {
