@@ -170,6 +170,46 @@
 					key2: 'Q 累计预计计划完成指标',
 					planFinish: data.data.data.planFinish,
 					unit: data.data.data.unit
+				},{
+					key1: '实际填入值',
+					key2: 'F 价差完成率',
+					planFinish: data.data.data.fvalue,
+					unit: data.data.data.funit
+				},{
+					key1: '实际填入值',
+					key2: 'J 客户提出偏差数价差完成率',
+					planFinish: data.data.data.jvalue,
+					unit: data.data.data.junit
+				},{
+					key1: '实际填入值',
+					key2: 'H 离职人数',
+					planFinish: data.data.data.hvalue,
+					unit: data.data.data.hunit
+				},{
+					key1: '实际填入值',
+					key2: 'N 实际综合费率/问卷得分/期权平均完成率',
+					planFinish: data.data.data.nvalue,
+					unit: data.data.data.nunit
+				},{
+					key1: '实际填入值',
+					key2: 'O 前月及本月末在编人数和',
+					planFinish: data.data.data.ovalue,
+					unit: data.data.data.ounit
+				},{
+					key1: '实际填入值',
+					key2: 'P 实际完成值、巡检、检查、走访等每日或每天进行的工作次数、累计完成金额、实支物流费、实际价差、实际到货量、实际发货量、当月受载期内抵达装货港船舶数量',
+					planFinish: data.data.data.pvalue,
+					unit: data.data.data.punit
+				},{
+					key1: '实际填入值',
+					key2: 'X 最终偏差数价差完成率',
+					planFinish: data.data.data.xvalue,
+					unit: data.data.data.xunit
+				},{
+					key1: '实际填入值',
+					key2: 'Y 出错/失误次数/超期时数（小时或天）',
+					planFinish: data.data.data.yvalue,
+					unit: data.data.data.yunit
 				}]
 				this.linesList.forEach(item => {
 					item.list.push(item.name)
