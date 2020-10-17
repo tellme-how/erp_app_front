@@ -190,7 +190,8 @@
 						fpublicity: formData.checkbox,
 						fremark: formData.remark
 					}).then(res => {
-						this.goOk("加签成功")
+						this.goOk("加签成功");
+						this.$router.go(-1);
 					})
 				} else if(index == 2) {
 					//委托
@@ -201,6 +202,7 @@
 						fremark: formData.remark
 					}).then(res => {
 						this.goOk("委托成功")
+						this.$router.go(-1);
 					})
 				} else {
 					//其他(转发等)
@@ -211,6 +213,7 @@
 					}).then(data => {
 						if(data.data.data.msg == "success") {
 							this.goOk("转发成功")
+							this.$router.go(-1);
 						}
 					})
 				}
