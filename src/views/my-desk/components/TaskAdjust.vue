@@ -2,6 +2,7 @@
 	一人一表(任务调整)
 -->
 <template>
+
 	<div>
 		<erpVanCell v-for="(item,key) in list" :key="key" :formContext="formContext" :rowCell="item"></erpVanCell>
 		<erpVanCellTitle title="参数">
