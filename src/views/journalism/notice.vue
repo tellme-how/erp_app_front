@@ -114,6 +114,10 @@
 			})
 			this.$store.commit("titleShow", '新闻资讯')
 		},
+		beforeRouteLeave(to,from,next){
+			this.searchValue = '';
+			next();
+		},
 		methods: {
 			toDo(row) {
 				this.$router.push({
