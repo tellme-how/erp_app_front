@@ -104,12 +104,12 @@
 						<van-checkbox v-model="formData.checkbox" shape="square" />
 					</template>
 				</van-field>
-				<van-field v-model="formData.remark" rows="3" autosize label="加签附言" type="textarea" />
+				<van-field v-model="formData.remark" rows="3" autosize label="加签附言" type="textarea" border='true' placeholder="请输入加签附言"/>
 			</van-row>
 			<van-button type="primary" @click="toDo">提交</van-button>
 		</van-popup>
 		<van-popup v-model="show2" :style="{ height: '20%',width:'100%' }">
-			<van-field v-model="formData2.remark" rows="3" autosize label="委托意见" type="textarea" />
+			<van-field v-model="formData2.remark" rows="3" autosize label="委托意见" type="textarea" border='true' placeholder="请输入委托意见" />
 			<van-button type="primary" @click="toDo2">提交</van-button>
 		</van-popup>
 	</div>
