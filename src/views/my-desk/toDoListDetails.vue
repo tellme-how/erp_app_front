@@ -554,6 +554,7 @@
 					}).then(response => {
 						if(response.code != 999) {
 							this.goOk('已阅成功!');
+							this.$router.go(-1);
 						} else {
 							this.goOk('已阅失败!');
 						}
