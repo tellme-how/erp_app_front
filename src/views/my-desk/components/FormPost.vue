@@ -12,25 +12,36 @@
 			<van-button @click="showTow = !showTow;showTow ? showName2 ='收起明细' : showName2 = '展开明细'" size="mini" plain type="primary">{{showName2}}</van-button>
 		</erpVanCellTitle>
 		<lineTable v-if="showTow" :linesList="linesList2" :widthTable="widthTable2"></lineTable>
-		<!--<erpVanCellTitle title="附件">
-			<van-button size="mini" plain type="primary">展开明细</van-button>
-		</erpVanCellTitle>-->
+		<enclosureFile ref="child" :voucherId="voucherId"/>
+		<!-- <erpVanCellTitle title="附件">
+			<van-button @click="showThree = !showThree;showThree ? showName3 ='收起明细' : showName3 = '展开明细'" size="mini" plain type="primary">{{showName3}}</van-button>
+		</erpVanCellTitle>
+		<lineTable v-if="showThree" :linesList="linesList3" :widthTable="widthTable3"></lineTable> -->
 	</div>
 </template>
 
 <script>
+	import enclosureFile from './enclosure-file';
 	export default {
 		props: {
 			context: Object
 		},
+		components:{
+			enclosureFile
+		},
 		data() {
 			return {
+				voucherId:'',
+				// enclosureTableData: [],
 				showName1 :'展开明细',
 				showName2 :'展开明细',
+				// showName3 :'展开明细',
 				showOne: false,
 				showTow: false,
+				// showThree: false,
 				widthTable: 100,
 				widthTable2: 100,
+				// widthTable3: 100,
 				formContext: {},
 				list: [{
 					name: "公司",
@@ -107,6 +118,11 @@
 					value: "remark",
 					list: []
 				}],
+				// linesList3: [{
+				// 	name: "附件",
+				// 	value: "name",
+				// 	list: []
+				// },],
 			};
 		},
 		created() {
@@ -120,6 +136,10 @@
 				this.showName(this.formContext)
 				var lines = data.data.data.lines
 				var lines2 = data.data.data.companyLines
+				// if(this.context.fsrcoId){
+				// 	this.showFileData(this.context.fsrcoId)
+				// }
+				this.voucherId = this.context.fsrcoId;
 				this.linesList.forEach(item => {
 					item.list.push(item.name)
 					lines.forEach(val => {
@@ -134,9 +154,48 @@
 				})
 				this.widthTable = lines.length * 40 + 40
 				this.widthTable2 = lines2.length * 40 + 40
-			})
+			});
+			
 		},
 		methods: {
+		// 	/**
+        //  * 查看附件列表
+        //  * @param data
+        //  */
+        // showFileData(data){
+        //     let formDataA ={};
+        //     let creator = localStorage.getItem('ms_staffId');
+        //     formDataA.voucherId = data;
+        //     this.$api.myDesk.findInfosList(formDataA).then(response => {
+        //     	this.enclosureTableData = []
+        //         if (response.data.data) {
+        //             let values = response.data.data;
+        //             let flag = true;
+        //             for(var i= 0;i<values.length;i++){
+        //                 let attachment = values[i];
+        //                     let file = {
+        //                         rowNum: this.rowNum,
+        //                         name: attachment.fileName,
+        //                         id: attachment.id,
+        //                         fullPath:attachment.fullPath,
+        //                         fileSize:attachment.fileSize,
+        //                     };
+		// 				console.log(attachment)
+		// 					var fileArray = [];
+		// 					fileArray.unshift(file);
+		// 					for(var i=0;i<fileArray.length;i++) {
+		// 						this.linesList3[0].list.push('附件');
+		// 						this.linesList3[0].list.push(fileArray[i].name);
+		// 					}
+        //                     this.rowNum += 1;
+		// 			}
+		// 			var lines3 = this.linesList3[0].list.length;
+		// 			this.widthTable3 = lines3.length * 40 + 40
+        //         } else {
+        //             this.$message.error(response.data.msg);
+        //         }
+        //     });
+        // },
 			showName(row) {
 				switch(row.taskState) {
 					case "1":
@@ -163,7 +222,6 @@
 					default:
 						break;
 				}
-				// debugger;
 				switch(row.taskType) {
 					case 1:
 						row.taskType = '主任务';
@@ -239,9 +297,21 @@
 	/deep/.van-cell__value {
 		text-align: center;
 	}
-</style>
-<style>
 	.van-cell__title {
 		text-align: left;
 	}
+	.preview-cover {
+		position: absolute;
+		bottom: 0;
+		box-sizing: border-box;
+		width: 100%;
+		padding: 4px;
+		color: #fff;
+		font-size: 12px;
+		text-align: center;
+		background: rgba(0, 0, 0, 0.3);
+  }
+</style>
+<style>
+	
 </style>

@@ -8,6 +8,7 @@
 			<van-button @click="showOne = !showOne;showOne ? showName1 ='收起明细' : showName1 = '展开明细'" size="mini" plain type="primary">{{showName1}}</van-button>
 		</erpVanCellTitle>
 		<lineTable v-if="showOne" :linesList="linesList" :widthTable="widthTable"></lineTable>
+		<enclosureFile ref="child" :voucherId="voucherId"/>
 		<!--<erpVanCellTitle title="附件">
 			<van-button size="mini" plain type="primary">展开明细</van-button>
 		</erpVanCellTitle>-->
@@ -15,12 +16,17 @@
 </template>
 
 <script>
+	import enclosureFile from './enclosure-file';
 	export default {
 		props: {
 			context: Object
 		},
+		components:{
+			enclosureFile
+		},
 		data() {
 			return {
+				voucherId:'',
 				showName1 :'展开明细',
 				showOne: false,
 				widthTable: 100,
@@ -193,6 +199,7 @@
 					})
 				})
 				this.widthTable = lines.length * 40 + 40
+				this.voucherId = this.context.fsrcoId;
 			})
 		},
 		methods: {
