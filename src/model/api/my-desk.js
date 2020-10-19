@@ -2,10 +2,14 @@ import httpReqest from '../../utils/https';
 import QS from 'qs';
 
 const myDesk = {
-	  // 获取会议申请列表
-    getApplyList(params) {
-        return httpReqest.post('/api/interfaces/confApply/findApplyList', params);
-    },
+	//流程图
+	viewProcess(params) {
+		return httpReqest.post('/api/wfInterfaces/workFlow/viewProcess', params);
+	},
+	// 获取会议申请列表
+	getApplyList(params) {
+		return httpReqest.post('/api/interfaces/confApply/findApplyList', params);
+	},
 	//操作已阅
 	removeBizMail(params) {
 		return httpReqest.post('/api/wfInterfaces/workFlow/removeBizMail', params);

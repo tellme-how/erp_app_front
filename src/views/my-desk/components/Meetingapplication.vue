@@ -4,9 +4,12 @@
 <template>
 	<div>
 		<erpVanCell v-for="(item,key) in list" :key="key" :formContext="formContext" :rowCell="item"></erpVanCell>
-		<!--<erpVanCellTitle title="附件">
-			<van-button size="mini" plain type="primary">展开明细</van-button>
-		</erpVanCellTitle>-->
+		<van-cell title="附件"></van-cell>
+		<van-cell title-class='titleClassBlue' v-for="(item,index) in fileList" :key="index" :title="item.name">
+			<template #default>
+				<van-icon @click="delUpload(index)" name="cross" />
+			</template>
+		</van-cell>
 	</div>
 </template>
 
@@ -99,20 +102,21 @@
 				page: 1,
 				size: 999
 			}).then(data => {
+				console.log(data)
 				this.formContext = data.data.data.rows[0]
-				if(this.formContext.fimportance == 0){
+				if(this.formContext.fimportance == 0) {
 					this.formContext.fimportanceValue = "一般"
-				}else{
+				} else {
 					this.formContext.fimportanceValue = "重要"
 				}
-				if(this.formContext.fovert == 0){
+				if(this.formContext.fovert == 0) {
 					this.formContext.fovert = "是"
-				}else{
+				} else {
 					this.formContext.fovert = "否"
 				}
-				if(this.formContext.fexternal == 0){
+				if(this.formContext.fexternal == 0) {
 					this.formContext.fexternal = "否"
-				}else{
+				} else {
 					this.formContext.fexternal = "是"
 				}
 			})

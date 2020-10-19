@@ -1,8 +1,8 @@
 <template>
 	<div>
-		<!--<erpVanCellTitle title="审批详情">
-			<van-button @click="showOne = !showOne" size="mini" plain type="primary">展开明细</van-button>
-		</erpVanCellTitle>-->
+		<erpVanCellTitle title="流程图">
+			<van-button @click="getFlow" size="mini" plain type="primary">查看</van-button>
+		</erpVanCellTitle>
 		<van-collapse v-model="activeNames">
 			<van-collapse-item title="审批详情" name="1">
 				<div style="width:100%; overflow:scroll;">
@@ -18,12 +18,17 @@
 			</van-collapse-item>
 		</van-collapse>
 		<vanPopupReply @showClose='showClose' :context="auditReplyMsg" v-if="show" :show="show"></vanPopupReply>
+		<flowChart :showOne="showOne" :flow="flow" :flowIndex="flowIndex" :contextOther="contextOther"></flowChart>
 	</div>
 </template>
 <script>
+	import flowChart from './flowChart';
 	export default {
 		props: {
 			contextOther: Object
+		},
+		components: {
+			flowChart
 		},
 		filters: {
 			valShow(status, key) {
@@ -36,19 +41,39 @@
 		},
 		data() {
 			return {
-				activeNames:[],
+				activeNames: [],
 				auditReplyMsg: [],
 				show: false,
 				showOne: false,
 				widthTable: 100,
 				linesList: [],
-				context: []
+				context: [],
+				flow: [],
+				flowIndex : 0
 			};
 		},
 		created() {
 			this.getContext()
 		},
 		methods: {
+			getFlow() {
+				this.$api.myDesk.viewProcess({
+					bizMailId: this.contextOther.foid,
+					currUserId: localStorage.getItem("ms_userId")
+				}).then(res => {
+					console.log(res)
+					this.flow = res.data.data
+					this.flow.forEach((item, index) => {
+						if(item.fstatus == 2) {
+							this.flowIndex = index
+						}
+					})
+					this.showOne = true
+				})
+			},
+			showOneClose() {
+				this.showOne = false
+			},
 			getContext() {
 				this.linesList = [{
 					name: "流程节点",
@@ -121,5 +146,5 @@
 </script>
 
 <style scoped>
-	
+
 </style>
