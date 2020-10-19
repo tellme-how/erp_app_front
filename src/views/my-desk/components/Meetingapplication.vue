@@ -4,12 +4,7 @@
 <template>
 	<div>
 		<erpVanCell v-for="(item,key) in list" :key="key" :formContext="formContext" :rowCell="item"></erpVanCell>
-		<van-cell title="附件"></van-cell>
-		<van-cell title-class='titleClassBlue' v-for="(item,index) in fileList" :key="index" :title="item.name">
-			<template #default>
-				<van-icon @click="delUpload(index)" name="cross" />
-			</template>
-		</van-cell>
+		<enclosureFile :voucherId="voucherId"></enclosureFile>
 	</div>
 </template>
 
@@ -20,6 +15,7 @@
 		},
 		data() {
 			return {
+				voucherId:'',
 				formContext: {},
 				list: [{
 					name: "公司",
@@ -98,6 +94,7 @@
 			};
 		},
 		created() {
+			this.voucherId = this.context.fsrcoId;
 			this.$api.myDesk.getApplyList({
 				foid: this.context.fsrcoId,
 				page: 1,

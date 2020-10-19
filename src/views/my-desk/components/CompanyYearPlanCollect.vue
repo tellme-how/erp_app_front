@@ -8,9 +8,7 @@
 			<van-button @click="showOne = !showOne;showOne ? showName1 ='收起明细' : showName1 = '展开明细'" size="mini" plain type="primary">{{showName1}}</van-button>
 		</erpVanCellTitle>
 		<lineTable v-if="showOne" :linesList="linesList" :widthTable="widthTable"></lineTable>
-		<!--<erpVanCellTitle title="附件">
-			<van-button size="mini" plain type="primary">展开明细</van-button>
-		</erpVanCellTitle>-->
+		<enclosureFile :voucherId="voucherId"></enclosureFile>
 	</div>
 </template>
 
@@ -21,6 +19,7 @@
 		},
 		data() {
 			return {
+				voucherId:'',
 				showName1 :'展开明细',
 				showOne: false,
 				widthTable: 100,

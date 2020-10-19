@@ -22,7 +22,6 @@
 				{{item.fileName}}
 			</van-row>
 		</van-cell-group>
-		<div v-html="aaaa"></div>
 	</div>
 </template>
 
@@ -39,7 +38,6 @@
 				context: {},
 				editorOption: this.$GLOBAL.editorOptionNull,
 				fileList: [],
-				aaaa: "",
 			};
 		},
 		created() {

@@ -15,9 +15,7 @@
 			<van-button @click="showTow = !showTow;showTow ? showName2 ='收起明细' : showName2 = '展开明细'" size="mini" plain type="primary">{{showName2}}</van-button>
 		</erpVanCellTitle>
 		<lineTable v-if="showTow" :linesList="linesList2" :widthTable="widthTable2"></lineTable>
-		<!--<erpVanCellTitle title="附件">
-			<van-button size="mini" plain type="primary">展开明细</van-button>
-		</erpVanCellTitle>-->
+		<enclosureFile :voucherId="voucherId"></enclosureFile>
 	</div>
 </template>
 
@@ -28,6 +26,7 @@
 		},
 		data() {
 			return {
+				voucherId:'',
 				showName1 :'展开明细',
 				showName2 :'展开明细',
 				showOne: false,
@@ -174,6 +173,7 @@
 			};
 		},
 		created() {
+			this.voucherId = this.context.fsrcoId;
 			this.$api.myDesk.staffAppraisalsFindInfoById({
 				id: this.context.fsrcoId
 			}).then(data => {

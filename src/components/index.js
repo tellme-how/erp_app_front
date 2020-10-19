@@ -4,12 +4,14 @@ import lineTable2 from './lineTable2.vue'
 import erpVanCellTitle from './erpVanCellTitle.vue'
 import approvalProcess from './approvalProcess.vue'
 import vanPopupReply from './vanPopupReply.vue'
+import enclosureFile from '../views/my-desk/components/enclosure-file';
 const components = {
 	erpVanCell,
 	vanPopupReply,
 	approvalProcess,
 	lineTable,
 	lineTable2,
+	enclosureFile,
 	erpVanCellTitle
 };
 const install = function(Vue, opts = {}) {
