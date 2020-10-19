@@ -32,6 +32,7 @@
 			<van-share-sheet cancel-text="关闭" v-model="showShare" :options="options" @select="onSelect" />
 		</div>
 		<personnelSelection v-if="showUser" :showChild="showChild" :showUser="showUser" @dataBackMethod="getDataBack"></personnelSelection>
+		<personnelSelection v-if="showUser2" :showChild="showChild2" :showUser="showUser2" @dataBackMethod="getDataBack2"></personnelSelection>
 		<van-popup v-model="showOther" :style="{ height: '12%',width:'100%' }">
 			<van-field v-model="remark" autosize label="加批意见" type="input" />
 			<van-button type="primary" size='small' @click="toDoOher">提交</van-button>
@@ -102,6 +103,8 @@
 		},
 		data() {
 			return {
+				showChild2 : 3,
+				showUser2:false,
 				actions: [],
 				showActions: false,
 				valueStateShow: false,
@@ -141,13 +144,9 @@
 			this.valueState = JSON.parse(sessionStorage.getItem("valueState"))
 			this.$store.commit("titleShow", this.context.fsubject)
 			this.columns = []
-			console.log(this.context.fsubject.substring(0, 3) == '退回：')
-			console.log(this.context.fcreator == localStorage.getItem("ms_userId"))
-			console.log(this.context.fcode == 'manpower')
 			if((this.context.fsubject.substring(0, 3) == '退回：' && this.context.fcreator == localStorage.getItem("ms_userId")) || this.context.fcode == 'manpower') {
 				this.showSeeOrUpd = "3";
 			} else {
-				console.log(1)
 				this.showSeeOrUpd = "1";
 			}
 			this.$api.myDesk.getWfDecisionTypeConByCurNode({
@@ -163,6 +162,10 @@
 			this.optionsShow()
 		},
 		methods: {
+			getDataBack2(cur){
+				this.submitMethod('手工指定', cur[0].foid);
+				this.showUser2 = false
+			},
 			onSelectActions(val) {
 				this.submitData(val.id)
 			},
@@ -421,6 +424,7 @@
 								if(this.value === 2) {
 									this.submitMethod('', '');
 								} else {
+									this.showUser2 = true
 									//this.baseInputTable("手工指定下一节点");
 								}
 							} else {

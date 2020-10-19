@@ -7,7 +7,7 @@
 
 <template>
 	<div class="loading">
-		<van-loading type="spinner" color="#1989fa" />
+		<van-loading type="spinner" color="#1989fa">败急哈</van-loading>
 	</div>
 </template>
 

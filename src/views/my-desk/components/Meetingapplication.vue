@@ -94,13 +94,14 @@
 					value: "fmeetcontent",
 					list: []
 				}],
+				fileList: []
 			};
 		},
 		created() {
 			this.$api.myDesk.getApplyList({
 				foid: this.context.fsrcoId,
 				page: 1,
-				size: 999
+				size: 1
 			}).then(data => {
 				console.log(data)
 				this.formContext = data.data.data.rows[0]

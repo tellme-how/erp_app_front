@@ -1,3 +1,15 @@
+<!--
+	流程图
+		传值:
+		flow  				所有流程(父组件查询)
+		contextOther		列表页整体内容(只是为了显示标题)
+		showOne				是否显示
+		flowIndex			当前节点index(从0开始)
+-->
+
+
+
+
 <template>
 	<van-popup v-model="showOne" position="right" :style="{ height: '100%',width:'100%' }">
 		<van-nav-bar :title="contextOther.fsrcCompany +'/' + contextOther.factivityName" left-text="返回" left-arrow @click-left="onClickLeft" />
@@ -23,12 +35,6 @@
 			contextOther: Object,
 			showOne: Boolean,
 			flowIndex: Number
-		},
-		data() {
-			return {};
-		},
-		created() {
-			console.log(this.flowIndex)
 		},
 		methods: {
 			onClickLeft() {

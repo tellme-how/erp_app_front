@@ -38,7 +38,7 @@
 				<div class="sa"></div>
 			</div>
 			<div style="margin-top: 5vh;" v-else-if="showDiv && showName == '组织架构'">
-				<el-tree @check="getTreeData" :data="dataTree" :default-checked-keys="result" show-checkbox node-key="foid" :props="defaultProps"></el-tree>
+				<el-tree @check="getTreeData" :data="dataTree" :default-checked-keys="result" show-checkbox node-key="userid" :props="defaultProps"></el-tree>
 				<div class="sa"></div>
 			</div>
 			<div style="margin-top: 5vh;" v-if="!showDiv">
@@ -104,7 +104,7 @@
 						<van-checkbox v-model="formData.checkbox" shape="square" />
 					</template>
 				</van-field>
-				<van-field v-model="formData.remark" rows="3" autosize label="加签附言" type="textarea" border='true' placeholder="请输入加签附言"/>
+				<van-field v-model="formData.remark" rows="3" autosize label="加签附言" type="textarea" border='true' placeholder="请输入加签附言" />
 			</van-row>
 			<van-button type="primary" @click="toDo">提交</van-button>
 		</van-popup>
@@ -232,6 +232,12 @@
 					this.show1 = true
 				} else if(this.showChild == 2) {
 					this.show2 = true
+				} else if(this.showChild == 3) {
+					if(cur.length > 1) {
+						this.goOut("清单选")
+					} else {
+						this.$emit('dataBackMethod', cur)
+					}
 				} else {
 					this.$parent.showUserClose()
 					this.$emit('dataBackMethod', cur, 3)
@@ -243,7 +249,7 @@
 				b.checkedNodes.forEach(item => {
 					console.log(item)
 					this.checkListShow.push({
-						foid: item.foid,
+						foid: item.userid,
 						fname: item.fname,
 						ffirmpositionname: item.firmpositiName,
 						fcompanyName: item.fcompanyName,
@@ -269,6 +275,7 @@
 				} else {
 					this.checkList.push(item)
 				}
+				console.log(this.result)
 			},
 			onSearch1() {
 				this.showList = this.checkList.filter(item => {

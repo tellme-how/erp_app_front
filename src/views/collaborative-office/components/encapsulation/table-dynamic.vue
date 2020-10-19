@@ -229,7 +229,7 @@
 											}
 										}
 									}
-									if(item.fieldType == 6 && item.field == keyVal) {
+									if(item.fieldType == 6 && item.field == keyVal && !this.noNull(val[keyVal])) {
 										this.$set(val, keyVal + "_NameShow", '请至PC端进行查看!')
 									}
 									if(item.fieldType == 1 && item.field == keyVal) {

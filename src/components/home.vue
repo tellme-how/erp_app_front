@@ -141,6 +141,7 @@
 				} else {
 					window.history.back()
 				}
+				this.$store.commit('hideLoading')
 			}
 		}
 	};

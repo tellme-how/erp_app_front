@@ -25,6 +25,7 @@
 			};
 		},
 		created() {
+			this.$store.commit('showLoading')
 			this.$api.myDesk.findIds({
 				srcId: this.context.fsrcoId,
 			}).then((res) => {
@@ -49,6 +50,9 @@
 						tableName: res.data.data[i].tableName
 					}).then(data => {
 						return new Promise(resolve => {
+							if(i == res.data.data.length - 1){
+								this.$store.commit('hideLoading')
+							}
 							this.$api.collaborativeOffice.findlnfosList({
 								voucherId: JSON.parse(data.data.data).id,
 								userCode: localStorage.getItem('ms_userId'),

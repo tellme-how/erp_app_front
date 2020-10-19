@@ -269,6 +269,7 @@
 					tableName: this.formData.tableName
 				}
 			}
+			console.log(this.formData.wholeData)
 		},
 		methods: {
 			aaa(item) {
@@ -386,7 +387,6 @@
 					for(var key in this.formData.wholeData) {
 						if(key == this.formData.id) {
 							valObject = this.formData.wholeData[key][0]
-							console.log(valObject)
 							this.$set(this.ruleForm, "id", valObject.id)
 						}
 					}
@@ -562,6 +562,7 @@
 										await this.$api.collaborativeOffice.findWorkItemList({
 											gestorOid: this.formData.wholeData.gestor
 										}).then(data => {
+											console.log(data)
 											data.data.data.forEach(itemChild => {
 												if(itemChild.srcId == valObject[key]) {
 													this.itemChildOther = itemChild
