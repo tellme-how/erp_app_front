@@ -224,6 +224,7 @@
 			},
 			showUserClose() {
 				this.showUser = false
+				this.showUser2 = false
 			},
 			optionsShow() {
 				if(this.valueState == 1) {
@@ -418,11 +419,10 @@
 						if(res.data.data) {
 							//手工指定下一节点
 							if(res.data.data.fmntnextjoin === 1) {
-								if(this.value === 2) {
+								if(this.value == 2) {
 									this.submitMethod('', '');
 								} else {
 									this.showUser2 = true
-									//this.baseInputTable("手工指定下一节点");
 								}
 							} else {
 								//正常提交
