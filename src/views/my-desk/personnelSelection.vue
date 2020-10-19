@@ -234,7 +234,7 @@
 					this.show2 = true
 				} else if(this.showChild == 10) {
 					if(cur.length > 1) {
-						this.goOut("清单选")
+						this.goOut("请单选")
 					} else {
 						this.$emit('dataBackMethod', cur)
 					}
