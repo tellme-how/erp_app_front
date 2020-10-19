@@ -232,7 +232,7 @@
 					this.show1 = true
 				} else if(this.showChild == 2) {
 					this.show2 = true
-				} else if(this.showChild == 3) {
+				} else if(this.showChild == 10) {
 					if(cur.length > 1) {
 						this.goOut("清单选")
 					} else {

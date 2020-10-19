@@ -103,7 +103,7 @@
 		},
 		data() {
 			return {
-				showChild2 : 3,
+				showChild2 : 10,
 				showUser2:false,
 				actions: [],
 				showActions: false,
@@ -275,9 +275,6 @@
 						this.options = [{
 							name: '转发',
 							icon: this.$GLOBAL.htmlUrl + '转发.png'
-						}, {
-							name: '加签',
-							icon: this.$GLOBAL.htmlUrl + '加签.png'
 						}]
 					} else if(this.context.fsubject.slice(0, 4).indexOf('加签') != -1) {
 						this.valueStateShow = true

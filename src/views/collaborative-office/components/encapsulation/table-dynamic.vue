@@ -1,13 +1,11 @@
 <template>
 	<div>
 		<lineTable2 :dis="dis" :linesList="linesList"></lineTable2>
-		<van-popup v-model="showUp" position="right" :style="{ width: '100%' , height: '90%' }">
+		<van-popup v-model="showUp" position="right" :style="{ width: '100%' , height: '100%' }">
+			<van-nav-bar title="新增" left-text="返回" right-text="提交" left-arrow @click-left="showUp = false" @click-right="toSave" />
 			<formIcon v-if="showUp" ref="formDataChildren" dis="2" showAdd='1' show="4" :form-data="formData"></formIcon>
 			<div style="margin-top: 10vh;">
-				<van-button style="margin: 10px;" @click="showUp = false" type="primary">返回</van-button>
-				<van-button style="margin: 10px;" @click="toSave" type="primary">提交</van-button>
 			</div>
-
 		</van-popup>
 	</div>
 </template>
