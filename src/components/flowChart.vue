@@ -1,6 +1,11 @@
 <template>
 	<van-popup v-model="showOne" position="right" :style="{ height: '100%',width:'100%' }">
 		<van-nav-bar :title="contextOther.fsrcCompany +'/' + contextOther.factivityName" left-text="返回" left-arrow @click-left="onClickLeft" />
+		<div style="margin: 10px 0px;">
+			<van-tag style="color: #000000;" color='aquamarine' type="primary" size="large">已处理节点</van-tag>
+			<van-tag style="color: #000000;" color='#E6A23C' type="primary" size="large">当前节点</van-tag>
+			<van-tag style="color: #000000;" color='darkgray' type="primary" size="large">未处理节点</van-tag>
+		</div>
 		<van-steps direction="vertical" :active="flowIndex">
 			<van-step v-for="(item,key) in flow" :key="key" :class="key > flowIndex ? 'aaa' : ''">
 				<h3>{{item.name}}</h3>
@@ -38,17 +43,21 @@
 		background: aquamarine!important;
 		border-bottom: 1px solid black;
 	}
+	
 	/deep/.van-step--process {
 		background: #E6A23C!important;
 		border-bottom: 1px solid black;
 	}
+	
 	/deep/.van-step {
 		color: #000000!important;
 	}
+	
 	/deep/.van-step__title--active {
 		color: #000000!important;
 	}
-	.aaa{
+	
+	.aaa {
 		background: darkgray;
 		border-bottom: 1px solid black;
 	}
