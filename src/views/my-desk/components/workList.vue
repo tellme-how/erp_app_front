@@ -150,6 +150,9 @@
 					this.$api.collaborativeOffice.dataToDataWorkItem(backData).then(data => {
 						if(this.dataBack(data, "提交成功")) {
 							this.$refs.child.toUpload(this.context.id)
+							this.$router.push({
+								name: "toDoList"
+							})
 						}
 					})
 				} else {

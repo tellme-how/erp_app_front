@@ -173,9 +173,6 @@
 				this.$refs.childOher.$refs.childOtherChild.forEach(item => {
 					if((item.context.gestor == localStorage.getItem('ms_staffId') || typeof(item.context.gestor) == 'undefined') && this.showSeeOrUpd == 3) {
 						item.submitForm(2)
-						this.$router.push({
-							name: "toDoList"
-						})
 					}
 				})
 			},
@@ -503,12 +500,6 @@
 				this.$api.myDesk.addWfsubmit(paramsData).then(res => {
 					if(res.data) {
 						if(res.data.code == 0) {
-							//							if(this.uploadFiles != null) {
-							//								this.uploadFile("WApplicantApproval", FoidS, fsrcoId);
-							//							}
-							//							if(this.delFileFoids != null) {
-							//								this.delFile();
-							//							}
 							this.goOk('保存成功');
 							this.$router.push({
 								name: "toDoList"
