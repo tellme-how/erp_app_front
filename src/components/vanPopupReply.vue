@@ -7,6 +7,7 @@
 					<span> 回复 </span>
 					<span @click="toReply(item,2)" class="spanClss">{{item.replyedName}} : </span>
 					<span>{{item.replyContent}}</span>
+					<span>{{item.fileName}}</span>
 				</template>
 			</van-cell>
 		</div>
