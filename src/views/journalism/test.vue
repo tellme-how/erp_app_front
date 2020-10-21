@@ -52,13 +52,35 @@
 					modules: {
 						toolbar: {
 							container: [
-								['bold'], //加粗
+								['bold', 'italic', 'underline', 'strike'],
 								[{
-									'color': []
+									header: 1
+								}, {
+									header: 2
+								}],
+								[{
+									list: 'ordered'
+								}, {
+									list: 'bullet'
+								}],
+								[{
+									indent: '-1'
+								}, {
+									indent: '+1'
+								}],
+								[{
+									color: []
+								}, {
+									background: []
+								}],
+								[{
+									font: []
 								}],
 								[{
 									align: []
-								}], //对齐方式
+								}],
+								['clean'],
+								['image'],
 								[{
 										table: 'TD'
 									},
@@ -123,15 +145,15 @@
 			}
 		},
 		mounted() {
-			console.log(this.value)
 			const dom = this.$el.querySelector('.editor')
 			this.quill = new Quill(dom, this.options)
-			if(typeof(this.value) == "undefined") {
+			if(typeof(this.value) == "undefined"){
 				this.quill.root.innerHTML = ""
-			} else {
+			}else{
 				this.quill.root.innerHTML = this.value
 			}
 			this.quill.on('text-change', () => {
+				debugger
 				this.$emit('contentData', this.quill.root.innerHTML)
 			})
 			this.$el.querySelector(
